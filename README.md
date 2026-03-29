@@ -1,57 +1,108 @@
 # 🌦️ Weather AI API
 
-An intelligent backend API that provides real-time weather data along with smart insights using FastAPI.
+An intelligent weather API built with **FastAPI**, enhanced with **LLM-powered insights**, **Redis caching**, and **analytics**.
 
 ---
 
 ## 🚀 Features
 
-* 🌐 Real-time weather data from OpenWeather API
-* 🧠 AI-powered weather insights
-* 🗄️ Database integration (SQLite + SQLAlchemy)
-* 📜 Search history tracking
-* ⚡ FastAPI with interactive Swagger UI
+* 🌤️ **Real-time Weather Data** (via external API)
+* 🤖 **AI-powered Insights** using LLM (Groq)
+* 🌍 **Multi-city Comparison**
+* ⚡ **Redis Caching** for faster responses
+* 💾 **Database Logging** (SQLAlchemy)
+* 📊 **Analytics API** (trends, usage, averages)
 
 ---
 
-## 🧱 Tech Stack
+## 🧠 How It Works
+
+```text
+User Request
+     ↓
+FastAPI Backend
+     ↓
+Weather API → Fetch data
+     ↓
+LLM → Generate insight
+     ↓
+Redis → Cache response
+     ↓
+Database → Store logs
+     ↓
+Return JSON response
+```
+
+---
+
+## 📌 API Endpoints
+
+### 🌤️ Get Weather (Single City)
+
+```
+GET /weather/{city}
+```
+
+**Example:**
+
+```
+/weather/kolkata
+```
+
+---
+
+### 🌍 Compare Multiple Cities
+
+```
+GET /weather/compare?cities=kolkata,delhi,mumbai
+```
+
+---
+
+### 📜 Get History
+
+```
+GET /history
+```
+
+---
+
+### 📊 Analytics
+
+```
+GET /analytics
+```
+
+**Returns:**
+
+* Most searched city
+* Request count per city
+* Average temperature per city
+
+---
+
+## ⚡ Tech Stack
 
 * **Backend:** FastAPI
+* **Database:** SQLite + SQLAlchemy
+* **Caching:** Redis
+* **AI/LLM:** Groq (LLaMA 3.1)
 * **Language:** Python
-* **Database:** SQLite
-* **ORM:** SQLAlchemy
-* **API:** OpenWeather
 
 ---
 
-## 📂 Project Structure
+## 🛠️ Setup Instructions
 
-```
-app/
-├── api/            # Routes
-├── core/           # Config
-├── db/             # Database setup
-├── models/         # DB models
-├── services/       # Business logic
-│   ├── weather_service.py
-│   └── insight_engine.py
-├── main.py         # Entry point
-```
-
----
-
-## ⚙️ Setup Instructions
-
-### 1️⃣ Clone the repository
+### 1️⃣ Clone Repository
 
 ```bash
-git clone https://github.com/biprajitbhattacharya400-tech/weather-ai-api.git
+git clone https://github.com/your-username/weather-ai-api.git
 cd weather-ai-api
 ```
 
 ---
 
-### 2️⃣ Create virtual environment
+### 2️⃣ Create Virtual Environment
 
 ```bash
 python -m venv venv
@@ -60,7 +111,7 @@ venv\Scripts\activate   # Windows
 
 ---
 
-### 3️⃣ Install dependencies
+### 3️⃣ Install Dependencies
 
 ```bash
 pip install -r requirements.txt
@@ -68,15 +119,18 @@ pip install -r requirements.txt
 
 ---
 
-### 4️⃣ Create `.env` file
+### 4️⃣ Setup Environment Variables
 
-```
-WEATHER_API_KEY=your_api_key_here
+Create `.env` file:
+
+```env
+WEATHER_API_KEY=your_weather_api_key
+GROQ_API_KEY=your_groq_api_key
 ```
 
 ---
 
-### 5️⃣ Run the server
+### 5️⃣ Run Server
 
 ```bash
 uvicorn app.main:app --reload
@@ -84,83 +138,55 @@ uvicorn app.main:app --reload
 
 ---
 
-## 🌐 API Endpoints
-
-### 🔹 Get Weather + Insights
+### 6️⃣ Open Swagger UI
 
 ```
-GET /weather/{city}
+http://127.0.0.1:8000/docs
 ```
 
-**Example Response:**
+---
+
+## ⚡ Redis (Optional but Recommended)
+
+Run Redis locally:
+
+```bash
+docker run -d -p 6379:6379 redis
+```
+
+---
+
+## 📊 Example Response
 
 ```json
 {
-  "city": "Dharmanagar",
-  "insights": [
-    "⛈️ Heavy rain expected. Avoid going out."
-  ],
-  "data": [...]
+  "city": "kolkata",
+  "temperature": 30.2,
+  "condition": "Clouds",
+  "insight": "Carry an umbrella due to cloudy weather."
 }
 ```
 
 ---
 
-### 🔹 Get Search History
+## 🔥 Future Improvements
 
-```
-GET /history
-```
-
-**Example Response:**
-
-```json
-[
-  {
-    "id": 1,
-    "city": "Kolkata",
-    "temperature": 30.5,
-    "condition": "Clouds"
-  }
-]
-```
-
----
-
-## 🧠 How It Works
-
-1. User sends request
-2. API fetches real-time data from OpenWeather
-3. Insight engine analyzes weather data
-4. Data is stored in database
-5. Response returned with insights
-
----
-
-## 🔐 Environment Variables
-
-| Variable        | Description         |
-| --------------- | ------------------- |
-| WEATHER_API_KEY | OpenWeather API key |
-
----
-
-## 📌 Future Improvements
-
-* 🔥 Redis caching
-* 🤖 LLM-based insights
-* 📊 Advanced analytics
-* 🌍 Multi-city comparison
+* 📈 Time-based weather trends
+* 🌐 Frontend dashboard (charts)
+* 🔐 User authentication
+* ☁️ Deployment (Render / Railway)
 
 ---
 
 ## 👨‍💻 Author
 
 **Biprajit Bhattacharya**
-Backend Developer | AI Enthusiast
+
+* 💼 Backend Developer | AI/ML Enthusiast
+* 🚀 Building intelligent systems with FastAPI & Python
 
 ---
 
 ## ⭐ If you like this project
 
-Give it a ⭐ on GitHub!
+Give it a star ⭐ on GitHub!
