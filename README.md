@@ -5,6 +5,7 @@ An intelligent full-stack weather application. The backend is built with **FastA
 ---
 
 Live Server Frontend : https://weather-ai-api.vercel.app/
+
 Backend swagger Ui : https://weather-ai-api-lxdy.onrender.com/docs
 
 ## 🚀 Key Features
