@@ -1,36 +1,37 @@
-# 🌦️ Weather AI API
+# 🌦️ Weather AI API & Dashboard
 
-An intelligent weather API built with **FastAPI**, enhanced with **LLM-powered insights**, **Redis caching**, and **analytics**.
-
----
-
-## 🚀 Features
-
-* 🌤️ **Real-time Weather Data** (via external API)
-* 🤖 **AI-powered Insights** using LLM (Groq)
-* 🌍 **Multi-city Comparison**
-* ⚡ **Redis Caching** for faster responses
-* 💾 **Database Logging** (SQLAlchemy)
-* 📊 **Analytics API** (trends, usage, averages)
+An intelligent full-stack weather application. The backend is built with **FastAPI**, enhanced with **LLM-powered insights**, **Redis caching**, and **analytics**. The frontend is a **modern, premium React dashboard** featuring dynamic glassmorphism UI and sleek real-time weather tracking.
 
 ---
 
-## 🧠 How It Works
+## 🚀 Key Features
+
+* 🖥️ **Premium Frontend Dashboard** (React + Vite with dynamic backgrounds & glassmorphism)
+* 🌤️ **Real-time Weather & Hourly Forecasts** (via external API mapped to custom endpoints)
+* 🤖 **AI-powered Insights** using LLM (Groq) to provide smart daily recommendations
+* 🌍 **Multi-city Comparison** in both API and visually in the UI grid
+* ⚡ **Redis Caching** for lightning-fast backend responses
+* 💾 **Database Logging** (SQLAlchemy) & 📊 **Analytics API** (trends, usage, averages)
+* 🌐 **CORS Enabled** natively for seamless frontend integration
+
+---
+
+## 🧠 Architecture Flow
 
 ```text
-User Request
+React Frontend (User Search / Dashboard)
      ↓
 FastAPI Backend
      ↓
-Weather API → Fetch data
+Weather API → Fetch data & 24h forecast
      ↓
-LLM → Generate insight
+LLM → Generate tailored insight (Groq)
      ↓
 Redis → Cache response
      ↓
-Database → Store logs
+Database → Store logs & analytics
      ↓
-Return JSON response
+Return formatted JSON response
 ```
 
 ---
@@ -43,21 +44,11 @@ Return JSON response
 GET /weather/{city}
 ```
 
-**Example:**
-
-```
-/weather/kolkata
-```
-
----
-
 ### 🌍 Compare Multiple Cities
 
 ```
 GET /weather/compare?cities=kolkata,delhi,mumbai
 ```
-
----
 
 ### 📜 Get History
 
@@ -65,123 +56,127 @@ GET /weather/compare?cities=kolkata,delhi,mumbai
 GET /history
 ```
 
----
-
 ### 📊 Analytics
 
 ```
 GET /analytics
 ```
 
-**Returns:**
-
-* Most searched city
-* Request count per city
-* Average temperature per city
-
 ---
 
 ## ⚡ Tech Stack
 
-* **Backend:** FastAPI
-* **Database:** SQLite + SQLAlchemy
-* **Caching:** Redis
+* **Frontend:** React, Vite, Vanilla CSS (Modern UI/UX), Lucide Icons
+* **Backend:** FastAPI, Python
+* **Database & Caching:** SQLite + SQLAlchemy, Redis
 * **AI/LLM:** Groq (LLaMA 3.1)
-* **Language:** Python
 
 ---
 
 ## 🛠️ Setup Instructions
 
-### 1️⃣ Clone Repository
+### Backend Setup (FastAPI)
+
+#### 1️⃣ Clone Repository
 
 ```bash
 git clone https://github.com/your-username/weather-ai-api.git
 cd weather-ai-api
 ```
 
----
-
-### 2️⃣ Create Virtual Environment
+#### 2️⃣ Create Virtual Environment
 
 ```bash
 python -m venv venv
 venv\Scripts\activate   # Windows
+# or
+source venv/bin/activate # Mac/Linux
 ```
 
----
-
-### 3️⃣ Install Dependencies
+#### 3️⃣ Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
----
+#### 4️⃣ Setup Environment Variables
 
-### 4️⃣ Setup Environment Variables
-
-Create `.env` file:
+Create `.env` file in the root directory:
 
 ```env
 WEATHER_API_KEY=your_weather_api_key
 GROQ_API_KEY=your_groq_api_key
 ```
 
----
-
-### 5️⃣ Run Server
+#### 5️⃣ Run Server
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
----
-
-### 6️⃣ Open Swagger UI
-
+#### 6️⃣ Open Swagger UI (Optional)
 ```
 http://127.0.0.1:8000/docs
 ```
 
 ---
 
-## ⚡ Redis (Optional but Recommended)
+### Frontend Setup (React/Vite)
 
-Run Redis locally:
-
+#### 1️⃣ Install Frontend Dependencies
 ```bash
-docker run -d -p 6379:6379 redis
+cd frontend
+npm install
 ```
+
+#### 2️⃣ Setup Frontend Environment Variables
+Create `.env` file inside the `frontend/` directory:
+```env
+VITE_API_URL=http://127.0.0.1:8000
+# Alternatively, point it to your deployed Render URL:
+# VITE_API_URL=https://weather-ai-api-lxdy.onrender.com
+```
+
+#### 3️⃣ Run Frontend Development Server
+```bash
+npm run dev
+```
+Visit `http://localhost:5173/` in your browser to view the premium UI.
 
 ---
 
-## 📊 Example Response
+## 📊 Example Backend Response
 
 ```json
 {
   "city": "kolkata",
   "temperature": 30.2,
   "condition": "Clouds",
-  "insight": "Carry an umbrella due to cloudy weather."
+  "insight": "Carry an umbrella due to cloudy weather.",
+  "forecast": [
+    {
+      "time": "2023-11-20 15:00:00",
+      "temperature": 31.0,
+      "condition": "Clouds"
+    }
+  ]
 }
 ```
 
-GET https://weather-ai-api-lxdy.onrender.com/weather/kolkata
+---
 
+## ☁️ Deployment
 
-## 📸 API Preview
-
-![Swagger UI](assets/assets/swagger.jpeg)
+* **Backend:** Easily deployable on **Render** or **Railway**. *(Ensure you push the updated `main.py` which contains the latest CORS middleware).*
+* **Frontend:** Production-ready for **Vercel** or **Netlify**. Ensure the Root Directory is set to `frontend/` and add the `VITE_API_URL` environment variable to match your live backend URL.
 
 ---
 
 ## 🔥 Future Improvements
 
-* 📈 Time-based weather trends
-* 🌐 Frontend dashboard (charts)
-* 🔐 User authentication
-* ☁️ Deployment (Render / Railway)
+* 📈 Time-based weather trends visually mapped in Dashboard
+* 🔐 User Authentication layer
+* 🌤️ Interactive map integrations
 
 ---
 
@@ -189,11 +184,12 @@ GET https://weather-ai-api-lxdy.onrender.com/weather/kolkata
 
 **Biprajit Bhattacharya**
 
-* 💼 Backend Developer | AI/ML Enthusiast
-* 🚀 Building intelligent systems with FastAPI & Python
+* 💼 Full-Stack Developer | AI/ML Enthusiast
+* 🚀 Building intelligent systems with FastAPI, Python, and React
 
 ---
 
 ## ⭐ If you like this project
 
+Made with ❤ by Biprajit Bhattacharya
 Give it a star ⭐ on GitHub!
