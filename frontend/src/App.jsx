@@ -156,22 +156,30 @@ function App() {
         {/* --- SEARCH TAB --- */}
         {activeTab === 'search' && (
           <>
-            <form onSubmit={fetchSingleWeather} className="search-form">
-              <div className="input-group">
-                <MapPin className="input-icon" size={20} />
-                <input
-                  type="text"
-                  className="search-input"
-                  placeholder="Search city (e.g., Kolkata)"
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  disabled={loading}
-                />
+            <div className="search-container" style={{display: 'flex', flexDirection: 'column', gap: '0.75rem'}}>
+              <form onSubmit={fetchSingleWeather} className="search-form" style={{marginBottom: 0}}>
+                <div className="input-group">
+                  <MapPin className="input-icon" size={20} />
+                  <input
+                    type="text"
+                    className="search-input"
+                    placeholder="Search city (e.g., Kolkata)"
+                    value={city}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setCity(val.charAt(0).toUpperCase() + val.slice(1));
+                    }}
+                    disabled={loading}
+                  />
+                </div>
+                <button type="submit" className="search-button" disabled={loading || !city.trim()}>
+                  {loading ? <><div className="spinner"></div></> : <><Search size={18} /> Get Weather</>}
+                </button>
+              </form>
+              <div style={{fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)', textAlign: 'center', paddingLeft: '1rem'}}>
+                ✨ Tip: Please make sure the first letter of your city name is capitalized.
               </div>
-              <button type="submit" className="search-button" disabled={loading || !city.trim()}>
-                {loading ? <><div className="spinner"></div></> : <><Search size={18} /> Get Weather</>}
-              </button>
-            </form>
+            </div>
 
             {renderError()}
 
@@ -231,22 +239,30 @@ function App() {
         {/* --- COMPARE TAB --- */}
         {activeTab === 'compare' && (
           <>
-            <form onSubmit={fetchCompare} className="search-form">
-              <div className="input-group">
-                <MapPin className="input-icon" size={20} />
-                <input
-                  type="text"
-                  className="search-input"
-                  placeholder="e.g., London, Tokyo, Paris"
-                  value={compareCities}
-                  onChange={(e) => setCompareCities(e.target.value)}
-                  disabled={loading}
-                />
+            <div className="search-container" style={{display: 'flex', flexDirection: 'column', gap: '0.75rem'}}>
+              <form onSubmit={fetchCompare} className="search-form" style={{marginBottom: 0}}>
+                <div className="input-group">
+                  <MapPin className="input-icon" size={20} />
+                  <input
+                    type="text"
+                    className="search-input"
+                    placeholder="e.g., London, Tokyo, Paris"
+                    value={compareCities}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setCompareCities(val.charAt(0).toUpperCase() + val.slice(1));
+                    }}
+                    disabled={loading}
+                  />
+                </div>
+                <button type="submit" className="search-button" disabled={loading || !compareCities.trim()}>
+                  {loading ? <><div className="spinner"></div></> : <><MapPin size={18} /> Compare</>}
+                </button>
+              </form>
+              <div style={{fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)', textAlign: 'center', paddingLeft: '1rem'}}>
+                ✨ Tip: Make sure the first letter of each city name is capitalized for the best results.
               </div>
-              <button type="submit" className="search-button" disabled={loading || !compareCities.trim()}>
-                {loading ? <><div className="spinner"></div></> : <><MapPin size={18} /> Compare</>}
-              </button>
-            </form>
+            </div>
 
             {renderError()}
 
