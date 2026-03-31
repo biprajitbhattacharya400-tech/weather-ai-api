@@ -31,46 +31,67 @@ body {
   align-items: center;
   justify-content: center;
   position: relative;
-  transition: background 1.5s ease-in-out;
+  transition: background-color 1.5s ease-in-out; /* We'll transition colors on blobs instead */
   padding: 2rem 1rem;
+  background-color: #0f172a; /* deep base */
+  overflow: hidden;
 }
 
-/* Dynamic Backgrounds */
-.app-wrapper.Clear { background: linear-gradient(135deg, #fbbf24, #ea580c, #4338ca); }
-.app-wrapper.Clouds { background: linear-gradient(135deg, #64748b, #334155, #0f172a); }
-.app-wrapper.Rain { background: linear-gradient(135deg, #1e3a8a, #312e81, #020617); }
-.app-wrapper.Snow { background: linear-gradient(135deg, #94a3b8, #e2e8f0, #475569); }
-.app-wrapper.Thunderstorm { background: linear-gradient(135deg, #1f2937, #111827, #4c1d95); }
-.app-wrapper.Default { background: linear-gradient(135deg, #312e81, #1e1b4b, #020617); }
+/* New Rich Blob Backgrounds */
+.bg-blobs-container {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
 
-/* Soft Glowing Orbs in Background */
-.app-wrapper::before,
-.app-wrapper::after {
-  content: '';
+.parallax-layer {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  transition: transform 0.15s ease-out;
+}
+
+.bg-blob {
   position: absolute;
   border-radius: 50%;
   filter: blur(100px);
-  z-index: 0;
-  pointer-events: none;
-  animation: float 12s infinite ease-in-out alternate;
+  opacity: 0.5;
+  will-change: transform;
+  transition: background 1.5s ease-in-out;
 }
 
-.app-wrapper::before {
-  width: 45vw;
-  height: 45vw;
-  background: rgba(255, 255, 255, 0.12);
-  top: -10vw;
-  left: -10vw;
-}
+/* Animations added later in file (float-blob handled via app keyframes if needed, but we'll use strict keyframes here) */
+.bg-blob.b1 { animation: float-blob 18s infinite ease-in-out alternate; }
+.bg-blob.b2 { animation: float-blob 15s infinite ease-in-out alternate-reverse; }
+.bg-blob.b3 { animation: float-blob 22s infinite ease-in-out alternate; }
 
-.app-wrapper::after {
-  width: 35vw;
-  height: 35vw;
-  background: rgba(99, 102, 241, 0.25);
-  bottom: -5vw;
-  right: -5vw;
-  animation-delay: -6s;
-}
+.Clear .b1 { background: #f59e0b; top: -15%; left: -10%; width: 55vw; height: 55vw; }
+.Clear .b2 { background: #ea580c; bottom: -10%; right: -5%; width: 45vw; height: 45vw; }
+.Clear .b3 { background: #4338ca; top: 35%; left: 50%; width: 40vw; height: 40vw; }
+
+.Clouds .b1 { background: #64748b; top: -10%; left: -10%; width: 50vw; height: 50vw; }
+.Clouds .b2 { background: #38bdf8; bottom: -10%; right: -10%; width: 40vw; height: 40vw; }
+.Clouds .b3 { background: #1e293b; top: 40%; left: 60%; width: 40vw; height: 40vw; }
+
+.Rain .b1 { background: #3b82f6; top: -10%; left: -10%; width: 50vw; height: 50vw; }
+.Rain .b2 { background: #1e3a8a; bottom: -5%; right: -10%; width: 50vw; height: 50vw; }
+.Rain .b3 { background: #0ea5e9; top: 40%; left: 60%; width: 35vw; height: 35vw; }
+
+.Snow .b1 { background: #94a3b8; top: -10%; left: -10%; width: 50vw; height: 50vw; }
+.Snow .b2 { background: #e2e8f0; bottom: -10%; right: -10%; width: 40vw; height: 40vw; }
+.Snow .b3 { background: #cbd5e1; top: 40%; left: 60%; width: 30vw; height: 30vw; }
+
+.Thunderstorm .b1 { background: #8b5cf6; top: -10%; left: -10%; width: 55vw; height: 55vw; }
+.Thunderstorm .b2 { background: #4c1d95; bottom: -10%; right: -10%; width: 45vw; height: 45vw; }
+.Thunderstorm .b3 { background: #facc15; opacity: 0.3; top: 40%; left: 60%; width: 30vw; height: 30vw; }
+
+.Default .b1 { background: #6366f1; top: -10%; left: -10%; width: 50vw; height: 50vw; }
+.Default .b2 { background: #4f46e5; bottom: -20%; right: -10%; width: 50vw; height: 50vw; }
+.Default .b3 { background: #ec4899; opacity: 0.4; top: 30%; left: 50%; width: 35vw; height: 35vw; }
 
 .main-container {
   width: 100%;
@@ -196,7 +217,7 @@ body {
   padding: 2.5rem;
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4), inset 0 2px 0 rgba(255, 255, 255, 0.15), inset 2px 0 0 rgba(255, 255, 255, 0.05);
   animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   position: relative;
   overflow: hidden;
@@ -361,6 +382,13 @@ body {
 @keyframes float {
   0% { transform: translateY(0) translateX(0) scale(1); }
   100% { transform: translateY(-30px) translateX(30px) scale(1.05); }
+}
+
+@keyframes float-blob {
+  0% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(4%, 6%) scale(1.1); }
+  66% { transform: translate(-4%, -4%) scale(0.9); }
+  100% { transform: translate(0, 0) scale(1); }
 }
 
 @keyframes float-icon {

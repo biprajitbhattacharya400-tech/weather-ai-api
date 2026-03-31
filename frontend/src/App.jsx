@@ -24,6 +24,16 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Parallax Effect
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e) => {
+    // Subtle shift based on mouse relative to center of screen
+    const x = (e.clientX / window.innerWidth - 0.5) * 40; 
+    const y = (e.clientY / window.innerHeight - 0.5) * 40;
+    setMousePos({ x, y });
+  };
+
   const fetchSingleWeather = async (e) => {
     e.preventDefault();
     if (!city.trim()) return;
@@ -133,8 +143,26 @@ function App() {
   };
 
   return (
-    <div className={`app-wrapper ${bgClass}`}>
-      <div className="main-container" style={{maxWidth: activeTab !== 'search' ? '750px' : '500px', transition: 'max-width 0.4s ease'}}>
+    <div className={`app-wrapper ${bgClass}`} onMouseMove={handleMouseMove}>
+      
+      {/* Dynamic Background Parallax Blobs */}
+      <div className="bg-blobs-container">
+        <div className="parallax-layer" style={{ transform: `translate(${mousePos.x}px, ${mousePos.y}px)` }}>
+          <div className="bg-blob b1"></div>
+        </div>
+        <div className="parallax-layer" style={{ transform: `translate(${mousePos.x * -1.5}px, ${mousePos.y * -1.5}px)` }}>
+          <div className="bg-blob b2"></div>
+        </div>
+        <div className="parallax-layer" style={{ transform: `translate(${mousePos.x * 0.5}px, ${mousePos.y * 0.5}px)` }}>
+          <div className="bg-blob b3"></div>
+        </div>
+      </div>
+
+      <div className="main-container" style={{
+        maxWidth: activeTab !== 'search' ? '750px' : '500px', 
+        transition: 'max-width 0.4s ease, transform 0.15s ease-out',
+        transform: `translate(${mousePos.x * -0.2}px, ${mousePos.y * -0.2}px)`
+      }}>
         
         <div className="header">
           <h1>Weather AI</h1>
