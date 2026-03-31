@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Search, MapPin, CloudRain, CloudLightning, CloudSnow, Cloud, Sun, Sparkles, AlertCircle, LayoutDashboard } from 'lucide-react';
 import './index.css';
+import './weather-fx.css';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'https://weather-ai-api-lxdy.onrender.com';
 
@@ -142,6 +143,42 @@ function App() {
     return new Date().toLocaleDateString('en-US', options);
   };
 
+  const renderWeatherFX = () => {
+    switch(bgClass) {
+      case 'Rain':
+      case 'Thunderstorm':
+        return (
+          <div className="weather-fx" style={{animation: 'slideUpFade 1s ease'}}>
+             <div className="rain-layer"></div>
+             <div className="rain-layer rain-2"></div>
+             {bgClass === 'Thunderstorm' && <div className="lightning-flash intense"></div>}
+          </div>
+        );
+      case 'Snow':
+        return (
+          <div className="weather-fx" style={{animation: 'slideUpFade 1s ease'}}>
+             <div className="snow-layer"></div>
+             <div className="snow-layer snow-2"></div>
+          </div>
+        );
+      case 'Clear':
+        return (
+          <div className="weather-fx" style={{animation: 'slideUpFade 1s ease'}}>
+             <div className="sun-ray"></div>
+             <div className="floating-dust"></div>
+          </div>
+        );
+      case 'Clouds':
+        return (
+          <div className="weather-fx" style={{animation: 'slideUpFade 1s ease'}}>
+             <div className="cloud-layer"></div>
+             <div className="cloud-layer cloud-2"></div>
+          </div>
+        );
+      default: return null;
+    }
+  };
+
   const renderError = () => {
     if (!error) return null;
 
@@ -190,6 +227,9 @@ function App() {
   return (
     <div className={`app-wrapper ${bgClass}`} onMouseMove={handleMouseMove}>
       
+      {/* Immersive Weather Ambient Effects */}
+      {renderWeatherFX()}
+
       {/* Dynamic Background Parallax Blobs */}
       <div className="bg-blobs-container">
         <div className="parallax-layer" style={{ transform: `translate(${mousePos.x}px, ${mousePos.y}px)` }}>

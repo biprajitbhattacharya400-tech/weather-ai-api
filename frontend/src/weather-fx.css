@@ -1,0 +1,167 @@
+/* weather-fx.css - Pure CSS High Performance Weather Animations */
+
+.weather-fx {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+/* =========================================
+   🌧️ RAIN EFFECT
+========================================= */
+.rain-layer {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 200%;
+  background-image: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.25));
+  background-size: 2px 80px;
+  animation: rainDrop 0.7s linear infinite;
+  opacity: 0.4;
+}
+
+.rain-2 {
+  background-size: 1px 60px;
+  animation: rainDrop 0.9s linear infinite;
+  opacity: 0.2;
+  transform: translateX(10px);
+}
+
+.rain-layer.heavy {
+  background-size: 3px 120px;
+  animation: rainDrop 0.5s linear infinite;
+  opacity: 0.6;
+}
+
+@keyframes rainDrop {
+  0% { transform: translateY(0) rotate(10deg); }
+  100% { transform: translateY(50%) rotate(10deg); }
+}
+
+/* Lightning */
+.lightning-flash {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: white;
+  opacity: 0;
+  animation: lightning 10s infinite;
+}
+
+.lightning-flash.intense {
+  animation: lightning 5s infinite;
+}
+
+@keyframes lightning {
+  0%, 95%, 98%, 100% { opacity: 0; }
+  96% { opacity: 0.15; }
+  97% { opacity: 0; }
+  99% { opacity: 0.2; }
+}
+
+/* =========================================
+   ❄️ SNOW EFFECT
+========================================= */
+.snow-layer {
+  position: absolute;
+  top: -100%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background-image: 
+    radial-gradient(3px 3px at 20px 30px, rgba(255,255,255,0.8), transparent),
+    radial-gradient(4px 4px at 80px 70px, rgba(255,255,255,0.9), transparent),
+    radial-gradient(5px 5px at 150px 10px, rgba(255,255,255,0.7), transparent),
+    radial-gradient(2px 2px at 250px 90px, rgba(255,255,255,0.6), transparent);
+  background-size: 300px 300px;
+  animation: snowFall 15s linear infinite;
+}
+
+.snow-2 {
+  background-size: 200px 200px;
+  animation: snowFall 20s linear infinite reverse;
+  opacity: 0.6;
+  filter: blur(1px);
+}
+
+@keyframes snowFall {
+  0% { transform: translateY(0) translateX(0); }
+  100% { transform: translateY(50%) translateX(10%); }
+}
+
+/* =========================================
+   🌤️ CLEAR / SUNNY EFFECT
+========================================= */
+.sun-ray {
+  position: absolute;
+  top: -20vh;
+  left: -20vw;
+  width: 140vw;
+  height: 140vh;
+  background: conic-gradient(from 0deg at 50% 50%, rgba(255,255,255,0) 0%, rgba(255,215,0,0.08) 15%, rgba(255,255,255,0) 30%, rgba(255,215,0,0.05) 60%, rgba(255,255,255,0) 80%);
+  animation: rotateRays 80s linear infinite;
+  transform-origin: center;
+  mix-blend-mode: overlay;
+}
+
+.floating-dust {
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background-image: radial-gradient(1px 1px at 50% 50%, rgba(255,255,255,0.3), transparent);
+  background-size: 80px 80px;
+  animation: driftDust 40s linear infinite;
+}
+
+@keyframes rotateRays {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes driftDust {
+  0% { transform: translateY(0) translateX(0) rotate(0deg); }
+  100% { transform: translateY(20%) translateX(10%) rotate(10deg); }
+}
+
+/* =========================================
+   ☁️ CLOUDS EFFECT
+========================================= */
+.cloud-layer {
+  position: absolute;
+  top: -10%;
+  left: -50%;
+  width: 200%;
+  height: 50%;
+  background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.05) 0%, transparent 60%);
+  background-size: 50% 100%;
+  background-repeat: repeat-x;
+  animation: slowDrift 40s linear infinite;
+  filter: blur(40px);
+}
+
+.cloud-2 {
+  top: 10%;
+  left: -100%;
+  height: 60%;
+  background: radial-gradient(circle at 60% 40%, rgba(200,220,255,0.04) 0%, transparent 70%);
+  animation: slowDrift 60s linear infinite reverse;
+}
+
+@keyframes slowDrift {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(25%); }
+}
+
+/* =========================================
+   MOBILE OPTIMIZATIONS
+========================================= */
+@media (max-width: 640px) {
+  .rain-layer { background-size: 2px 50px; opacity: 0.25; }
+  .floating-dust { display: none; } /* Save battery on mobile */
+  .cloud-layer { filter: blur(20px); } /* Less blur processing cost */
+  .sun-ray { animation: rotateRays 120s linear infinite; } /* Slower on mobile */
+}
