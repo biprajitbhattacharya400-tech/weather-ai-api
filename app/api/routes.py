@@ -79,8 +79,8 @@ def weather(city: str, db: Session = Depends(get_db)):
     # 🌐 Fetch weather
     data = get_weather(city)
 
-    if not data or str(data.get("cod")) != "200":
-        return {"error": "Could not fetch weather"}
+    if not data or data.get("cod") not in [200, "200"]:
+        return {"error": "Could not fetch weather", "raw": data}
 
     first = data["list"][0]
 
