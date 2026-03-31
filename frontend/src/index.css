@@ -664,21 +664,29 @@ body {
 
 @media (max-width: 640px) {
   .app-wrapper {
-    padding: 1rem;
+    padding: 1.25rem 1rem;
     align-items: flex-start;
   }
   
+  .bg-blob {
+    opacity: 0.75;
+    filter: blur(80px); /* Tighter blur makes gradients richer on small screens */
+  }
+  
   .header h1 {
-    font-size: 2.6rem;
+    font-size: 2.35rem; /* Slightly balanced for mobile headers */
   }
   
   .weather-card {
     padding: 2rem 1.75rem;
     border-radius: 2rem;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.08)); /* Frosty, brighter */
+    border: 1px solid rgba(255, 255, 255, 0.35); /* High contrast outline */
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 2px 0 rgba(255, 255, 255, 0.3);
   }
   
   .temperature {
-    font-size: 4.5rem;
+    font-size: 4rem;
   }
   
   .search-form {
@@ -686,8 +694,24 @@ body {
     gap: 1.25rem;
   }
   
+  .input-group {
+    background: rgba(255, 255, 255, 0.12); /* Lifted from muddy black to frosty glass */
+    border: 1.5px solid rgba(255, 255, 255, 0.35);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  }
+  
+  .input-group:focus-within {
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.85); /* Bright glow */
+  }
+  
   .input-icon {
     left: 1.25rem;
+    color: rgba(255, 255, 255, 0.9); /* Brilliant contrast */
+  }
+  
+  .search-input::placeholder {
+    color: rgba(255, 255, 255, 0.8); /* Highly legible placeholder */
   }
   
   .search-input {
@@ -698,5 +722,7 @@ body {
     padding: 1.25rem;
     width: 100%;
     border-radius: 20px;
+    box-shadow: 0 12px 40px rgba(139, 92, 246, 0.8); /* Dominant vivid glow */
+    letter-spacing: 0.5px;
   }
 }
