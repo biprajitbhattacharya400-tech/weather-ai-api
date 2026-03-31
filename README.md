@@ -167,6 +167,13 @@ docker run -d -p 6379:6379 redis
 }
 ```
 
+GET https://weather-ai-api-lxdy.onrender.com/weather/kolkata
+
+
+## 📸 API Preview
+
+![Swagger UI](assets/swagger.jpeg)
+
 ---
 
 ## 🔥 Future Improvements
