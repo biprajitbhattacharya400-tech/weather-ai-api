@@ -29,6 +29,7 @@ function App() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   const handleMouseMove = (e) => {
+    if (window.innerWidth <= 768) return; // Disable expensive parallax state updates on mobile
     // Subtle shift based on mouse relative to center of screen
     const x = (e.clientX / window.innerWidth - 0.5) * 40; 
     const y = (e.clientY / window.innerHeight - 0.5) * 40;

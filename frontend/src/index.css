@@ -737,7 +737,7 @@ body {
   
   .bg-blob {
     opacity: 0.75;
-    filter: blur(80px); /* Tighter blur makes gradients richer on small screens */
+    filter: blur(35px); /* Radically lower blur to save massive GPU load on mobile */
   }
   
   .header h1 {
@@ -753,7 +753,9 @@ body {
     border-radius: 2rem;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.08)); /* Frosty, brighter */
     border: 1px solid rgba(255, 255, 255, 0.35); /* High contrast outline */
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 2px 0 rgba(255, 255, 255, 0.3);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3), inset 0 2px 0 rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(15px); /* Explicit downgrade on mobile to save GPU */
+    -webkit-backdrop-filter: blur(15px);
   }
   
   .temperature {
@@ -768,7 +770,9 @@ body {
   .input-group {
     background: rgba(255, 255, 255, 0.12); /* Lifted from muddy black to frosty glass */
     border: 1.5px solid rgba(255, 255, 255, 0.35);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px); /* Massive GPU saver */
+    -webkit-backdrop-filter: blur(10px);
   }
   
   .input-group:focus-within {
