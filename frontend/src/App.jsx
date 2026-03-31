@@ -42,12 +42,22 @@ function App() {
 
     try {
       const response = await fetch(`${API_BASE}/weather/${encodeURIComponent(city.trim())}`);
-      if (!response.ok) throw new Error('City not found or API error.');
+      if (!response.ok) throw new Error('NotFound');
       const data = await response.json();
+      
+      // Strict Validation to catch unhandled external API failures (e.g. returning NaN)
+      if (data.error || data.temperature === undefined || isNaN(data.temperature) || data.temperature === null) {
+        throw new Error('NotFound');
+      }
+
       setWeatherData(data);
       updateBackground(data.condition);
     } catch (err) {
-      setError(err.message || 'Failed to fetch weather data.');
+      if (err.message === 'NotFound' || err.message.includes('not found')) {
+        setError(`unsupported_city`);
+      } else {
+        setError('Failed to fetch weather data. Please check your connection.');
+      }
       setBgClass('Default');
     } finally {
       setLoading(false);
@@ -134,8 +144,43 @@ function App() {
 
   const renderError = () => {
     if (!error) return null;
+
+    if (error === 'unsupported_city') {
+      return (
+        <div className="weather-card" style={{
+          animation: 'slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+          textAlign: 'center',
+          padding: '3rem 2rem',
+          background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(0, 0, 0, 0.4))',
+          borderColor: 'rgba(239, 68, 68, 0.25)',
+          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3), inset 0 2px 0 rgba(239, 68, 68, 0.15)'
+        }}>
+          <div style={{color: '#fca5a5', marginBottom: '1rem'}}>
+            <AlertCircle size={56} style={{margin: '0 auto'}} />
+          </div>
+          <h2 style={{fontSize: '1.75rem', marginBottom: '1rem', fontWeight: 600}}>Location Not Found</h2>
+          <p style={{color: 'rgba(255,255,255,0.75)', lineHeight: 1.6, fontSize: '1.05rem', marginBottom: '2rem'}}>
+            We couldn't retrieve atmospheric data for <strong>"{activeTab === 'search' ? city : compareCities}"</strong>. This location might be too small, misspelled, or unsupported by satellite models.
+          </p>
+          <div style={{
+            background: 'rgba(0,0,0,0.35)', padding: '1.5rem', borderRadius: '1.5rem', 
+            border: '1px solid rgba(255,255,255,0.05)', display: 'inline-block'
+          }}>
+            <span style={{color: '#facc15', fontSize: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '0.5rem'}}>
+              <Sparkles size={16} /> Try a nearby major city:
+            </span>
+            <strong style={{color: '#fff', fontSize: '1.25rem', letterSpacing: '0.5px'}}>e.g., Agartala, Kolkata, Delhi</strong>
+          </div>
+        </div>
+      );
+    }
+
+    // Generic fallback error
     return (
-      <div className="error-message">
+      <div className="error-message" style={{
+        display: 'flex', alignItems: 'center', gap: '0.75rem', background: 'rgba(239, 68, 68, 0.15)',
+        border: '1px solid rgba(239, 68, 68, 0.3)', padding: '1rem 1.5rem', borderRadius: '1rem', color: '#fca5a5', marginTop: '1rem'
+      }}>
         <AlertCircle size={24} />
         <span style={{fontWeight: 500, fontSize: '1.05rem'}}>{error}</span>
       </div>
