@@ -149,6 +149,7 @@ function App() {
       case 'Thunderstorm':
         return (
           <div className="weather-fx" style={{animation: 'slideUpFade 1s ease'}}>
+             <div className="ambient-fog"></div>
              <div className="rain-layer"></div>
              <div className="rain-layer rain-2"></div>
              {bgClass === 'Thunderstorm' && <div className="lightning-flash intense"></div>}
