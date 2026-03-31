@@ -105,7 +105,15 @@ def weather(city: str, db: Session = Depends(get_db)):
         "city": city,
         "temperature": first["main"]["temp"],
         "condition": first["weather"][0]["main"],
-        "insight": insight
+        "insight": insight,
+        "forecast": [
+            {
+                "time": item["dt_txt"],
+                "temperature": item["main"]["temp"],
+                "condition": item["weather"][0]["main"]
+            }
+            for item in data.get("list", [])[:8]
+        ]
     }
 
     # ⚡ Cache it
