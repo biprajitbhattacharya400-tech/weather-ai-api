@@ -13,16 +13,24 @@ router = APIRouter()
 @router.get("/weather/compare")
 def compare_weather(cities: str = Query(...), db: Session = Depends(get_db)):
     
-    city_list = [city.strip().lower() for city in cities.split(",")]
+    city_list = [c.strip().lower() for c in cities.split(",")]
     result = {}
+    
+    # Map unsupported local names to the nearest supported API hub
+    alias_map = {
+        "kadamtala": "dharmanagar",
+        "kadamtala north tripura": "dharmanagar",
+        "kadamtala tripura": "dharmanagar"
+    }
 
-    for city in city_list:
-        data = get_weather(city)
-
-        print("DEBUG:", city, data)
+    for original_city in city_list:
+        query_city = alias_map.get(original_city, original_city)
+        display_city = original_city.title()
+        
+        data = get_weather(query_city)
 
         if not data or str(data.get("cod")) != "200" or "list" not in data:
-            result[city] = {"error": f"Could not fetch weather for {city}"}
+            result[display_city] = {"error": f"Could not fetch weather for {display_city}"}
             continue
 
         try:
@@ -30,27 +38,27 @@ def compare_weather(cities: str = Query(...), db: Session = Depends(get_db)):
 
             # 🤖 LLM INSIGHT
             llm_insight = generate_llm_insight(
-                city,
+                display_city,
                 first["main"]["temp"],
                 first["weather"][0]["main"]
             )
 
             # Save to DB
             weather_log = WeatherLog(
-                city=city,
+                city=display_city,
                 temperature=first["main"]["temp"],
                 condition=first["weather"][0]["main"]
             )
             db.add(weather_log)
 
-            result[city] = {
+            result[display_city] = {
                 "temperature": first["main"]["temp"],
                 "condition": first["weather"][0]["main"],
                 "insight": llm_insight  # UPDATED
             }
 
         except Exception as e:
-            result[city] = {"error": str(e)}
+            result[display_city] = {"error": str(e)}
 
     db.commit()
 
@@ -68,16 +76,27 @@ def weather(city: str, db: Session = Depends(get_db)):
     city = city.strip().lower()
     city = city.replace('"', '').replace("'", "")
 
-    cache_key = f"weather:{city}"
+    # Map unsupported local names to the nearest supported API hub
+    alias_map = {
+        "kadamtala": "dharmanagar",
+        "kadamtala north tripura": "dharmanagar",
+        "kadamtala tripura": "dharmanagar"
+    }
+    
+    display_city = city.title()
+    query_city = alias_map.get(city, city)
+
+    cache_key = f"weather:{query_city}"
 
     # 🔁 Check cache
     cached_data = get_cache(cache_key)
     if cached_data:
         print("CACHE HIT")
+        cached_data["city"] = display_city # Force cache to show desired name
         return cached_data
 
     # 🌐 Fetch weather
-    data = get_weather(city)
+    data = get_weather(query_city)
 
     if not data or data.get("cod") not in [200, "200"]:
         return {"error": "Could not fetch weather", "raw": data}
@@ -86,14 +105,14 @@ def weather(city: str, db: Session = Depends(get_db)):
 
     # 🤖 LLM insight
     insight = generate_llm_insight(
-        city,
+        display_city,
         first["main"]["temp"],
         first["weather"][0]["main"]
     )
 
     # 💾 Save to DB
     weather_log = WeatherLog(
-        city=city,
+        city=display_city,
         temperature=first["main"]["temp"],
         condition=first["weather"][0]["main"]
     )
@@ -102,7 +121,7 @@ def weather(city: str, db: Session = Depends(get_db)):
     db.commit()
 
     response = {
-        "city": city,
+        "city": display_city,
         "temperature": first["main"]["temp"],
         "condition": first["weather"][0]["main"],
         "insight": insight,
