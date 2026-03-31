@@ -4,6 +4,9 @@ An intelligent full-stack weather application. The backend is built with **FastA
 
 ---
 
+Live Server Frontend : https://weather-ai-api.vercel.app/
+Backend swagger Ui : https://weather-ai-api-lxdy.onrender.com/docs
+
 ## 🚀 Key Features
 
 * 🖥️ **Premium Frontend Dashboard** (React + Vite with dynamic backgrounds & glassmorphism)
@@ -184,7 +187,7 @@ Visit `http://localhost:5173/` in your browser to view the premium UI.
 
 **Biprajit Bhattacharya**
 
-* 💼 Full-Stack Developer | AI/ML Enthusiast
+* 💼  Developer | AI/ML Enthusiast
 * 🚀 Building intelligent systems with FastAPI, Python, and React
 
 ---
@@ -192,4 +195,5 @@ Visit `http://localhost:5173/` in your browser to view the premium UI.
 ## ⭐ If you like this project
 
 Made with ❤ by Biprajit Bhattacharya
+
 Give it a star ⭐ on GitHub!
