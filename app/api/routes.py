@@ -123,6 +123,11 @@ def weather(city: str, db: Session = Depends(get_db)):
     response = {
         "city": display_city,
         "temperature": first["main"]["temp"],
+        "feels_like": first["main"].get("feels_like", first["main"]["temp"]),
+        "humidity": first["main"].get("humidity", 0),
+        "pressure": first["main"].get("pressure", 0),
+        "wind_speed": first.get("wind", {}).get("speed", 0),
+        "visibility": first.get("visibility", 10000),
         "condition": first["weather"][0]["main"],
         "insight": insight,
         "forecast": [

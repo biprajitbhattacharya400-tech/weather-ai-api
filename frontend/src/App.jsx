@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, MapPin, CloudRain, CloudLightning, CloudSnow, Cloud, Sun, Sparkles, AlertCircle, LayoutDashboard } from 'lucide-react';
+import { Search, MapPin, CloudRain, CloudLightning, CloudSnow, Cloud, Sun, Sparkles, AlertCircle, LayoutDashboard, Droplets, Wind, Thermometer, Eye } from 'lucide-react';
 import './index.css';
 import './weather-fx.css';
 
@@ -317,6 +317,37 @@ function App() {
                    <div className="temperature">
                      {Math.round(weatherData.temperature)}°
                    </div>
+                </div>
+
+                <div className="weather-details-grid" style={{animation: 'slideUpFade 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards'}}>
+                  <div className="detail-item">
+                    <Droplets className="detail-icon" size={24} />
+                    <div className="detail-info">
+                      <span className="detail-label">Humidity</span>
+                      <span className="detail-value">{weatherData.humidity !== undefined ? weatherData.humidity : '--'}%</span>
+                    </div>
+                  </div>
+                  <div className="detail-item">
+                    <Wind className="detail-icon" size={24} />
+                    <div className="detail-info">
+                      <span className="detail-label">Wind</span>
+                      <span className="detail-value">{weatherData.wind_speed ? Math.round(weatherData.wind_speed * 3.6) : '--'} <span style={{fontSize: '0.8rem', fontWeight: '500', color: 'rgba(255,255,255,0.7)'}}>km/h</span></span>
+                    </div>
+                  </div>
+                  <div className="detail-item">
+                    <Thermometer className="detail-icon" size={24} />
+                    <div className="detail-info">
+                      <span className="detail-label">Feels Like</span>
+                      <span className="detail-value">{weatherData.feels_like ? Math.round(weatherData.feels_like) : (weatherData.temperature ? Math.round(weatherData.temperature) : '--')}°</span>
+                    </div>
+                  </div>
+                  <div className="detail-item">
+                    <Eye className="detail-icon" size={24} />
+                    <div className="detail-info">
+                      <span className="detail-label">Visibility</span>
+                      <span className="detail-value">{weatherData.visibility ? (weatherData.visibility / 1000).toFixed(1) : '--'} <span style={{fontSize: '0.8rem', fontWeight: '500', color: 'rgba(255,255,255,0.7)'}}>km</span></span>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="insight-card">
