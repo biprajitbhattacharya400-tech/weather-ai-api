@@ -172,7 +172,7 @@ GET https://weather-ai-api-lxdy.onrender.com/weather/kolkata
 
 ## 📸 API Preview
 
-![Swagger UI](assets/swagger.jpeg)
+![Swagger UI](assets/assets/swagger.jpeg)
 
 ---
 
