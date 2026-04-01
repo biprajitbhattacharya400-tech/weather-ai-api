@@ -200,19 +200,51 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.5);
+  gap: 0.75rem;
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.5); /* Deep physical rim light */
   animation: glowPulse 3s infinite alternate;
+  will-change: transform, box-shadow, background-position;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Cinematic glass sheen tracing effect */
+.search-button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
+  transform: skewX(-25deg);
+  transition: left 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.search-button svg {
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  will-change: transform;
 }
 
 .search-button:hover:not(:disabled) {
-  transform: translateY(-3px) scale(1.03);
+  transform: translateY(-4px) scale(1.05); /* Aggressive, extremely satisfying tactile boost */
   background-position: right center;
-  box-shadow: 0 15px 40px rgba(236, 72, 153, 0.7);
+  box-shadow: 0 20px 45px rgba(236, 72, 153, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.7);
+}
+
+/* Fire the glass sheen exclusively on hover interaction */
+.search-button:hover:not(:disabled)::after {
+  left: 150%;
+}
+
+/* Make the inner icon pop outwards and scale to draw the user's eye */
+.search-button:hover:not(:disabled) svg {
+  transform: translateX(3px) scale(1.15);
 }
 
 .search-button:active:not(:disabled) {
-  transform: translateY(1px) scale(0.97);
+  transform: translateY(2px) scale(0.95);
+  box-shadow: 0 5px 15px rgba(236, 72, 153, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.2);
 }
 
 .search-button:disabled {
@@ -225,8 +257,8 @@ body {
 }
 
 @keyframes glowPulse {
-  0% { box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4); }
-  100% { box-shadow: 0 15px 45px rgba(139, 92, 246, 0.8); }
+  0% { box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4); }
+  100% { box-shadow: 0 15px 50px rgba(139, 92, 246, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.6); }
 }
 
 /* Weather Card */
