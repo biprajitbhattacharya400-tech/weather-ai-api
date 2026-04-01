@@ -248,7 +248,7 @@ function App() {
       <div className="main-container" style={{
         maxWidth: activeTab !== 'search' ? '750px' : '500px', 
         transition: 'max-width 0.4s ease, transform 0.15s ease-out',
-        transform: `translate(${mousePos.x * -0.2}px, ${mousePos.y * -0.2}px)`
+        willChange: 'max-width, opacity'
       }}>
         
         <div className="header">
