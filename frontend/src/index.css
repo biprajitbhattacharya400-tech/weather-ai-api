@@ -146,6 +146,13 @@ body {
   will-change: transform, box-shadow; /* Instructs GPU to allocate memory for butter-smooth states */
 }
 
+.input-group:hover:not(:focus-within) {
+  background: rgba(0, 0, 0, 0.40);
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+}
+
 .input-group:focus-within {
   transform: translateY(-2px);
   background: rgba(0, 0, 0, 0.45);
@@ -445,8 +452,19 @@ body {
 }
 
 .insight-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.3);
+  transform: translateY(-6px) scale(1.015);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.05));
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.35), inset 0 1px 1px rgba(255,255,255,0.4);
+}
+
+.insight-card .insight-header svg {
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.insight-card:hover .insight-header svg {
+  transform: scale(1.2) rotate(15deg);
+  filter: drop-shadow(0 0 10px rgba(253, 224, 71, 0.8));
 }
 
 .insight-header {
@@ -573,12 +591,25 @@ body {
   padding: 1rem 0.5rem;
   border-radius: 1rem;
   border: 1px solid rgba(255,255,255,0.05);
-  transition: transform 0.2s ease, background 0.2s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  will-change: transform, box-shadow;
+  cursor: pointer;
 }
 
 .forecast-item:hover {
-  transform: translateY(-5px);
-  background: rgba(255,255,255,0.1);
+  transform: translateY(-6px) scale(1.08);
+  background: linear-gradient(145deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+  border-color: rgba(255,255,255,0.25);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+}
+
+.forecast-item svg {
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.forecast-item:hover svg {
+  transform: translateY(-3px) scale(1.2) rotate(-5deg);
+  filter: drop-shadow(0 4px 8px rgba(255,255,255,0.4));
 }
 
 .forecast-time {
@@ -620,7 +651,7 @@ body {
 
 .tab-btn {
   background: transparent;
-  border: none;
+  border: 1px solid transparent;
   color: var(--text-muted);
   padding: 0.6rem 1.2rem;
   border-radius: 999px;
@@ -628,17 +659,29 @@ body {
   font-size: 0.95rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+  will-change: transform, box-shadow;
 }
 
-.tab-btn:hover {
+.tab-btn:hover:not(.active) {
   color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.tab-btn:active {
+  transform: translateY(1px) scale(0.95);
 }
 
 .tab-btn.active {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.2);
   color: #fff;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15), inset 0 1px 1px rgba(255,255,255,0.4);
+  transform: translateY(-1px);
 }
 
 /* Compare Grid */
