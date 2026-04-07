@@ -642,19 +642,26 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 1rem 0.5rem;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  padding: 1rem 1rem; /* px-4 py-4 */
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 0.5rem; /* rounded-lg */
+  margin-bottom: 4px;
+  transition: background 0.2s ease;
+}
+
+.daily-row:hover {
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .daily-row:last-child {
-  border-bottom: none;
+  margin-bottom: 0;
 }
 
 .daily-day {
   min-width: 100px;
-  font-size: 1rem;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.95);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
 }
 
 .daily-icon {
@@ -665,22 +672,14 @@ body {
 }
 
 .daily-pop {
-  min-width: 50px;
+  min-width: 55px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-}
-
-.daily-pop-badge {
-  display: flex;
-  align-items: center;
   gap: 0.25rem;
-  background: rgba(59, 130, 246, 0.1);
-  color: #60a5fa;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7); /* Subtle */
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 500;
 }
 
 .daily-bar {
@@ -689,29 +688,29 @@ body {
   align-items: center;
   justify-content: flex-end;
   gap: 12px;
-  max-width: 200px;
+  max-width: 220px;
 }
 
 .daily-min { 
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 500;
   width: 40px;
   text-align: right;
-  color: rgba(255,255,255,0.7); 
+  color: rgba(255,255,255,0.8); 
 }
 
 .daily-max { 
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 500;
   width: 40px;
   text-align: left;
-  color: rgba(255, 255, 255, 0.95); 
+  color: #fff; 
 }
 
 .temp-bar-bg {
   flex: 1;
-  height: 6px;
-  background: rgba(255,255,255,0.08); /* clean background track */
+  height: 3px; /* Thin elegant line */
+  background: rgba(255,255,255,0.06); /* subtle track */
   border-radius: 9999px;
   position: relative;
   overflow: hidden;
@@ -722,7 +721,7 @@ body {
   position: absolute;
   top: 0; left: 10%; width: 75%; height: 100%;
   max-width: 100%;
-  background: linear-gradient(90deg, #60a5fa, #fb923c); /* smooth gradient */
+  background: linear-gradient(90deg, #60a5fa, #fdba74); /* soft gradient without glow */
   border-radius: 9999px;
 }
 
