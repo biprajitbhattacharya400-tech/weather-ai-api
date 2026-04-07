@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Search, MapPin, CloudRain, CloudLightning, CloudSnow, Cloud, Sun, Sparkles, AlertCircle, LayoutDashboard, Droplets, Wind, Thermometer, Eye } from 'lucide-react';
+import { Search, MapPin, CloudRain, CloudLightning, CloudSnow, Cloud, Sun, Sparkles, AlertCircle, LayoutDashboard, Droplets, Wind, Thermometer, Eye, Activity, Sunrise, Sunset, CalendarDays, ActivitySquare, ArrowDown, ArrowUp } from 'lucide-react';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import './index.css';
 import './weather-fx.css';
 
@@ -311,45 +312,88 @@ function App() {
                   </div>
                 </div>
 
-                <div className="weather-middle">
+                <div className="weather-middle tesla-dashboard-header">
                    <div className="weather-icon-large">
                      {getWeatherIcon(weatherData.condition, 140)}
                    </div>
-                   <div className="temperature">
-                     {Math.round(weatherData.temperature)}°
+                   <div className="temperature-group">
+                     <div className="temperature">
+                       {Math.round(weatherData.temperature)}°
+                     </div>
+                     <div className="high-low">
+                       <span><ArrowUp size={14}/> {Math.round(weatherData.temp_max || weatherData.temperature)}°</span>
+                       <span><ArrowDown size={14}/> {Math.round(weatherData.temp_min || weatherData.temperature)}°</span>
+                     </div>
                    </div>
                 </div>
 
-                <div className="weather-details-grid" style={{animation: 'slideUpFade 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards'}}>
-                  <div className="detail-item">
-                    <Droplets className="detail-icon" size={24} />
+                <div className="weather-details-grid grid-3x2" style={{animation: 'slideUpFade 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards'}}>
+                  <div className="detail-item tesla-glass">
+                    <Droplets className="detail-icon" size={22} />
                     <div className="detail-info">
                       <span className="detail-label">Humidity</span>
                       <span className="detail-value">{weatherData.humidity !== undefined ? weatherData.humidity : '--'}%</span>
                     </div>
                   </div>
-                  <div className="detail-item">
-                    <Wind className="detail-icon" size={24} />
+                  <div className="detail-item tesla-glass">
+                    <Wind className="detail-icon" size={22} />
                     <div className="detail-info">
                       <span className="detail-label">Wind</span>
-                      <span className="detail-value">{weatherData.wind_speed ? Math.round(weatherData.wind_speed * 3.6) : '--'} <span style={{fontSize: '0.8rem', fontWeight: '500', color: 'rgba(255,255,255,0.7)'}}>km/h</span></span>
+                      <span className="detail-value">{weatherData.wind_speed ? Math.round(weatherData.wind_speed * 3.6) : '--'} <span style={{fontSize: '0.75rem', fontWeight: '500', color: 'rgba(255,255,255,0.7)'}}>km/h</span></span>
                     </div>
                   </div>
-                  <div className="detail-item">
-                    <Thermometer className="detail-icon" size={24} />
+                  <div className="detail-item tesla-glass">
+                    <Thermometer className="detail-icon" size={22} />
                     <div className="detail-info">
                       <span className="detail-label">Feels Like</span>
-                      <span className="detail-value">{weatherData.feels_like ? Math.round(weatherData.feels_like) : (weatherData.temperature ? Math.round(weatherData.temperature) : '--')}°</span>
+                      <span className="detail-value">{weatherData.feels_like ? Math.round(weatherData.feels_like) : '--'}°</span>
                     </div>
                   </div>
-                  <div className="detail-item">
-                    <Eye className="detail-icon" size={24} />
+                  <div className="detail-item tesla-glass">
+                    <Sun className="detail-icon" size={22} color="#facc15" />
+                    <div className="detail-info">
+                      <span className="detail-label">UV Index</span>
+                      <span className="detail-value">{weatherData.uv_index !== undefined ? weatherData.uv_index : '--'}</span>
+                    </div>
+                  </div>
+                  <div className="detail-item tesla-glass">
+                    <Activity className="detail-icon" size={22} color="#10b981" />
+                    <div className="detail-info">
+                      <span className="detail-label">AQI</span>
+                      <span className="detail-value">{weatherData.aqi || '--'}</span>
+                    </div>
+                  </div>
+                  <div className="detail-item tesla-glass">
+                    <Eye className="detail-icon" size={22} />
                     <div className="detail-info">
                       <span className="detail-label">Visibility</span>
-                      <span className="detail-value">{weatherData.visibility ? (weatherData.visibility / 1000).toFixed(1) : '--'} <span style={{fontSize: '0.8rem', fontWeight: '500', color: 'rgba(255,255,255,0.7)'}}>km</span></span>
+                      <span className="detail-value">{weatherData.visibility ? (weatherData.visibility / 1000).toFixed(1) : '--'} <span style={{fontSize: '0.75rem', fontWeight: '500', color: 'rgba(255,255,255,0.7)'}}>km</span></span>
                     </div>
                   </div>
                 </div>
+
+                {/* 24H Temperature Chart rendered with Recharts */}
+                {weatherData.forecast && weatherData.forecast.length > 0 && (
+                  <div className="chart-container tesla-glass" style={{animation: 'slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards'}}>
+                    <h3 className="chart-title"><ActivitySquare size={16} /> 24-Hour Timeline</h3>
+                    <div style={{ width: '100%', height: 180 }}>
+                      <ResponsiveContainer>
+                        <AreaChart data={weatherData.forecast.slice(0, 8)} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                          <defs>
+                            <linearGradient id="colorTemp" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.5}/>
+                              <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
+                            </linearGradient>
+                          </defs>
+                          <XAxis dataKey="time" tick={{fill: 'rgba(255,255,255,0.6)', fontSize: 12}} tickFormatter={(val) => new Date(val.replace(' ', 'T')).toLocaleTimeString([], {hour: '2-digit'})} axisLine={false} tickLine={false} />
+                          <YAxis tick={{fill: 'rgba(255,255,255,0.6)', fontSize: 12}} axisLine={false} tickLine={false} />
+                          <Tooltip contentStyle={{ background: 'rgba(15, 23, 42, 0.85)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '12px' }} />
+                          <Area type="monotone" dataKey="temperature" stroke="#8b5cf6" strokeWidth={3} fillOpacity={1} fill="url(#colorTemp)" />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+                )}
 
                 <div className="insight-card">
                   <div className="insight-header">
@@ -360,9 +404,11 @@ function App() {
                 </div>
 
                 {weatherData.forecast && weatherData.forecast.length > 0 && (
-                  <div className="forecast-section">
-                    <h3 className="forecast-title">Hourly Forecast</h3>
-                    <div className="forecast-scroll">
+                  <div className="forecast-section" style={{animation: 'slideUpFade 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards'}}>
+                    <h3 className="forecast-title"><CalendarDays size={16} /> Extended Forecast</h3>
+                    
+                    {/* Hourly Scroll Row */}
+                    <div className="forecast-scroll subtle-scroll">
                       {weatherData.forecast.map((item, index) => {
                         const dateObj = new Date(item.time.replace(' ', 'T'));
                         const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -371,10 +417,32 @@ function App() {
                             <div className="forecast-time">{timeStr}</div>
                             <div>{getWeatherIcon(item.condition, 24)}</div>
                             <div className="forecast-temp">{Math.round(item.temperature)}°</div>
+                            {item.pop > 0 && <div className="pop-chance"><CloudRain size={12}/> {item.pop}%</div>}
                           </div>
                         );
                       })}
                     </div>
+
+                    {/* 5-Day Vertical Row */}
+                    {weatherData.daily && weatherData.daily.length > 0 && (
+                      <div className="daily-forecast">
+                        {weatherData.daily.map((item, idx) => {
+                          const dt = new Date(item.date.replace(' ', 'T'));
+                          const dayName = dt.toLocaleDateString([], { weekday: 'long' });
+                          return (
+                            <div key={idx} className="daily-row">
+                              <span className="daily-day">{dayName}</span>
+                              <div className="daily-icon">{getWeatherIcon(item.condition, 20)}</div>
+                              <div className="daily-bar">
+                                <span className="daily-min">{Math.round(item.temp_min)}°</span>
+                                <div className="temp-bar-bg"><div className="temp-bar-fill"></div></div>
+                                <span className="daily-max">{Math.round(item.temp_max)}°</span>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
