@@ -39,18 +39,16 @@ function App() {
     setMousePos({ x, y });
   };
 
-  const fetchSingleWeather = async (e) => {
-    e.preventDefault();
-    if (!city.trim()) return;
+  const fetchDataForCity = async (targetCity) => {
+    if (!targetCity.trim()) return;
 
     setLoading(true); setError(''); setWeatherData(null); setBgClass('Default');
 
     try {
-      const response = await fetch(`${API_BASE}/weather/${encodeURIComponent(city.trim())}`);
+      const response = await fetch(`${API_BASE}/weather/${encodeURIComponent(targetCity.trim())}`);
       if (!response.ok) throw new Error('NotFound');
       const data = await response.json();
       
-      // Strict Validation to catch unhandled external API failures (e.g. returning NaN)
       if (data.error || data.temperature === undefined || isNaN(data.temperature) || data.temperature === null) {
         throw new Error('NotFound');
       }
@@ -67,6 +65,11 @@ function App() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchSingleWeather = async (e) => {
+    e.preventDefault();
+    await fetchDataForCity(city);
   };
 
   const fetchCompare = async (e) => {
@@ -312,12 +315,42 @@ function App() {
                   {loading ? <><div className="spinner"></div></> : <><Search size={18} /> Get Weather</>}
                 </button>
               </form>
-              <div style={{fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)', textAlign: 'center', paddingLeft: '1rem'}}>
-                ✨ Tip: Please make sure the first letter of your city name is capitalized.
+              <div className="quick-cities-bar">
+                 <button onClick={() => { setCity("Kolkata"); fetchDataForCity("Kolkata"); }} className="quick-city-pill">Kolkata</button>
+                 <button onClick={() => { setCity("Delhi"); fetchDataForCity("Delhi"); }} className="quick-city-pill">Delhi</button>
+                 <button onClick={() => { setCity("Mumbai"); fetchDataForCity("Mumbai"); }} className="quick-city-pill">Mumbai</button>
+                 <button onClick={() => { setCity("London"); fetchDataForCity("London"); }} className="quick-city-pill">London</button>
+                 <button onClick={() => { setCity("Tokyo"); fetchDataForCity("Tokyo"); }} className="quick-city-pill">Tokyo</button>
               </div>
             </div>
 
             {renderError()}
+
+            {/* FEATURE 1: SMART ALERTS */}
+            {weatherData && (
+               <div className="smart-alerts-container">
+                 {weatherData.temperature > 35 && (
+                   <div className="smart-alert alert-heat">
+                     <AlertCircle size={18} /> <strong>Heatwave Alert:</strong> Dangerous thermal levels detected. Best to stay indoors.
+                   </div>
+                 )}
+                 {weatherData.forecast && weatherData.forecast.length > 0 && weatherData.forecast[0].pop > 60 && (
+                   <div className="smart-alert alert-rain">
+                     <CloudRain size={18} /> <strong>Rain Expected:</strong> High probability of precipitation soon. Carry an umbrella.
+                   </div>
+                 )}
+                 {weatherData.wind_speed > 20 && (
+                   <div className="smart-alert alert-wind">
+                     <Wind size={18} /> <strong>Wind Advisory:</strong> Strong gusts detected.
+                   </div>
+                 )}
+                 {weatherData.aqi > 150 && (
+                   <div className="smart-alert alert-aqi">
+                     <Activity size={18} /> <strong>Poor Air Quality:</strong> AQI levels are unsafe. Wear a mask outdoors.
+                   </div>
+                 )}
+               </div>
+            )}
 
             {weatherData && (
               <div className="dashboard-grid">
@@ -399,7 +432,7 @@ function App() {
                 {/* --- ROW 2 --- */}
                 {weatherData.forecast && weatherData.forecast.length > 0 && (
                   <div className="chart-container tesla-glass span-2">
-                    <h3 className="chart-title"><ActivitySquare size={16} /> 24-Hour Timeline</h3>
+                    <h3 className="chart-title"><ActivitySquare size={16} /> 24-Hour Temp vs Feels Like</h3>
                     <div style={{ width: '100%', height: 180 }}>
                       <ResponsiveContainer>
                         <AreaChart data={weatherData.forecast.slice(0, 8)} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
@@ -408,30 +441,77 @@ function App() {
                               <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.5}/>
                               <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
                             </linearGradient>
+                            <linearGradient id="colorFeelsLike" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#ec4899" stopOpacity={0.5}/>
+                              <stop offset="95%" stopColor="#ec4899" stopOpacity={0}/>
+                            </linearGradient>
                           </defs>
                           <XAxis dataKey="time" tick={{fill: 'rgba(255,255,255,0.6)', fontSize: 12}} tickFormatter={(val) => new Date(val.replace(' ', 'T')).toLocaleTimeString([], {hour: '2-digit'})} axisLine={false} tickLine={false} />
                           <YAxis tick={{fill: 'rgba(255,255,255,0.6)', fontSize: 12}} axisLine={false} tickLine={false} />
                           <Tooltip contentStyle={{ background: 'rgba(15, 23, 42, 0.85)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '12px' }} />
                           <Area type="monotone" dataKey="temperature" stroke="#8b5cf6" strokeWidth={3} fillOpacity={1} fill="url(#colorTemp)" />
+                          <Area type="monotone" dataKey="feels_like" stroke="#ec4899" strokeWidth={3} fillOpacity={1} fill="url(#colorFeelsLike)" />
                         </AreaChart>
                       </ResponsiveContainer>
                     </div>
                   </div>
                 )}
 
-                <div className="insight-card span-1">
-                  <div className="insight-header">
-                    <Sparkles size={18} />
-                    <span>AI Assistant Insight</span>
+                <div className="span-1" style={{display: 'flex', flexDirection: 'column', gap: '1rem'}}>
+                  <div className="insight-card" style={{flex: 1}}>
+                    <div className="insight-header">
+                      <Sparkles size={18} />
+                      <span>AI Weather Summary</span>
+                    </div>
+                    <p className="insight-text">{weatherData.insight}</p>
                   </div>
-                  <p className="insight-text">{weatherData.insight}</p>
+
+                  {/* FEATURE 4: LIFESTYLE RECOMMENDATIONS */}
+                  {(() => {
+                       const temp = weatherData.temperature ?? 20;
+                       const rain = weatherData.forecast?.[0]?.pop ?? 0;
+                       const aqi = weatherData.aqi ?? 50;
+
+                       let wearStr = "Light, breathable clothing";
+                       if (temp < 10) wearStr = "Heavy coat and warm layers";
+                       else if (temp < 20) wearStr = "Light jacket or a sweater";
+
+                       let actStr = "Great conditions outside";
+                       if (rain > 50) actStr = "Take an umbrella. Best to stay indoors";
+                       else if (temp > 35) actStr = "Too hot for intense outdoor exercise";
+                       else if (aqi > 150) actStr = "Poor air quality. Avoid outdoor running";
+
+                       return (
+                         <div className="tesla-glass" style={{padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem', borderRadius: '1.5rem'}}>
+                           <div className="insight-header" style={{color: '#fff', opacity: 0.9, marginBottom: 0}}>
+                             <LayoutDashboard size={18} />
+                             <span>Lifestyle Recommendations</span>
+                           </div>
+                           <div style={{fontSize: '0.85rem', color: 'rgba(255,255,255,0.9)'}}><strong>👕 Wear:</strong> {wearStr}</div>
+                           <div style={{fontSize: '0.85rem', color: 'rgba(255,255,255,0.9)'}}><strong>🏃 Activity:</strong> {actStr}</div>
+                         </div>
+                       );
+                  })()}
                 </div>
 
                 {/* --- ROW 3 --- */}
                 {weatherData.forecast && weatherData.forecast.length > 0 && (
                   <div className="forecast-section tesla-glass span-2">
-                    <h3 className="forecast-title"><CalendarDays size={16} /> Hourly Forecast</h3>
-                    <div className="forecast-scroll subtle-scroll">
+                    <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem'}}>
+                       <h3 className="forecast-title" style={{margin: 0}}><CalendarDays size={16} /> Hourly Forecast</h3>
+                       {(() => {
+                           const t0 = weatherData.forecast[0]?.temperature ?? 0;
+                           const t3 = weatherData.forecast[3]?.temperature ?? 0;
+                           const rainProb = Math.max(...weatherData.forecast.slice(0, 3).map(f => f.pop ?? 0));
+                           let trendStr = "Temp steady";
+                           if (t3 > t0 + 1.5) trendStr = "Temp rising";
+                           else if (t3 < t0 - 1.5) trendStr = "Temp dropping";
+                           let rainStr = ", no rain expected";
+                           if (rainProb > 40) rainStr = ", rain expected soon";
+                           return <div style={{fontSize: '0.8rem', color: '#cbd5e1', fontStyle: 'italic', background: 'rgba(0,0,0,0.2)', padding:'0.35rem 0.8rem', borderRadius: '99px'}}>Next 3 hrs: {trendStr}{rainStr}</div>;
+                       })()}
+                    </div>
+                    <div className="forecast-scroll subtle-scroll" style={{marginTop: '1.25rem'}}>
                       {weatherData.forecast.map((item, index) => {
                         const dateObj = new Date(item.time.replace(' ', 'T'));
                         const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -570,15 +650,28 @@ function App() {
                          else if (aqiB < aqiA) summaryStr += `but ${cityBName} has cleaner air `;
                          else summaryStr += `with identical air quality `;
 
-                         if (windA > windB + 2) summaryStr += `and higher winds.`;
-                         else if (windB > windA + 2) summaryStr += `while ${cityBName} is windier.`;
-                         else summaryStr += `and calm winds overall.`;
+                         if (windA > windB + 2) summaryStr += `and higher winds. `;
+                         else if (windB > windA + 2) summaryStr += `while ${cityBName} is windier. `;
+                         else summaryStr += `and calm winds overall. `;
+
+                         // FEATURE 2: Algorithmic City Score
+                         const scoreA = Math.max(0, 10 - (Math.abs(tempA - 22) * 0.2) - (aqiA * 0.02) - (windA * 0.1));
+                         const scoreB = Math.max(0, 10 - (Math.abs(tempB - 22) * 0.2) - (aqiB * 0.02) - (windB * 0.1));
+                         
+                         if (scoreA > scoreB + 0.5) summaryStr += `${cityAName} is significantly better for outdoor activities today.`;
+                         else if (scoreB > scoreA + 0.5) summaryStr += `${cityBName} is significantly better for outdoor activities today.`;
 
                          return (
                            <>
                              <div className="compare-summary-block">
                                <Sparkles size={18} color="#facc15" />
-                               <p>{summaryStr}</p>
+                               <div style={{display: 'flex', flexDirection: 'column', gap: '0.5rem'}}>
+                                 <p style={{margin: 0}}>{summaryStr}</p>
+                                 <div className="city-scores">
+                                    <span className="city-score-pill">{cityAName}: ⭐ {scoreA.toFixed(1)} / 10</span>
+                                    <span className="city-score-pill">{cityBName}: ⭐ {scoreB.toFixed(1)} / 10</span>
+                                 </div>
+                               </div>
                              </div>
 
                              <div className="ctable-wrapper">
