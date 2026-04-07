@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Search, MapPin, CloudRain, CloudLightning, CloudSnow, Cloud, Sun, Sparkles, AlertCircle, LayoutDashboard, Droplets, Wind, Thermometer, Eye, Activity, Sunrise, Sunset, CalendarDays, ActivitySquare, ArrowDown, ArrowUp } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { motion } from 'framer-motion';
 import './index.css';
 import './weather-fx.css';
 
@@ -258,16 +259,33 @@ function App() {
           <p>Premium Insights & Real-time Forecast</p>
         </div>
 
-        <div className="tabs-container">
-          <button className={`tab-btn ${activeTab === 'search' ? 'active' : ''}`} onClick={() => handleTabChange('search')}>
-            <Search size={16} style={{display:'inline', marginRight:'4px'}} /> Single City
-          </button>
-          <button className={`tab-btn ${activeTab === 'compare' ? 'active' : ''}`} onClick={() => handleTabChange('compare')}>
-            <MapPin size={16} style={{display:'inline', marginRight:'4px'}} /> Compare
-          </button>
-          <button className={`tab-btn ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => handleTabChange('dashboard')}>
-            <LayoutDashboard size={16} style={{display:'inline', marginRight:'4px'}} /> Dashboard
-          </button>
+        <div className="tabs-wrapper">
+          <div className="segmented-tabs-container">
+            {['search', 'compare', 'dashboard'].map((tab) => {
+               const title = tab === 'search' ? 'Single City' : tab === 'compare' ? 'Compare' : 'Dashboard';
+               const Icon = tab === 'search' ? Search : tab === 'compare' ? MapPin : LayoutDashboard;
+               const isActive = activeTab === tab;
+               return (
+                 <button
+                   key={tab}
+                   className={`segmented-tab ${isActive ? 'active' : ''}`}
+                   onClick={() => handleTabChange(tab)}
+                 >
+                   {isActive && (
+                     <motion.div
+                       layoutId="active-tab"
+                       className="segmented-tab-active-bg"
+                       initial={false}
+                       transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                     />
+                   )}
+                   <span className="segmented-tab-content">
+                     <Icon size={16} /> {title}
+                   </span>
+                 </button>
+               );
+            })}
+          </div>
         </div>
 
         {/* --- SEARCH TAB --- */}
