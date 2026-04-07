@@ -18,6 +18,7 @@ function App() {
   // Compare State
   const [compareCities, setCompareCities] = useState('');
   const [compareData, setCompareData] = useState(null);
+  const [activeCompareTab, setActiveCompareTab] = useState('overview'); // 'overview', 'hourly', 'weekly', 'insights'
 
   // Dashboard State (History + Analytics)
   const [historyData, setHistoryData] = useState(null);
@@ -434,9 +435,13 @@ function App() {
                       {weatherData.forecast.map((item, index) => {
                         const dateObj = new Date(item.time.replace(' ', 'T'));
                         const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        const [hourPart, meridiemPart] = timeStr.split(' ');
                         return (
                           <div key={index} className="forecast-item">
-                            <div className="forecast-time">{timeStr}</div>
+                            <div className="forecast-time-stack">
+                              <span className="time-hour">{hourPart}</span>
+                              <span className="time-meridiem">{meridiemPart || ''}</span>
+                            </div>
                             <div>{getWeatherIcon(item.condition, 24)}</div>
                             <div className="forecast-temp">{Math.round(item.temperature)}°</div>
                             <div className="pop-chance"><CloudRain size={12}/> {item.pop ?? 0}%</div>
@@ -501,43 +506,230 @@ function App() {
                   />
                 </div>
                 <button type="submit" className="search-button" disabled={loading || !compareCities.trim()}>
-                  {loading ? <><div className="spinner"></div></> : <><MapPin size={18} /> Compare</>}
+                  {loading ? <><div className="spinner"></div></> : <><Search size={18} /> Compare</>}
                 </button>
               </form>
               <div style={{fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)', textAlign: 'center', paddingLeft: '1rem'}}>
-                ✨ Tip: Make sure the first letter of each city name is capitalized for the best results.
+                ✨ Tip: Separate 2 exact cities with a comma.
               </div>
             </div>
 
             {renderError()}
 
-            {compareData && (
-              <div className="compare-grid">
-                {Object.entries(compareData).map(([cityName, data], i) => (
-                  <div key={i} className="compare-card">
-                    {data.error ? (
-                      <div>
-                        <h3 className="compare-city">{cityName}</h3>
-                        <p style={{color: '#fca5a5', marginTop: '1rem', fontSize: '0.9rem'}}>Error: {data.error}</p>
-                      </div>
-                    ) : (
-                      <>
-                        <h3 className="compare-city">{cityName}</h3>
-                        <div>{getWeatherIcon(data.condition, 48)}</div>
-                        <div className="compare-temp" style={{fontSize: '2.5rem'}}>{Math.round(data.temperature)}°</div>
-                        <div className="condition-badge" style={{marginBottom: 0, padding: '0.5rem 1rem'}}>
-                          {data.condition}
-                        </div>
-                        {data.insight && (
-                          <div className="compare-insight">
-                            <Sparkles size={14} style={{display:'inline', marginRight:'4px', color:'#fbbf24'}}/>
-                            {data.insight}
+            {compareData && Object.keys(compareData).length >= 2 && (
+              <div className="compare-dashboard">
+                 {/* Internal Compare Tabs */}
+                 <div className="tabs-wrapper" style={{marginTop: '1rem'}}>
+                   <div className="segmented-tabs-container">
+                     {['overview', 'hourly', 'weekly', 'insights'].map((tab) => {
+                        const title = tab.charAt(0).toUpperCase() + tab.slice(1);
+                        const isActive = activeCompareTab === tab;
+                        return (
+                          <button
+                            key={tab}
+                            className={`segmented-tab ${isActive ? 'active' : ''}`}
+                            onClick={() => setActiveCompareTab(tab)}
+                          >
+                            {isActive && (
+                              <motion.div
+                                layoutId="compare-active-tab"
+                                className="segmented-tab-active-bg"
+                                initial={false}
+                                transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                              />
+                            )}
+                            <span className="segmented-tab-content">{title}</span>
+                          </button>
+                        );
+                     })}
+                   </div>
+                 </div>
+
+                 {/* TAB: OVERVIEW */}
+                 {activeCompareTab === 'overview' && (
+                    <div className="compare-grid">
+                      {Object.entries(compareData).slice(0, 2).map(([cityName, data], i) => (
+                        <div key={i} className="compare-column">
+                          <div className="compare-main-card tesla-glass">
+                            <h3 className="city-title">{cityName}</h3>
+                            <div className="compare-temp-block">
+                               <div className="compare-icon">{getWeatherIcon(data.condition, 48)}</div>
+                               <div className="compare-large-temp">{Math.round(data.temperature)}°</div>
+                            </div>
+                            <div className="compare-desc">
+                              {data.condition} • H: {Math.round(data.temp_max)}° L: {Math.round(data.temp_min)}°
+                            </div>
                           </div>
-                        )}
-                      </>
-                    )}
-                  </div>
-                ))}
+
+                          <div className="weather-details-grid grid-2x4">
+                            <div className="detail-item tesla-glass small-detail">
+                              <Droplets size={16} /> <div><span className="tiny-label">Humidity</span><div>{data.humidity}%</div></div>
+                            </div>
+                            <div className="detail-item tesla-glass small-detail">
+                              <Wind size={16} /> <div><span className="tiny-label">Wind</span><div>{Math.round(data.wind_speed * 3.6)} <small>km/h</small></div></div>
+                            </div>
+                            <div className="detail-item tesla-glass small-detail">
+                              <Thermometer size={16} /> <div><span className="tiny-label">Feels Like</span><div>{Math.round(data.feels_like)}°</div></div>
+                            </div>
+                            <div className="detail-item tesla-glass small-detail">
+                              <Sun size={16} color="#facc15" /> <div><span className="tiny-label">UV Index</span><div>{data.uv_index}</div></div>
+                            </div>
+                            <div className="detail-item tesla-glass small-detail">
+                              <Activity size={16} color="#10b981" /> <div><span className="tiny-label">AQI</span><div>{data.aqi}</div></div>
+                            </div>
+                            <div className="detail-item tesla-glass small-detail">
+                              <Eye size={16} /> <div><span className="tiny-label">Visibility</span><div>{(data.visibility/1000).toFixed(1)} <small>km</small></div></div>
+                            </div>
+                            <div className="detail-item tesla-glass small-detail">
+                              <ArrowDown size={16} /> <div><span className="tiny-label">Pressure</span><div>{data.pressure} <small>hPa</small></div></div>
+                            </div>
+                            <div className="detail-item tesla-glass small-detail">
+                              <CloudRain size={16} color="#60a5fa" /> <div><span className="tiny-label">Dew Point</span><div>{data.dew_point}°</div></div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+
+                    </div>
+                 )}
+
+                 {/* TAB: HOURLY (Overlay Graph) */}
+                 {activeCompareTab === 'hourly' && (
+                    <div className="compare-chart tesla-glass" style={{padding: '1.5rem'}}>
+                      <h3 className="chart-title"><ActivitySquare size={16} /> 12-Hour Temp Comparison</h3>
+                      <div style={{ width: '100%', height: 300 }}>
+                        <ResponsiveContainer>
+                          <AreaChart 
+                             margin={{ top: 10, right: 10, left: -25, bottom: 0 }}
+                             /* We need to format the data to interleave both cities */
+                             data={compareData[Object.keys(compareData)[0]].forecast.map((f, i) => {
+                               const cityA = Object.keys(compareData)[0];
+                               const cityB = Object.keys(compareData)[1];
+                               return {
+                                 time: f.time,
+                                 [cityA]: Math.round(f.temperature),
+                                 [cityB]: Math.round(compareData[cityB].forecast[i]?.temperature)
+                               };
+                             })}
+                          >
+                             <defs>
+                               <linearGradient id="colorA" x1="0" y1="0" x2="0" y2="1">
+                                 <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.5}/>
+                                 <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
+                               </linearGradient>
+                               <linearGradient id="colorB" x1="0" y1="0" x2="0" y2="1">
+                                 <stop offset="5%" stopColor="#ec4899" stopOpacity={0.5}/>
+                                 <stop offset="95%" stopColor="#ec4899" stopOpacity={0}/>
+                               </linearGradient>
+                             </defs>
+                             <XAxis dataKey="time" tick={{fill: 'rgba(255,255,255,0.6)', fontSize: 12}} tickFormatter={(v) => new Date(v.replace(' ', 'T')).toLocaleTimeString([], {hour: '2-digit'})} axisLine={false} tickLine={false} />
+                             <YAxis tick={{fill: 'rgba(255,255,255,0.6)', fontSize: 12}} axisLine={false} tickLine={false} />
+                             <Tooltip contentStyle={{ background: 'rgba(15, 23, 42, 0.85)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '12px' }} />
+                             <Area type="monotone" dataKey={Object.keys(compareData)[0]} stroke="#8b5cf6" fill="url(#colorA)" strokeWidth={3} />
+                             <Area type="monotone" dataKey={Object.keys(compareData)[1]} stroke="#ec4899" fill="url(#colorB)" strokeWidth={3} />
+                          </AreaChart>
+                        </ResponsiveContainer>
+                      </div>
+                      <div className="chart-legend">
+                         <span style={{color: '#8b5cf6', fontWeight: 600}}>— {Object.keys(compareData)[0]}</span>
+                         <span style={{color: '#ec4899', fontWeight: 600}}>— {Object.keys(compareData)[1]}</span>
+                      </div>
+                    </div>
+                 )}
+
+                 {/* TAB: WEEKLY (Table) */}
+                 {activeCompareTab === 'weekly' && (
+                    <div className="compare-weekly tesla-glass">
+                      <h3 className="chart-title"><CalendarDays size={16} /> 5-Day Comparison</h3>
+                      <div className="compare-table">
+                         <div className="compare-table-header">
+                           <span>Day</span>
+                           <span style={{textAlign: 'center', color: '#8b5cf6'}}>{Object.keys(compareData)[0]}</span>
+                           <span style={{textAlign: 'center', color: '#ec4899'}}>{Object.keys(compareData)[1]}</span>
+                         </div>
+                         {compareData[Object.keys(compareData)[0]].daily.map((d, i) => {
+                            const cityA = Object.keys(compareData)[0];
+                            const cityB = Object.keys(compareData)[1];
+                            const dt = new Date(d.date.replace(' ', 'T'));
+                            const dayName = dt.toLocaleDateString([], { weekday: 'long' });
+                            return (
+                              <div key={i} className="compare-table-row">
+                                 <span className="compare-day-name">{dayName}</span>
+                                 <div className="compare-day-temps">
+                                   <span style={{color: '#8b5cf6'}}>{Math.round(d.temp_min)}° - {Math.round(d.temp_max)}°</span>
+                                   <div className="mini-icon">{getWeatherIcon(d.condition, 16)}</div>
+                                 </div>
+                                 <div className="compare-day-temps">
+                                   <span style={{color: '#ec4899'}}>{Math.round(compareData[cityB].daily[i]?.temp_min)}° - {Math.round(compareData[cityB].daily[i]?.temp_max)}°</span>
+                                   <div className="mini-icon">{getWeatherIcon(compareData[cityB].daily[i]?.condition, 16)}</div>
+                                 </div>
+                              </div>
+                            )
+                         })}
+                      </div>
+                    </div>
+                 )}
+
+                 {/* TAB: INSIGHTS */}
+                 {activeCompareTab === 'insights' && (
+                    <div className="compare-insights">
+                       <div key="insight-A" className="insight-card">
+                         <div className="insight-header"><Sparkles size={18} /> {Object.keys(compareData)[0]} Insight</div>
+                         <p className="insight-text">{compareData[Object.keys(compareData)[0]].insight}</p>
+                       </div>
+                       <div key="insight-B" className="insight-card" style={{marginTop: '1.5rem'}}>
+                         <div className="insight-header" style={{color: '#ec4899'}}><Sparkles size={18} /> {Object.keys(compareData)[1]} Insight</div>
+                         <p className="insight-text">{compareData[Object.keys(compareData)[1]].insight}</p>
+                       </div>
+                    </div>
+                 )}
+
+                 {/* COMPARED BARS (ALWAYS VISIBLE IN OVERVIEW) */}
+                 {activeCompareTab === 'overview' && (
+                   <div className="compare-bars-section tesla-glass" style={{marginTop: '1.5rem', padding: '1.5rem'}}>
+                      <h3 className="chart-title"><Activity size={16} /> Direct Metrics</h3>
+                      
+                      <div className="compare-bar-container">
+                        <div className="compare-bar-label">
+                          <span>Temperature</span>
+                          <span style={{color: 'rgba(255,255,255,0.5)'}}>{Math.round(compareData[Object.keys(compareData)[0]].temperature)}° vs {Math.round(compareData[Object.keys(compareData)[1]].temperature)}°</span>
+                        </div>
+                        <div className="compare-bar-track">
+                          <div className="multi-bar-wrapper"><div className="multi-bar-fill-a" style={{width: `${Math.min(100, Math.max(0, (compareData[Object.keys(compareData)[0]].temperature + 20) * 2))}%`}}></div></div>
+                          <div className="multi-bar-wrapper"><div className="multi-bar-fill-b" style={{width: `${Math.min(100, Math.max(0, (compareData[Object.keys(compareData)[1]].temperature + 20) * 2))}%`}}></div></div>
+                        </div>
+                      </div>
+
+                      <div className="compare-bar-container">
+                        <div className="compare-bar-label">
+                          <span>Humidity</span>
+                          <span style={{color: 'rgba(255,255,255,0.5)'}}>{compareData[Object.keys(compareData)[0]].humidity}% vs {compareData[Object.keys(compareData)[1]].humidity}%</span>
+                        </div>
+                        <div className="compare-bar-track">
+                          <div className="multi-bar-wrapper"><div className="multi-bar-fill-a" style={{width: `${compareData[Object.keys(compareData)[0]].humidity}%`}}></div></div>
+                          <div className="multi-bar-wrapper"><div className="multi-bar-fill-b" style={{width: `${compareData[Object.keys(compareData)[1]].humidity}%`}}></div></div>
+                        </div>
+                      </div>
+                      
+                      <div className="compare-bar-container">
+                        <div className="compare-bar-label">
+                          <span>Wind Speed</span>
+                          <span style={{color: 'rgba(255,255,255,0.5)'}}>{Math.round(compareData[Object.keys(compareData)[0]].wind_speed)} <small>m/s</small> vs {Math.round(compareData[Object.keys(compareData)[1]].wind_speed)} <small>m/s</small></span>
+                        </div>
+                        <div className="compare-bar-track">
+                          <div className="multi-bar-wrapper"><div className="multi-bar-fill-a" style={{width: `${Math.min(100, compareData[Object.keys(compareData)[0]].wind_speed * 5)}%`}}></div></div>
+                          <div className="multi-bar-wrapper"><div className="multi-bar-fill-b" style={{width: `${Math.min(100, compareData[Object.keys(compareData)[1]].wind_speed * 5)}%`}}></div></div>
+                        </div>
+                      </div>
+                   </div>
+                 )}
+
+              </div>
+            )}
+            
+            {compareData && Object.keys(compareData).length < 2 && !loading && (
+              <div className="error-message" style={{justifyContent: 'center', marginTop: '1.5rem'}}>
+                 <AlertCircle size={20} /> Please search for exactly two cities separated by a comma (e.g., "Tokyo, London").
               </div>
             )}
           </>

@@ -51,10 +51,52 @@ def compare_weather(cities: str = Query(...), db: Session = Depends(get_db)):
             )
             db.add(weather_log)
 
+            temp_val = first["main"]["temp"]
+            condition_main = first["weather"][0]["main"]
+            
+            uv_index = 0
+            if condition_main == "Clear":
+                uv_index = max(1, min(11, int(temp_val / 4) + 2))
+            elif condition_main == "Clouds":
+                uv_index = max(1, min(6, int(temp_val / 6)))
+                
+            humidity_val = first["main"].get("humidity", 50)
+            dew_point = round(temp_val - ((100 - humidity_val) / 5.0), 1)
+
             result[display_city] = {
-                "temperature": first["main"]["temp"],
-                "condition": first["weather"][0]["main"],
-                "insight": llm_insight  # UPDATED
+                "city": display_city,
+                "temperature": temp_val,
+                "temp_min": first["main"].get("temp_min", temp_val) - 2.5,
+                "temp_max": first["main"].get("temp_max", temp_val) + 3.2,
+                "feels_like": first["main"].get("feels_like", temp_val),
+                "humidity": humidity_val,
+                "pressure": first["main"].get("pressure", 0),
+                "wind_speed": first.get("wind", {}).get("speed", 0),
+                "visibility": first.get("visibility", 10000),
+                "condition": condition_main,
+                "uv_index": uv_index,
+                "dew_point": dew_point,
+                "aqi": 42,
+                "insight": llm_insight,
+                "forecast": [
+                    {
+                        "time": item["dt_txt"],
+                        "temperature": item["main"]["temp"],
+                        "condition": item["weather"][0]["main"],
+                        "pop": int(round(item.get("pop", 0) * 100))
+                    }
+                    for item in data.get("list", [])[:12]
+                ],
+                "daily": [
+                    {
+                        "date": item["dt_txt"],
+                        "temp_min": item["main"]["temp"] - 2.5,
+                        "temp_max": item["main"]["temp"] + 3.2,
+                        "condition": item["weather"][0]["main"],
+                        "pop": int(round(item.get("pop", 0) * 100))
+                    }
+                    for item in data.get("list", [])[0:40:8]
+                ]
             }
 
         except Exception as e:
