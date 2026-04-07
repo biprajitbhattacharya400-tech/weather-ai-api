@@ -547,49 +547,107 @@ function App() {
 
                  {/* TAB: OVERVIEW */}
                  {activeCompareTab === 'overview' && (
-                    <div className="compare-grid">
-                      {Object.entries(compareData).slice(0, 2).map(([cityName, data], i) => (
-                        <div key={i} className="compare-column">
-                          <div className="compare-main-card tesla-glass">
-                            <h3 className="city-title">{cityName}</h3>
-                            <div className="compare-temp-block">
-                               <div className="compare-icon">{getWeatherIcon(data.condition, 48)}</div>
-                               <div className="compare-large-temp">{Math.round(data.temperature)}°</div>
-                            </div>
-                            <div className="compare-desc">
-                              {data.condition} • H: {Math.round(data.temp_max)}° L: {Math.round(data.temp_min)}°
-                            </div>
-                          </div>
+                    <div className="compare-overview-table tesla-glass" style={{padding: '2rem'}}>
+                      {(() => {
+                         const cityAName = Object.keys(compareData)[0];
+                         const cityBName = Object.keys(compareData)[1];
+                         const cityA = compareData[cityAName];
+                         const cityB = compareData[cityBName];
+                         
+                         const tempA = cityA?.temperature ?? 0;
+                         const tempB = cityB?.temperature ?? 0;
+                         const aqiA = cityA?.aqi ?? 50;
+                         const aqiB = cityB?.aqi ?? 50;
+                         const windA = cityA?.wind_speed ?? 0;
+                         const windB = cityB?.wind_speed ?? 0;
 
-                          <div className="weather-details-grid grid-2x4">
-                            <div className="detail-item tesla-glass small-detail">
-                              <Droplets size={16} /> <div><span className="tiny-label">Humidity</span><div>{data.humidity}%</div></div>
-                            </div>
-                            <div className="detail-item tesla-glass small-detail">
-                              <Wind size={16} /> <div><span className="tiny-label">Wind</span><div>{Math.round(data.wind_speed * 3.6)} <small>km/h</small></div></div>
-                            </div>
-                            <div className="detail-item tesla-glass small-detail">
-                              <Thermometer size={16} /> <div><span className="tiny-label">Feels Like</span><div>{Math.round(data.feels_like)}°</div></div>
-                            </div>
-                            <div className="detail-item tesla-glass small-detail">
-                              <Sun size={16} color="#facc15" /> <div><span className="tiny-label">UV Index</span><div>{data.uv_index}</div></div>
-                            </div>
-                            <div className="detail-item tesla-glass small-detail">
-                              <Activity size={16} color="#10b981" /> <div><span className="tiny-label">AQI</span><div>{data.aqi}</div></div>
-                            </div>
-                            <div className="detail-item tesla-glass small-detail">
-                              <Eye size={16} /> <div><span className="tiny-label">Visibility</span><div>{(data.visibility/1000).toFixed(1)} <small>km</small></div></div>
-                            </div>
-                            <div className="detail-item tesla-glass small-detail">
-                              <ArrowDown size={16} /> <div><span className="tiny-label">Pressure</span><div>{data.pressure} <small>hPa</small></div></div>
-                            </div>
-                            <div className="detail-item tesla-glass small-detail">
-                              <CloudRain size={16} color="#60a5fa" /> <div><span className="tiny-label">Dew Point</span><div>{data.dew_point}°</div></div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
+                         let summaryStr = "";
+                         if (tempA > tempB + 1) summaryStr += `${cityAName} is warmer, `;
+                         else if (tempB > tempA + 1) summaryStr += `${cityBName} is warmer, `;
+                         else summaryStr += `Both cities have similar temperatures, `;
 
+                         if (aqiA < aqiB) summaryStr += `but ${cityAName} has cleaner air `;
+                         else if (aqiB < aqiA) summaryStr += `but ${cityBName} has cleaner air `;
+                         else summaryStr += `with identical air quality `;
+
+                         if (windA > windB + 2) summaryStr += `and higher winds.`;
+                         else if (windB > windA + 2) summaryStr += `while ${cityBName} is windier.`;
+                         else summaryStr += `and calm winds overall.`;
+
+                         return (
+                           <>
+                             <div className="compare-summary-block">
+                               <Sparkles size={18} color="#facc15" />
+                               <p>{summaryStr}</p>
+                             </div>
+
+                             <div className="ctable-wrapper">
+                               <div className="ctable-header">
+                                  <div className="ctable-cell-label"></div>
+                                  <div className="ctable-cell-city">{cityAName}</div>
+                                  <div className="ctable-cell-city">{cityBName}</div>
+                               </div>
+
+                               {/* Group: Current Weather */}
+                               <div className="ctable-group-title">🌤 Current Weather</div>
+                               
+                               <div className="ctable-row">
+                                  <div className="ctable-cell-label">Temperature</div>
+                                  <div data-city={cityAName} className={`ctable-cell ${tempA > tempB ? 'ctable-highlight' : ''}`}>{Math.round(tempA)}°</div>
+                                  <div data-city={cityBName} className={`ctable-cell ${tempB > tempA ? 'ctable-highlight' : ''}`}>{Math.round(tempB)}°</div>
+                               </div>
+                               <div className="ctable-row">
+                                  <div className="ctable-cell-label">Condition</div>
+                                  <div data-city={cityAName} className="ctable-cell">{cityA?.condition}</div>
+                                  <div data-city={cityBName} className="ctable-cell">{cityB?.condition}</div>
+                               </div>
+                               <div className="ctable-row">
+                                  <div className="ctable-cell-label">Feels Like</div>
+                                  <div data-city={cityAName} className="ctable-cell">{Math.round(cityA?.feels_like ?? 0)}°</div>
+                                  <div data-city={cityBName} className="ctable-cell">{Math.round(cityB?.feels_like ?? 0)}°</div>
+                               </div>
+
+                               {/* Group: Air & Wind */}
+                               <div className="ctable-group-title">🌬 Air & Wind</div>
+
+                               <div className="ctable-row">
+                                  <div className="ctable-cell-label">Air Quality (AQI)</div>
+                                  <div data-city={cityAName} className={`ctable-cell ${aqiA < aqiB ? 'ctable-highlight-good' : ''}`}>{aqiA}</div>
+                                  <div data-city={cityBName} className={`ctable-cell ${aqiB < aqiA ? 'ctable-highlight-good' : ''}`}>{aqiB}</div>
+                               </div>
+                               <div className="ctable-row">
+                                  <div className="ctable-cell-label">Wind Speed</div>
+                                  <div data-city={cityAName} className="ctable-cell">{Math.round(windA * 3.6)} km/h</div>
+                                  <div data-city={cityBName} className="ctable-cell">{Math.round(windB * 3.6)} km/h</div>
+                               </div>
+                               <div className="ctable-row">
+                                  <div className="ctable-cell-label">Visibility</div>
+                                  <div data-city={cityAName} className="ctable-cell">{((cityA?.visibility??10000) / 1000).toFixed(1)} km</div>
+                                  <div data-city={cityBName} className="ctable-cell">{((cityB?.visibility??10000) / 1000).toFixed(1)} km</div>
+                               </div>
+
+                               {/* Group: Rain & Humidity */}
+                               <div className="ctable-group-title">🌧 Rain & Humidity</div>
+
+                               <div className="ctable-row">
+                                  <div className="ctable-cell-label">Humidity</div>
+                                  <div data-city={cityAName} className="ctable-cell">{cityA?.humidity ?? 0}%</div>
+                                  <div data-city={cityBName} className="ctable-cell">{cityB?.humidity ?? 0}%</div>
+                               </div>
+                               <div className="ctable-row">
+                                  <div className="ctable-cell-label">UV Index</div>
+                                  <div data-city={cityAName} className={`ctable-cell ${cityA?.uv_index < cityB?.uv_index ? 'ctable-highlight-good' : ''}`}>{cityA?.uv_index ?? 0}</div>
+                                  <div data-city={cityBName} className={`ctable-cell ${cityB?.uv_index < cityA?.uv_index ? 'ctable-highlight-good' : ''}`}>{cityB?.uv_index ?? 0}</div>
+                               </div>
+                               <div className="ctable-row">
+                                  <div className="ctable-cell-label">Dew Point</div>
+                                  <div data-city={cityAName} className="ctable-cell">{cityA?.dew_point ?? 0}°</div>
+                                  <div data-city={cityBName} className="ctable-cell">{cityB?.dew_point ?? 0}°</div>
+                               </div>
+                             </div>
+                           </>
+                         )
+                      })()}
                     </div>
                  )}
 
