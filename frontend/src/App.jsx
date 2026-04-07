@@ -303,160 +303,157 @@ function App() {
             {weatherData && (
               <div className="dashboard-grid">
                 
-                {/* --- LEFT COLUMN: Main Weather & AI Insight --- */}
-                <div className="dashboard-col">
-                  <div className="weather-card">
-                    <div className="main-weather-info">
-                      <div className="city-info">
-                        <h2>{weatherData.city}</h2>
-                        <div className="date-info">{formatDate()}</div>
-                      </div>
-                      <div className="condition-badge">
-                        {getWeatherIcon(weatherData.condition, 20)}
-                        <span>{weatherData.condition}</span>
-                      </div>
+                {/* --- ROW 1 --- */}
+                <div className="weather-card span-2">
+                  <div className="main-weather-info">
+                    <div className="city-info">
+                      <h2>{weatherData.city}</h2>
+                      <div className="date-info">{formatDate()}</div>
                     </div>
+                    <div className="condition-badge">
+                      {getWeatherIcon(weatherData.condition, 20)}
+                      <span>{weatherData.condition}</span>
+                    </div>
+                  </div>
 
-                    <div className="weather-middle tesla-dashboard-header">
-                       <div className="weather-icon-large">
-                         {getWeatherIcon(weatherData.condition, 140)}
+                  <div className="weather-middle tesla-dashboard-header">
+                     <div className="weather-icon-large">
+                       {getWeatherIcon(weatherData.condition, 140)}
+                     </div>
+                     <div className="temperature-group">
+                       <div className="temperature">
+                         {Math.round(weatherData.temperature)}°
                        </div>
-                       <div className="temperature-group">
-                         <div className="temperature">
-                           {Math.round(weatherData.temperature)}°
-                         </div>
-                         <div className="high-low">
-                           <span><ArrowUp size={14}/> {Math.round(weatherData.temp_max || weatherData.temperature)}°</span>
-                           <span><ArrowDown size={14}/> {Math.round(weatherData.temp_min || weatherData.temperature)}°</span>
-                         </div>
+                       <div className="high-low">
+                         <span><ArrowUp size={14}/> {Math.round(weatherData.temp_max || weatherData.temperature)}°</span>
+                         <span><ArrowDown size={14}/> {Math.round(weatherData.temp_min || weatherData.temperature)}°</span>
                        </div>
-                    </div>
-                  </div>
-
-                  <div className="insight-card">
-                    <div className="insight-header">
-                      <Sparkles size={18} />
-                      <span>AI Assistant Insight</span>
-                    </div>
-                    <p className="insight-text">{weatherData.insight}</p>
+                     </div>
                   </div>
                 </div>
 
-                {/* --- CENTER COLUMN: Charts & Hourly Forecast --- */}
-                <div className="dashboard-col">
-                  {weatherData.forecast && weatherData.forecast.length > 0 && (
-                    <div className="chart-container tesla-glass">
-                      <h3 className="chart-title"><ActivitySquare size={16} /> 24-Hour Timeline</h3>
-                      <div style={{ width: '100%', height: 180 }}>
-                        <ResponsiveContainer>
-                          <AreaChart data={weatherData.forecast.slice(0, 8)} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
-                            <defs>
-                              <linearGradient id="colorTemp" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.5}/>
-                                <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
-                              </linearGradient>
-                            </defs>
-                            <XAxis dataKey="time" tick={{fill: 'rgba(255,255,255,0.6)', fontSize: 12}} tickFormatter={(val) => new Date(val.replace(' ', 'T')).toLocaleTimeString([], {hour: '2-digit'})} axisLine={false} tickLine={false} />
-                            <YAxis tick={{fill: 'rgba(255,255,255,0.6)', fontSize: 12}} axisLine={false} tickLine={false} />
-                            <Tooltip contentStyle={{ background: 'rgba(15, 23, 42, 0.85)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '12px' }} />
-                            <Area type="monotone" dataKey="temperature" stroke="#8b5cf6" strokeWidth={3} fillOpacity={1} fill="url(#colorTemp)" />
-                          </AreaChart>
-                        </ResponsiveContainer>
-                      </div>
+                <div className="weather-details-grid span-1">
+                  <div className="detail-item tesla-glass">
+                    <Droplets className="detail-icon" size={22} />
+                    <div className="detail-info">
+                      <span className="detail-label">Humidity</span>
+                      <span className="detail-value">{weatherData.humidity !== undefined ? weatherData.humidity : '--'}%</span>
                     </div>
-                  )}
+                  </div>
+                  <div className="detail-item tesla-glass">
+                    <Wind className="detail-icon" size={22} />
+                    <div className="detail-info">
+                      <span className="detail-label">Wind</span>
+                      <span className="detail-value">{weatherData.wind_speed ? Math.round(weatherData.wind_speed * 3.6) : '--'} <span style={{fontSize: '0.75rem', fontWeight: '500', color: 'rgba(255,255,255,0.7)'}}>km/h</span></span>
+                    </div>
+                  </div>
+                  <div className="detail-item tesla-glass">
+                    <Thermometer className="detail-icon" size={22} />
+                    <div className="detail-info">
+                      <span className="detail-label">Feels Like</span>
+                      <span className="detail-value">{weatherData.feels_like ? Math.round(weatherData.feels_like) : '--'}°</span>
+                    </div>
+                  </div>
+                  <div className="detail-item tesla-glass">
+                    <Sun className="detail-icon" size={22} color="#facc15" />
+                    <div className="detail-info">
+                      <span className="detail-label">UV Index</span>
+                      <span className="detail-value">{weatherData.uv_index !== undefined ? weatherData.uv_index : '--'}</span>
+                    </div>
+                  </div>
+                  <div className="detail-item tesla-glass">
+                    <Activity className="detail-icon" size={22} color="#10b981" />
+                    <div className="detail-info">
+                      <span className="detail-label">AQI</span>
+                      <span className="detail-value">{weatherData.aqi || '--'}</span>
+                    </div>
+                  </div>
+                  <div className="detail-item tesla-glass">
+                    <Eye className="detail-icon" size={22} />
+                    <div className="detail-info">
+                      <span className="detail-label">Visibility</span>
+                      <span className="detail-value">{weatherData.visibility ? (weatherData.visibility / 1000).toFixed(1) : '--'} <span style={{fontSize: '0.75rem', fontWeight: '500', color: 'rgba(255,255,255,0.7)'}}>km</span></span>
+                    </div>
+                  </div>
+                </div>
 
-                  {weatherData.forecast && weatherData.forecast.length > 0 && (
-                    <div className="forecast-section tesla-glass">
-                      <h3 className="forecast-title"><CalendarDays size={16} /> Hourly Forecast</h3>
-                      <div className="forecast-scroll subtle-scroll">
-                        {weatherData.forecast.map((item, index) => {
-                          const dateObj = new Date(item.time.replace(' ', 'T'));
-                          const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                          return (
-                            <div key={index} className="forecast-item">
-                              <div className="forecast-time">{timeStr}</div>
-                              <div>{getWeatherIcon(item.condition, 24)}</div>
-                              <div className="forecast-temp">{Math.round(item.temperature)}°</div>
-                              {item.pop > 0 && <div className="pop-chance"><CloudRain size={12}/> {item.pop}%</div>}
+                {/* --- ROW 2 --- */}
+                {weatherData.forecast && weatherData.forecast.length > 0 && (
+                  <div className="chart-container tesla-glass span-2">
+                    <h3 className="chart-title"><ActivitySquare size={16} /> 24-Hour Timeline</h3>
+                    <div style={{ width: '100%', height: 180 }}>
+                      <ResponsiveContainer>
+                        <AreaChart data={weatherData.forecast.slice(0, 8)} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                          <defs>
+                            <linearGradient id="colorTemp" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.5}/>
+                              <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
+                            </linearGradient>
+                          </defs>
+                          <XAxis dataKey="time" tick={{fill: 'rgba(255,255,255,0.6)', fontSize: 12}} tickFormatter={(val) => new Date(val.replace(' ', 'T')).toLocaleTimeString([], {hour: '2-digit'})} axisLine={false} tickLine={false} />
+                          <YAxis tick={{fill: 'rgba(255,255,255,0.6)', fontSize: 12}} axisLine={false} tickLine={false} />
+                          <Tooltip contentStyle={{ background: 'rgba(15, 23, 42, 0.85)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '12px' }} />
+                          <Area type="monotone" dataKey="temperature" stroke="#8b5cf6" strokeWidth={3} fillOpacity={1} fill="url(#colorTemp)" />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+                )}
+
+                <div className="insight-card span-1">
+                  <div className="insight-header">
+                    <Sparkles size={18} />
+                    <span>AI Assistant Insight</span>
+                  </div>
+                  <p className="insight-text">{weatherData.insight}</p>
+                </div>
+
+                {/* --- ROW 3 --- */}
+                {weatherData.forecast && weatherData.forecast.length > 0 && (
+                  <div className="forecast-section tesla-glass span-2">
+                    <h3 className="forecast-title"><CalendarDays size={16} /> Hourly Forecast</h3>
+                    <div className="forecast-scroll subtle-scroll">
+                      {weatherData.forecast.map((item, index) => {
+                        const dateObj = new Date(item.time.replace(' ', 'T'));
+                        const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        return (
+                          <div key={index} className="forecast-item">
+                            <div className="forecast-time">{timeStr}</div>
+                            <div>{getWeatherIcon(item.condition, 24)}</div>
+                            <div className="forecast-temp">{Math.round(item.temperature)}°</div>
+                            <div className="pop-chance"><CloudRain size={12}/> {item.pop > 0 ? item.pop : 0}%</div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {weatherData.daily && weatherData.daily.length > 0 && (
+                  <div className="daily-forecast-panel tesla-glass span-1">
+                    <h3 className="chart-title"><CalendarDays size={16} /> 5-Day Forecast</h3>
+                    <div className="daily-forecast">
+                      <div className="temp-range-label">Temp Range</div>
+                      {weatherData.daily.map((item, idx) => {
+                        const dt = new Date(item.date.replace(' ', 'T'));
+                        const dayName = dt.toLocaleDateString([], { weekday: 'long' });
+                        const popVal = item.pop > 0 ? item.pop : 0;
+                        return (
+                          <div key={idx} className="daily-row">
+                            <span className="daily-day">{dayName}</span>
+                            <div className="daily-icon">{getWeatherIcon(item.condition, 20)}</div>
+                            <div className="daily-pop"><CloudRain size={10}/> {popVal}%</div>
+                            <div className="daily-bar">
+                              <span className="daily-min">{Math.round(item.temp_min)}°</span>
+                              <div className="temp-bar-bg"><div className="temp-bar-fill"></div></div>
+                              <span className="daily-max">{Math.round(item.temp_max)}°</span>
                             </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* --- RIGHT COLUMN: Metrics Grid & 7-Day Forecast --- */}
-                <div className="dashboard-col">
-                  <div className="weather-details-grid">
-                    <div className="detail-item tesla-glass">
-                      <Droplets className="detail-icon" size={22} />
-                      <div className="detail-info">
-                        <span className="detail-label">Humidity</span>
-                        <span className="detail-value">{weatherData.humidity !== undefined ? weatherData.humidity : '--'}%</span>
-                      </div>
-                    </div>
-                    <div className="detail-item tesla-glass">
-                      <Wind className="detail-icon" size={22} />
-                      <div className="detail-info">
-                        <span className="detail-label">Wind</span>
-                        <span className="detail-value">{weatherData.wind_speed ? Math.round(weatherData.wind_speed * 3.6) : '--'} <span style={{fontSize: '0.75rem', fontWeight: '500', color: 'rgba(255,255,255,0.7)'}}>km/h</span></span>
-                      </div>
-                    </div>
-                    <div className="detail-item tesla-glass">
-                      <Thermometer className="detail-icon" size={22} />
-                      <div className="detail-info">
-                        <span className="detail-label">Feels Like</span>
-                        <span className="detail-value">{weatherData.feels_like ? Math.round(weatherData.feels_like) : '--'}°</span>
-                      </div>
-                    </div>
-                    <div className="detail-item tesla-glass">
-                      <Sun className="detail-icon" size={22} color="#facc15" />
-                      <div className="detail-info">
-                        <span className="detail-label">UV Index</span>
-                        <span className="detail-value">{weatherData.uv_index !== undefined ? weatherData.uv_index : '--'}</span>
-                      </div>
-                    </div>
-                    <div className="detail-item tesla-glass">
-                      <Activity className="detail-icon" size={22} color="#10b981" />
-                      <div className="detail-info">
-                        <span className="detail-label">AQI</span>
-                        <span className="detail-value">{weatherData.aqi || '--'}</span>
-                      </div>
-                    </div>
-                    <div className="detail-item tesla-glass">
-                      <Eye className="detail-icon" size={22} />
-                      <div className="detail-info">
-                        <span className="detail-label">Visibility</span>
-                        <span className="detail-value">{weatherData.visibility ? (weatherData.visibility / 1000).toFixed(1) : '--'} <span style={{fontSize: '0.75rem', fontWeight: '500', color: 'rgba(255,255,255,0.7)'}}>km</span></span>
-                      </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
-
-                  {weatherData.daily && weatherData.daily.length > 0 && (
-                    <div className="daily-forecast-panel tesla-glass">
-                      <h3 className="chart-title"><CalendarDays size={16} /> 5-Day Forecast</h3>
-                      <div className="daily-forecast">
-                        {weatherData.daily.map((item, idx) => {
-                          const dt = new Date(item.date.replace(' ', 'T'));
-                          const dayName = dt.toLocaleDateString([], { weekday: 'long' });
-                          return (
-                            <div key={idx} className="daily-row">
-                              <span className="daily-day">{dayName}</span>
-                              <div className="daily-icon">{getWeatherIcon(item.condition, 20)}</div>
-                              <div className="daily-bar">
-                                <span className="daily-min">{Math.round(item.temp_min)}°</span>
-                                <div className="temp-bar-bg"><div className="temp-bar-fill"></div></div>
-                                <span className="daily-max">{Math.round(item.temp_max)}°</span>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-                </div>
+                )}
 
               </div>
             )}
