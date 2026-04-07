@@ -639,6 +639,7 @@ body {
   flex-direction: column;
   overflow: hidden;
   width: 100%;
+  padding: 1.5rem;
 }
 
 .daily-row {
