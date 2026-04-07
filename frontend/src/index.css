@@ -562,32 +562,31 @@ body {
 }
 
 .hover-highlight {
-  transition: all 0.3s ease;
-  will-change: transform, background;
+  transition: background 0.2s ease;
 }
 
 .hover-highlight:hover {
-  transform: translateX(3px) scale(1.015);
-  background: rgba(255,255,255,0.1);
-  border-color: rgba(255,255,255,0.25);
-  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  background: rgba(255,255,255,0.05); /* Minimal */
+  border-radius: 12px;
 }
 
 .daily-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.15rem 1.25rem;
-  background: rgba(0,0,0,0.15);
-  border-radius: 1rem;
-  border: 1px solid rgba(255,255,255,0.05);
+  padding: 1rem 0.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.daily-row:last-child {
+  border-bottom: none;
 }
 
 .daily-day {
   flex: 1.5;
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .daily-icon {
@@ -598,57 +597,55 @@ body {
 }
 
 .daily-pop {
-  flex: 1;
+  flex: 1.2;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.daily-pop-badge {
   display: flex;
   align-items: center;
   gap: 0.25rem;
+  background: rgba(59, 130, 246, 0.1);
   color: #60a5fa;
-  font-size: 0.85rem;
-  font-weight: 700;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem; /* rounded-md */
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 600;
 }
 
 .daily-bar {
-  flex: 3;
+  flex: 3.5;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: 1rem;
+  justify-content: space-between;
+  gap: 0.75rem;
 }
 
 .daily-min, .daily-max {
   font-size: 1rem;
-  font-weight: 600;
-  width: 2.5rem;
-  text-align: right;
+  font-weight: 500;
+  width: 2rem;
+  text-align: center;
 }
 
-.daily-min { color: rgba(255,255,255,0.6); }
-.daily-max { color: #fff; }
+.daily-min { color: rgba(255,255,255,0.7); }
+.daily-max { color: rgba(255, 255, 255, 0.95); }
 
 .temp-bar-bg {
   flex: 1;
-  height: 8px;
-  background: rgba(0,0,0,0.3);
-  border-radius: 10px;
+  height: 6px;
+  background: rgba(255,255,255,0.08); /* clean background track */
+  border-radius: 9999px;
   position: relative;
-  overflow: hidden;
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
-}
-
-.animated-gradient {
-  background-size: 200% auto;
-  animation: shine 4s linear infinite;
-}
-
-@keyframes shine {
-  to { background-position: 200% center; }
 }
 
 .temp-bar-fill {
   position: absolute;
   top: 0; left: 10%; width: 75%; height: 100%;
-  background: linear-gradient(90deg, #3b82f6, #facc15, #f97316);
-  border-radius: 10px;
+  background: linear-gradient(90deg, #60a5fa, #fb923c); /* smooth gradient */
+  border-radius: 9999px;
 }
 
 /* Pop Chance */

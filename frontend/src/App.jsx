@@ -442,7 +442,11 @@ function App() {
                           <div key={idx} className="daily-row">
                             <span className="daily-day">{dayName}</span>
                             <div className="daily-icon">{getWeatherIcon(item.condition, 20)}</div>
-                            <div className="daily-pop"><CloudRain size={10}/> {popVal}%</div>
+                            <div className="daily-pop">
+                              <div className="daily-pop-badge">
+                                <CloudRain size={12}/> {popVal}%
+                              </div>
+                            </div>
                             <div className="daily-bar">
                               <span className="daily-min">{Math.round(item.temp_min)}°</span>
                               <div className="temp-bar-bg"><div className="temp-bar-fill"></div></div>
