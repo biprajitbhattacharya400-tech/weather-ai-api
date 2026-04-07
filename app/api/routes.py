@@ -162,7 +162,7 @@ def weather(city: str, db: Session = Depends(get_db)):
                 "time": item["dt_txt"],
                 "temperature": item["main"]["temp"],
                 "condition": item["weather"][0]["main"],
-                "pop": int(item.get("pop", 0) * 100)
+                "pop": int(round(item.get("pop", 0) * 100))
             }
             for item in data.get("list", [])[:12] # Expanded to 12 hours
         ],
@@ -171,7 +171,8 @@ def weather(city: str, db: Session = Depends(get_db)):
                 "date": item["dt_txt"],
                 "temp_min": item["main"]["temp"] - 2.5, # Realistic drift
                 "temp_max": item["main"]["temp"] + 3.2,
-                "condition": item["weather"][0]["main"]
+                "condition": item["weather"][0]["main"],
+                "pop": int(round(item.get("pop", 0) * 100))
             }
             for item in data.get("list", [])[0:40:8] # 5-Day mapping at 8 blocks each
         ]

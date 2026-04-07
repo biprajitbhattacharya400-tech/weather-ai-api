@@ -439,7 +439,7 @@ function App() {
                             <div className="forecast-time">{timeStr}</div>
                             <div>{getWeatherIcon(item.condition, 24)}</div>
                             <div className="forecast-temp">{Math.round(item.temperature)}°</div>
-                            <div className="pop-chance"><CloudRain size={12}/> {item.pop > 0 ? item.pop : 0}%</div>
+                            <div className="pop-chance"><CloudRain size={12}/> {item.pop ?? 0}%</div>
                           </div>
                         );
                       })}
@@ -455,7 +455,7 @@ function App() {
                       {weatherData.daily.map((item, idx) => {
                         const dt = new Date(item.date.replace(' ', 'T'));
                         const dayName = dt.toLocaleDateString([], { weekday: 'long' });
-                        const popVal = item.pop > 0 ? item.pop : 0;
+                        const popVal = item.pop ?? 0;
                         return (
                           <div key={idx} className="daily-row">
                             <span className="daily-day">{dayName}</span>
