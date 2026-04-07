@@ -192,6 +192,8 @@ body {
   display: flex;
   gap: 1rem;
   width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .input-group {
@@ -239,9 +241,9 @@ body {
   width: 100%;
   background: transparent;
   border: none;
-  padding: 1.3rem 1rem 1.3rem 3.5rem;
+  padding: 0.95rem 1rem 0.95rem 3.25rem;
   color: var(--text-main);
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   font-weight: 500;
   font-family: inherit;
   outline: none;
@@ -261,10 +263,10 @@ body {
   background-size: 200% auto;
   color: white;
   border: none;
-  padding: 0 2.25rem;
+  padding: 0 1.75rem;
   border-radius: 20px;
   font-weight: 600;
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   display: flex;
@@ -595,11 +597,11 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: rgba(255,255,255,0.7);
+  color: rgba(255, 255, 255, 0.95);
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   font-weight: 700;
 }
 
@@ -608,9 +610,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  margin-top: 1.5rem;
-  border-top: 1px solid rgba(255,255,255,0.1);
-  padding-top: 1.5rem;
 }
 
 .temp-range-label {
@@ -633,10 +632,16 @@ body {
   border-radius: 12px;
 }
 
+.daily-forecast-panel {
+  overflow: hidden;
+  max-width: 100%;
+}
+
 .daily-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   padding: 1rem 0.5rem;
   border-bottom: 1px solid rgba(255,255,255,0.05);
 }
@@ -646,21 +651,21 @@ body {
 }
 
 .daily-day {
-  flex: 1.5;
+  min-width: 100px;
   font-size: 1rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.95);
 }
 
 .daily-icon {
-  flex: 0.8;
+  width: 24px;
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
 }
 
 .daily-pop {
-  flex: 1.2;
+  min-width: 50px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -673,28 +678,35 @@ body {
   background: rgba(59, 130, 246, 0.1);
   color: #60a5fa;
   padding: 0.25rem 0.5rem;
-  border-radius: 0.375rem; /* rounded-md */
-  font-size: 0.875rem; /* text-sm */
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
   font-weight: 600;
 }
 
 .daily-bar {
-  flex: 3.5;
+  flex: 1;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
+  justify-content: flex-end;
+  gap: 12px;
+  max-width: 200px;
 }
 
-.daily-min, .daily-max {
+.daily-min { 
   font-size: 1rem;
   font-weight: 500;
-  width: 2rem;
-  text-align: center;
+  width: 40px;
+  text-align: right;
+  color: rgba(255,255,255,0.7); 
 }
 
-.daily-min { color: rgba(255,255,255,0.7); }
-.daily-max { color: rgba(255, 255, 255, 0.95); }
+.daily-max { 
+  font-size: 1rem;
+  font-weight: 500;
+  width: 40px;
+  text-align: left;
+  color: rgba(255, 255, 255, 0.95); 
+}
 
 .temp-bar-bg {
   flex: 1;
@@ -702,16 +714,19 @@ body {
   background: rgba(255,255,255,0.08); /* clean background track */
   border-radius: 9999px;
   position: relative;
+  overflow: hidden;
+  width: 100%;
 }
 
 .temp-bar-fill {
   position: absolute;
   top: 0; left: 10%; width: 75%; height: 100%;
+  max-width: 100%;
   background: linear-gradient(90deg, #60a5fa, #fb923c); /* smooth gradient */
   border-radius: 9999px;
 }
 
-/* Pop Chance */
+/* Pop Chance Hourly */
 .pop-chance {
   font-size: 0.75rem;
   color: #60a5fa;
@@ -721,8 +736,8 @@ body {
   gap: 0.25rem;
   background: rgba(59, 130, 246, 0.15);
   padding: 0.25rem 0.5rem;
-  border-radius: 999px;
-  margin-top: -0.25rem;
+  border-radius: 0.375rem;
+  margin-top: auto;
 }
 
 /* Insight Card Layered */
@@ -871,32 +886,27 @@ body {
 .forecast-item {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  gap: 0.75rem;
+  height: 140px;
+  gap: 6px;
   min-width: 75px;
   background: rgba(0,0,0,0.2);
   padding: 1rem 0.5rem;
   border-radius: 1rem;
   border: 1px solid rgba(255,255,255,0.05);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  will-change: transform, box-shadow;
+  transition: background 0.3s ease;
+  will-change: background;
   cursor: pointer;
 }
 
 .forecast-item:hover {
-  transform: translateY(-6px) scale(1.08);
-  background: linear-gradient(145deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+  background: rgba(255,255,255,0.1);
   border-color: rgba(255,255,255,0.25);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.3);
 }
 
 .forecast-item svg {
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.forecast-item:hover svg {
-  transform: translateY(-3px) scale(1.2) rotate(-5deg);
-  filter: drop-shadow(0 4px 8px rgba(255,255,255,0.4));
+  transition: transform 0.3s ease;
 }
 
 .forecast-time {
