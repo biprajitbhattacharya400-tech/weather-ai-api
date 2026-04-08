@@ -928,44 +928,59 @@ function App() {
                  )}
 
                  {/* COMPARED BARS (ALWAYS VISIBLE IN OVERVIEW) */}
-                 {activeCompareTab === 'overview' && (
-                   <div className="compare-bars-section tesla-glass" style={{marginTop: '1.5rem', padding: '1.5rem'}}>
-                      <h3 className="chart-title"><Activity size={16} /> Direct Metrics</h3>
+                 {activeCompareTab === 'overview' && (() => {
+                      const keys = Object.keys(compareData || {});
+                      if (keys.length < 2) return null;
                       
-                      <div className="compare-bar-container">
-                        <div className="compare-bar-label">
-                          <span>Temperature</span>
-                          <span style={{color: 'rgba(255,255,255,0.5)'}}>{Math.round(compareData[Object.keys(compareData)[0]].temperature)}° vs {Math.round(compareData[Object.keys(compareData)[1]].temperature)}°</span>
-                        </div>
-                        <div className="compare-bar-track">
-                          <div className="multi-bar-wrapper"><div className="multi-bar-fill-a" style={{width: `${Math.min(100, Math.max(0, (compareData[Object.keys(compareData)[0]].temperature + 20) * 2))}%`}}></div></div>
-                          <div className="multi-bar-wrapper"><div className="multi-bar-fill-b" style={{width: `${Math.min(100, Math.max(0, (compareData[Object.keys(compareData)[1]].temperature + 20) * 2))}%`}}></div></div>
-                        </div>
-                      </div>
+                      const cityA = compareData[keys[0]];
+                      const cityB = compareData[keys[1]];
+                      
+                      const tempA = cityA?.temperature ?? 0;
+                      const tempB = cityB?.temperature ?? 0;
+                      const humA = cityA?.humidity ?? 0;
+                      const humB = cityB?.humidity ?? 0;
+                      const windA = cityA?.wind_speed ?? 0;
+                      const windB = cityB?.wind_speed ?? 0;
 
-                      <div className="compare-bar-container">
-                        <div className="compare-bar-label">
-                          <span>Humidity</span>
-                          <span style={{color: 'rgba(255,255,255,0.5)'}}>{compareData[Object.keys(compareData)[0]].humidity}% vs {compareData[Object.keys(compareData)[1]].humidity}%</span>
-                        </div>
-                        <div className="compare-bar-track">
-                          <div className="multi-bar-wrapper"><div className="multi-bar-fill-a" style={{width: `${compareData[Object.keys(compareData)[0]].humidity}%`}}></div></div>
-                          <div className="multi-bar-wrapper"><div className="multi-bar-fill-b" style={{width: `${compareData[Object.keys(compareData)[1]].humidity}%`}}></div></div>
-                        </div>
-                      </div>
-                      
-                      <div className="compare-bar-container">
-                        <div className="compare-bar-label">
-                          <span>Wind Speed</span>
-                          <span style={{color: 'rgba(255,255,255,0.5)'}}>{Math.round(compareData[Object.keys(compareData)[0]].wind_speed)} <small>m/s</small> vs {Math.round(compareData[Object.keys(compareData)[1]].wind_speed)} <small>m/s</small></span>
-                        </div>
-                        <div className="compare-bar-track">
-                          <div className="multi-bar-wrapper"><div className="multi-bar-fill-a" style={{width: `${Math.min(100, compareData[Object.keys(compareData)[0]].wind_speed * 5)}%`}}></div></div>
-                          <div className="multi-bar-wrapper"><div className="multi-bar-fill-b" style={{width: `${Math.min(100, compareData[Object.keys(compareData)[1]].wind_speed * 5)}%`}}></div></div>
-                        </div>
-                      </div>
-                   </div>
-                 )}
+                      return (
+                       <div className="compare-bars-section tesla-glass" style={{marginTop: '1.5rem', padding: '1.5rem'}}>
+                          <h3 className="chart-title"><Activity size={16} /> Direct Metrics</h3>
+                          
+                          <div className="compare-bar-container">
+                            <div className="compare-bar-label">
+                              <span>Temperature</span>
+                              <span style={{color: 'rgba(255,255,255,0.5)'}}>{Math.round(tempA)}° vs {Math.round(tempB)}°</span>
+                            </div>
+                            <div className="compare-bar-track">
+                              <div className="multi-bar-wrapper"><div className="multi-bar-fill-a" style={{width: `${Math.min(100, Math.max(0, (tempA + 20) * 2))}%`}}></div></div>
+                              <div className="multi-bar-wrapper"><div className="multi-bar-fill-b" style={{width: `${Math.min(100, Math.max(0, (tempB + 20) * 2))}%`}}></div></div>
+                            </div>
+                          </div>
+
+                          <div className="compare-bar-container">
+                            <div className="compare-bar-label">
+                              <span>Humidity</span>
+                              <span style={{color: 'rgba(255,255,255,0.5)'}}>{Math.round(humA)}% vs {Math.round(humB)}%</span>
+                            </div>
+                            <div className="compare-bar-track">
+                              <div className="multi-bar-wrapper"><div className="multi-bar-fill-a" style={{width: `${humA}%`}}></div></div>
+                              <div className="multi-bar-wrapper"><div className="multi-bar-fill-b" style={{width: `${humB}%`}}></div></div>
+                            </div>
+                          </div>
+                          
+                          <div className="compare-bar-container">
+                            <div className="compare-bar-label">
+                              <span>Wind Speed</span>
+                              <span style={{color: 'rgba(255,255,255,0.5)'}}>{Math.round(windA)} <small>m/s</small> vs {Math.round(windB)} <small>m/s</small></span>
+                            </div>
+                            <div className="compare-bar-track">
+                              <div className="multi-bar-wrapper"><div className="multi-bar-fill-a" style={{width: `${Math.min(100, windA * 5)}%`}}></div></div>
+                              <div className="multi-bar-wrapper"><div className="multi-bar-fill-b" style={{width: `${Math.min(100, windB * 5)}%`}}></div></div>
+                            </div>
+                          </div>
+                       </div>
+                      );
+                 })()}
 
               </div>
             )}

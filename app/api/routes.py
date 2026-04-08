@@ -155,6 +155,11 @@ def weather(city: str, lat: float = Query(None), lon: float = Query(None), db: S
 
     first = data["list"][0]
 
+    # Explicitly override the generic query string if OpenWeather identifies a precise locale name
+    fetched_city = data.get("city", {}).get("name")
+    if fetched_city and fetched_city.lower() not in ["globe", "none", ""]:
+        display_city = fetched_city
+
     # 🤖 LLM insight
     insight = generate_llm_insight(
         display_city,
