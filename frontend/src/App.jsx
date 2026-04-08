@@ -888,45 +888,160 @@ function App() {
 
         {/* --- DASHBOARD TAB --- */}
         {activeTab === 'dashboard' && (
-          <div className="dashboard-container">
+          <div className="dashboard-container" style={{display: 'flex', flexDirection: 'column', gap: '2rem'}}>
             {loading && !historyData && (
                <div style={{display:'flex',justifyContent:'center',padding:'2rem'}}><div className="spinner" style={{width:'40px',height:'40px'}}></div></div>
             )}
             
             {renderError()}
 
-            {!loading && analyticsData && !analyticsData.message && (
-              <div className="analytics-cards">
-                <div className="stat-card">
-                  <div className="stat-label">Most Searched City</div>
-                  <div className="stat-value">{analyticsData.most_searched_city || 'N/A'}</div>
-                </div>
-                <div className="stat-card" style={{background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(236, 72, 153, 0.05))', borderColor: 'rgba(236, 72, 153, 0.3)'}}>
-                  <div className="stat-label">Total Searches</div>
-                  <div className="stat-value">
-                     {Object.values(analyticsData.request_count || {}).reduce((a,b)=>a+b, 0)}
-                  </div>
-                </div>
-              </div>
-            )}
+            {!loading && historyData && (
+              <>
+                {(() => {
+                   const total = historyData.length;
+                   if (total === 0) return <div style={{textAlign: 'center', opacity: 0.5}}>No search history available yet.</div>;
+                   
+                   const avgTemp = Math.round(historyData.reduce((a, b) => a + b.temperature, 0) / total);
+                   const avgHum = Math.round(historyData.reduce((a, b) => a + (b.humidity || 50), 0) / total);
+                   const isHot = avgTemp > 25;
+                   
+                   // Group History
+                   const uniqueMap = {};
+                   historyData.forEach(h => {
+                      if (!uniqueMap[h.city]) uniqueMap[h.city] = { count: 0, temp: h.temperature, cond: h.condition, hum: h.humidity, wind: h.wind_speed };
+                      uniqueMap[h.city].count += 1;
+                   });
+                   const groupedSorted = Object.entries(uniqueMap).sort((a,b) => b[1].count - a[1].count);
+                   const topCity = groupedSorted[0]?.[0] || 'None';
 
-            {!loading && historyData && historyData.length > 0 && (
-              <div className="history-list">
-                {historyData.slice().reverse().map((item, i) => (
-                  <div key={i} className="history-item">
-                    <div className="history-city">{item.city}</div>
-                    <div className="history-details">
-                      <div style={{color: 'rgba(255,255,255,0.7)', fontSize: '0.95rem'}}>{item.condition}</div>
-                      <div className="history-temp">{Math.round(item.temperature)}°C</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                   // Time active
+                   let morning = 0, afternoon = 0, evening = 0;
+                   historyData.forEach(h => {
+                      if(h.fetch_time) {
+                         let hr = 12; // default
+                         try {
+                           const d = h.fetch_time.replace(' ', 'T');
+                           hr = new Date(d).getHours();
+                         } catch (e) {}
+                         if (hr >= 5 && hr < 12) morning++;
+                         else if (hr >= 12 && hr < 17) afternoon++;
+                         else evening++;
+                      }
+                   });
+                   const topTime = Math.max(morning, afternoon, evening) === morning ? "Morning" : Math.max(morning, afternoon, evening) === afternoon ? "Afternoon" : "Evening";
+
+                   // Smart Summary
+                   let smartSummary = `You primarily track weather in ${topCity}. `;
+                   if (isHot) smartSummary += `Your search history indicates a strong interest in warmer climates (Avg ${avgTemp}°C). `;
+                   else smartSummary += `You mostly check cooler regions. `;
+                   smartSummary += `Your activity peaks usually in the ${topTime.toLowerCase()}.`;
+
+                   return (
+                     <>
+                       {/* 1. HERO SUMMARY SECTION */}
+                       <div className="compare-main-card tesla-glass" style={{flexDirection: 'row', justifyContent: 'space-between', padding: '2rem', textAlign: 'left', flexWrap: 'wrap'}}>
+                          <div>
+                            <h3 style={{margin: 0, color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.1em'}}>Your Primary Location</h3>
+                            <h2 style={{margin: 0, fontSize: '2.5rem', fontWeight: 800}}>{topCity}</h2>
+                            <div style={{color: '#fff', fontSize: '1.1rem', marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
+                              {getWeatherIcon(groupedSorted[0]?.[1]?.cond, 20)} {groupedSorted[0]?.[1]?.cond}
+                            </div>
+                          </div>
+                          <div style={{display: 'flex', gap: '1.5rem', alignItems: 'center'}}>
+                            <div style={{fontSize: '5rem', fontWeight: 800, lineHeight: 1, letterSpacing: '-0.05em', background: 'linear-gradient(180deg, #fff 30%, rgba(255,255,255,0.4) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>
+                               {Math.round(groupedSorted[0]?.[1]?.temp)}°
+                            </div>
+                          </div>
+                       </div>
+                       
+                       {/* 6. AI DASHBOARD INSIGHT */}
+                       <div className="compare-summary-block" style={{marginTop: '-0.5rem'}}>
+                          <Sparkles size={20} color="#facc15" style={{flexShrink: 0}} />
+                          <p>{smartSummary}</p>
+                       </div>
+
+                       {/* 2. QUICK STATS */}
+                       <div className="analytics-cards" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '1rem'}}>
+                         <div className="stat-card">
+                           <div className="stat-label">Searches</div>
+                           <div className="stat-value">{total}</div>
+                         </div>
+                         <div className="stat-card">
+                           <div className="stat-label">Avg Temp</div>
+                           <div className="stat-value">{avgTemp}°<span style={{fontSize: '1rem'}}>C</span></div>
+                         </div>
+                         <div className="stat-card">
+                           <div className="stat-label">Avg Hum</div>
+                           <div className="stat-value">{avgHum}%</div>
+                         </div>
+                         <div className="stat-card">
+                           <div className="stat-label">Active Time</div>
+                           <div className="stat-value" style={{fontSize: '1.25rem'}}>{topTime}</div>
+                         </div>
+                       </div>
+
+                       {/* 3. FREQUENT CITIES (CARDS) */}
+                       <h3 style={{fontSize: '1.1rem', margin: '0.5rem 0 0 0'}}>Saved / Frequent Cities</h3>
+                       <div className="subtle-scroll" style={{display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '0.5rem'}}>
+                         {groupedSorted.map(([cName, cData], idx) => (
+                           <div key={idx} className="tesla-glass" style={{minWidth: '180px', padding: '1.25rem', borderRadius: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem'}}>
+                              <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                                 <strong style={{fontSize: '1.1rem'}}>{cName}</strong>
+                                 <span style={{color: '#8b5cf6'}}>{getWeatherIcon(cData.cond, 20)}</span>
+                              </div>
+                              <div style={{fontSize: '2rem', fontWeight: 700}}>{Math.round(cData.temp)}°</div>
+                              <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)'}}>
+                                 <span><Droplets size={12}/> {cData.hum}%</span>
+                                 <span style={{background:'rgba(255,255,255,0.1)', padding: '2px 8px', borderRadius: '10px'}}>{cData.count}x</span>
+                              </div>
+                           </div>
+                         ))}
+                       </div>
+
+                       {/* 5. MINI CHARTS (Temperature Trend) */}
+                       {historyData.length > 2 && (
+                         <div className="tesla-glass" style={{padding: '1.5rem', borderRadius: '1.5rem', width: '100%'}}>
+                           <h3 style={{fontSize: '0.9rem', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)', letterSpacing: '0.05em', marginBottom: '1rem'}}><ActivitySquare size={16} /> Global Temperature Search Trend</h3>
+                           <div style={{width: '100%', height: 160}}>
+                             <ResponsiveContainer>
+                               <AreaChart data={historyData.slice(-15)} margin={{top:10, right:0, left:-25, bottom:0}}>
+                                 <defs>
+                                   <linearGradient id="colorHist" x1="0" y1="0" x2="0" y2="1">
+                                     <stop offset="5%" stopColor="#10b981" stopOpacity={0.5}/>
+                                     <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                                   </linearGradient>
+                                 </defs>
+                                 <XAxis dataKey="city" tick={{fill:'rgba(255,255,255,0.5)', fontSize: 10}} axisLine={false} tickLine={false} />
+                                 <YAxis tick={{fill:'rgba(255,255,255,0.5)', fontSize: 10}} axisLine={false} tickLine={false} />
+                                 <Tooltip contentStyle={{background: 'rgba(15, 23, 42, 0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px'}} />
+                                 <Area type="monotone" dataKey="temperature" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorHist)" />
+                               </AreaChart>
+                             </ResponsiveContainer>
+                           </div>
+                         </div>
+                       )}
+
+                       {/* 7. RAW HISTORY (DOWNGRADED & COLLAPSIBLE / COMPACT) */}
+                       <details className="tesla-glass" style={{padding: '1rem 1.5rem', borderRadius: '1rem', cursor: 'pointer', transition: 'all 0.3s ease'}}>
+                          <summary style={{fontWeight: 600, outline: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', userSelect: 'none', color: 'rgba(255,255,255,0.8)'}}>
+                            <LayoutDashboard size={18} /> View Raw Search Log Archive
+                          </summary>
+                          <div style={{marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem'}}>
+                            {historyData.slice().reverse().slice(0, 15).map((item, i) => (
+                              <div key={i} style={{display: 'flex', justifyContent: 'space-between', padding: '0.75rem 1rem', background: 'rgba(255,255,255,0.02)', borderRadius: '0.5rem'}}>
+                                <div><strong>{item.city}</strong> <span style={{color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem'}}>— {item.condition}</span></div>
+                                <div style={{fontWeight: 600}}>{Math.round(item.temperature)}°</div>
+                              </div>
+                            ))}
+                            {historyData.length > 15 && <div style={{textAlign: 'center', color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem', marginTop: '0.5rem'}}>+ {historyData.length - 15} older entries hidden</div>}
+                          </div>
+                       </details>
+                     </>
+                   );
+                })()}
+              </>
             )}
             
-            {!loading && historyData && historyData.length === 0 && (
-              <div style={{textAlign: 'center', opacity: 0.5}}>No search history available yet.</div>
-            )}
           </div>
         )}
 
