@@ -2,11 +2,16 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.models.weather import WeatherLog
-from app.services.weather_service import get_weather
+from app.services.weather_service import get_weather, search_cities
 from app.services.llm_service import generate_llm_insight  # NEW
 from app.services.cache_service import get_cache, set_cache
 
 router = APIRouter()
+
+@router.get("/weather/search/coords")
+def get_city_options(q: str = Query(...)):
+    results = search_cities(q)
+    return results
 
 
 # 🌍 MULTI-CITY COMPARE
@@ -113,12 +118,11 @@ def compare_weather(cities: str = Query(...), db: Session = Depends(get_db)):
 
 # 🌤️ SINGLE CITY
 @router.get("/weather/{city}")
-def weather(city: str, db: Session = Depends(get_db)):
+def weather(city: str, lat: float = Query(None), lon: float = Query(None), db: Session = Depends(get_db)):
 
     city = city.strip().lower()
     city = city.replace('"', '').replace("'", "")
 
-    # Map unsupported local names to the nearest supported API hub
     alias_map = {
         "kadamtala": "dharmanagar",
         "kadamtala north tripura": "dharmanagar",
@@ -128,7 +132,10 @@ def weather(city: str, db: Session = Depends(get_db)):
     display_city = city.title()
     query_city = alias_map.get(city, city)
 
-    cache_key = f"weather:{query_city}"
+    if lat is not None and lon is not None:
+        cache_key = f"weather:{lat},{lon}"
+    else:
+        cache_key = f"weather:{query_city}"
 
     # 🔁 Check cache
     cached_data = get_cache(cache_key)
@@ -138,7 +145,10 @@ def weather(city: str, db: Session = Depends(get_db)):
         return cached_data
 
     # 🌐 Fetch weather
-    data = get_weather(query_city)
+    if lat is not None and lon is not None:
+        data = get_weather(lat=lat, lon=lon, city=display_city) # Pass city in case it cascades or we need logic
+    else:
+        data = get_weather(city=query_city)
 
     if not data or data.get("cod") not in [200, "200"]:
         return {"error": "Could not fetch weather", "raw": data}

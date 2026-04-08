@@ -14,6 +14,8 @@ function App() {
   // Single Search State
   const [city, setCity] = useState('');
   const [weatherData, setWeatherData] = useState(null);
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   
   // Compare State
   const [compareCities, setCompareCities] = useState('');
@@ -39,12 +41,53 @@ function App() {
     setMousePos({ x, y });
   };
 
+  const fetchDataForCoords = async (lat, lon, cityName) => {
+    setLoading(true); setError(''); setWeatherData(null); setBgClass('Default'); setShowSuggestions(false);
+    if(cityName) setCity(cityName);
+    try {
+      const response = await fetch(`${API_BASE}/weather/${encodeURIComponent(cityName || 'Unknown')}?lat=${lat}&lon=${lon}`);
+      if (!response.ok) throw new Error('NotFound');
+      const data = await response.json();
+      
+      if (data.error || data.temperature === undefined || isNaN(data.temperature) || data.temperature === null) {
+        throw new Error('NotFound');
+      }
+
+      setWeatherData(data);
+      updateBackground(data.condition);
+    } catch (err) {
+      if (err.message === 'NotFound' || err.message.includes('not found')) {
+        setError(`unsupported_city`);
+      } else {
+        setError('Failed to fetch weather data. Please check your connection.');
+      }
+      setBgClass('Default');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const fetchDataForCity = async (targetCity) => {
     if (!targetCity.trim()) return;
-
-    setLoading(true); setError(''); setWeatherData(null); setBgClass('Default');
+    setLoading(true); setError(''); setWeatherData(null); setBgClass('Default'); setShowSuggestions(false);
 
     try {
+      // 1. Precise geocoding attempt
+      const geoRes = await fetch(`${API_BASE}/weather/search/coords?q=${encodeURIComponent(targetCity.trim())}`);
+      const geoData = await geoRes.json();
+      
+      // 2. Exact fallback execution
+      if (geoData && geoData.length === 1) {
+         await fetchDataForCoords(geoData[0].lat, geoData[0].lon, geoData[0].name);
+         return;
+      } else if (geoData && geoData.length > 1) {
+         setSuggestions(geoData);
+         setShowSuggestions(true);
+         setLoading(false);
+         return;
+      }
+
+      // 3. Fallback (Failed Geo, try direct legacy search)
       const response = await fetch(`${API_BASE}/weather/${encodeURIComponent(targetCity.trim())}`);
       if (!response.ok) throw new Error('NotFound');
       const data = await response.json();
@@ -70,6 +113,24 @@ function App() {
   const fetchSingleWeather = async (e) => {
     e.preventDefault();
     await fetchDataForCity(city);
+  };
+
+  const handleUseMyLocation = () => {
+    if (!navigator.geolocation) {
+      setError("Geolocation is not supported by your browser");
+      return;
+    }
+    setLoading(true); setError(''); setWeatherData(null);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        fetchDataForCoords(latitude, longitude, "My Location");
+      },
+      () => {
+        setError("Unable to retrieve your location. Please check browser permissions.");
+        setLoading(false);
+      }
+    );
   };
 
   const fetchCompare = async (e) => {
@@ -295,7 +356,7 @@ function App() {
         {/* --- SEARCH TAB --- */}
         {activeTab === 'search' && (
           <>
-            <div className="search-container" style={{display: 'flex', flexDirection: 'column', gap: '0.75rem'}}>
+            <div className="search-container" style={{display: 'flex', flexDirection: 'column', gap: '0.75rem', position: 'relative'}}>
               <form onSubmit={fetchSingleWeather} className="search-form" style={{marginBottom: 0}}>
                 <div className="input-group">
                   <MapPin className="input-icon" size={20} />
@@ -314,8 +375,39 @@ function App() {
                 <button type="submit" className="search-button" disabled={loading || !city.trim()}>
                   {loading ? <><div className="spinner"></div></> : <><Search size={18} /> Get Weather</>}
                 </button>
-              </form>
-              <div className="quick-cities-bar">
+               </form>
+
+               {/* SUGGESTIONS DROPDOWN */}
+               {showSuggestions && suggestions.length > 0 && (
+                 <div className="suggestions-dropdown tesla-glass" style={{
+                    position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 100, 
+                    display: 'flex', flexDirection: 'column', padding: '0.5rem', borderRadius: '1rem',
+                    boxShadow: '0 10px 40px rgba(0,0,0,0.3)', marginTop: '0.5rem', maxHeight: '300px', overflowY: 'auto'
+                 }}>
+                    <div style={{fontSize: '0.8rem', padding: '0.5rem 1rem', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.05em'}}>Multiple locations found:</div>
+                    {suggestions.map((loc, i) => (
+                       <button key={i} className="suggestion-item" onClick={() => fetchDataForCoords(loc.lat, loc.lon, loc.name)}
+                               style={{
+                                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                                  padding: '1rem', background: 'transparent', border: 'none', color: '#fff',
+                                  textAlign: 'left', cursor: 'pointer', borderBottom: i !== suggestions.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
+                                  transition: 'background 0.2s'
+                               }}>
+                           <div style={{display: 'flex', flexDirection: 'column'}}>
+                              <span style={{fontWeight: '600', fontSize: '1.05rem'}}>{loc.name}</span>
+                              <span style={{fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)'}}>{loc.state ? `${loc.state}, ` : ''}{loc.country}</span>
+                           </div>
+                           <div style={{fontSize: '0.8rem', opacity: 0.5}}>📍 {loc.lat.toFixed(2)}, {loc.lon.toFixed(2)}</div>
+                       </button>
+                    ))}
+                 </div>
+               )}
+
+              <div className="quick-cities-bar" style={{marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap'}}>
+                 <button onClick={handleUseMyLocation} className="quick-city-pill" style={{background: 'rgba(139, 92, 246, 0.15)', color: '#c4b5fd', borderColor: 'rgba(139, 92, 246, 0.3)'}}>
+                    <MapPin size={14} style={{display: 'inline', marginRight: '4px', verticalAlign: 'text-top'}}/> Use My Location
+                 </button>
+                 <div style={{width: '1px', height: '14px', background: 'rgba(255,255,255,0.1)'}}></div>
                  <button onClick={() => { setCity("Kolkata"); fetchDataForCity("Kolkata"); }} className="quick-city-pill">Kolkata</button>
                  <button onClick={() => { setCity("Delhi"); fetchDataForCity("Delhi"); }} className="quick-city-pill">Delhi</button>
                  <button onClick={() => { setCity("Mumbai"); fetchDataForCity("Mumbai"); }} className="quick-city-pill">Mumbai</button>

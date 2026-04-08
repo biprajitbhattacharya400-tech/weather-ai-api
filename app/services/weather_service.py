@@ -1,9 +1,34 @@
 import requests
 from app.core.config import settings
 
-def get_weather(city: str):
-    url = f"http://api.openweathermap.org/data/2.5/forecast?q={city}&appid={settings.WEATHER_API_KEY}&units=metric"
-    
+def search_cities(query: str):
+    url = f"http://api.openweathermap.org/geo/1.0/direct?q={query}&limit=5&appid={settings.WEATHER_API_KEY}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()
+    return []
+
+def get_coordinates(city: str):
+    results = search_cities(city)
+    if results and len(results) > 0:
+        return results[0].get("lat"), results[0].get("lon")
+    return None, None
+
+from typing import Optional
+
+def get_weather(lat: Optional[float] = None, lon: Optional[float] = None, city: Optional[str] = None):
+    if lat is not None and lon is not None:
+        url = f"http://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={settings.WEATHER_API_KEY}&units=metric"
+    elif city:
+        # High Accuracy Coordinate Fallback Pipeline
+        clat, clon = get_coordinates(city)
+        if clat and clon:
+            url = f"http://api.openweathermap.org/data/2.5/forecast?lat={clat}&lon={clon}&appid={settings.WEATHER_API_KEY}&units=metric"
+        else:
+            url = f"http://api.openweathermap.org/data/2.5/forecast?q={city}&appid={settings.WEATHER_API_KEY}&units=metric"
+    else:
+        return {"error": "No location provided"}
+        
     response = requests.get(url)
 
     if response.status_code != 200:
