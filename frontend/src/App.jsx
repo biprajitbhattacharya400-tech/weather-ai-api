@@ -912,7 +912,17 @@ function App() {
                       uniqueMap[h.city].count += 1;
                    });
                    const groupedSorted = Object.entries(uniqueMap).sort((a,b) => b[1].count - a[1].count);
-                   const topCity = groupedSorted[0]?.[0] || 'None';
+                   
+                   // Priority City Logic
+                   const activeCity = city || '';
+                   const lastHistoryCity = historyData.length > 0 ? historyData[historyData.length - 1].city : null;
+                   const mostSearchedCity = groupedSorted[0]?.[0];
+                   
+                   const targetCityStr = activeCity || lastHistoryCity || mostSearchedCity || 'None';
+                   
+                   // Find exact cased key or fallback
+                   const matchedKey = Object.keys(uniqueMap).find(k => k.toLowerCase() === targetCityStr.toLowerCase()) || lastHistoryCity || mostSearchedCity || 'None';
+                   const primaryCityData = uniqueMap[matchedKey] || groupedSorted[0]?.[1] || {};
 
                    // Time active
                    let morning = 0, afternoon = 0, evening = 0;
@@ -931,7 +941,7 @@ function App() {
                    const topTime = Math.max(morning, afternoon, evening) === morning ? "Morning" : Math.max(morning, afternoon, evening) === afternoon ? "Afternoon" : "Evening";
 
                    // Smart Summary
-                   let smartSummary = `You primarily track weather in ${topCity}. `;
+                   let smartSummary = `You primarily track weather in ${mostSearchedCity}. `;
                    if (isHot) smartSummary += `Your search history indicates a strong interest in warmer climates (Avg ${avgTemp}°C). `;
                    else smartSummary += `You mostly check cooler regions. `;
                    smartSummary += `Your activity peaks usually in the ${topTime.toLowerCase()}.`;
@@ -942,14 +952,14 @@ function App() {
                        <div className="compare-main-card tesla-glass" style={{flexDirection: 'row', justifyContent: 'space-between', padding: '2rem', textAlign: 'left', flexWrap: 'wrap'}}>
                           <div>
                             <h3 style={{margin: 0, color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.1em'}}>Your Primary Location</h3>
-                            <h2 style={{margin: 0, fontSize: '2.5rem', fontWeight: 800}}>{topCity}</h2>
+                            <h2 style={{margin: 0, fontSize: '2.5rem', fontWeight: 800}}>{matchedKey}</h2>
                             <div style={{color: '#fff', fontSize: '1.1rem', marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
-                              {getWeatherIcon(groupedSorted[0]?.[1]?.cond, 20)} {groupedSorted[0]?.[1]?.cond}
+                              {getWeatherIcon(primaryCityData.cond, 20)} {primaryCityData.cond}
                             </div>
                           </div>
                           <div style={{display: 'flex', gap: '1.5rem', alignItems: 'center'}}>
                             <div style={{fontSize: '5rem', fontWeight: 800, lineHeight: 1, letterSpacing: '-0.05em', background: 'linear-gradient(180deg, #fff 30%, rgba(255,255,255,0.4) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>
-                               {Math.round(groupedSorted[0]?.[1]?.temp)}°
+                               {Math.round(primaryCityData.temp || 0)}°
                             </div>
                           </div>
                        </div>
