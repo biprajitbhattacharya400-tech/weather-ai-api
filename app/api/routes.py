@@ -32,7 +32,7 @@ def compare_weather(cities: str = Query(...), db: Session = Depends(get_db)):
         query_city = alias_map.get(original_city, original_city)
         display_city = original_city.title()
         
-        data = get_weather(query_city)
+        data = get_weather(city=query_city)
 
         if not data or str(data.get("cod")) != "200" or "list" not in data:
             result[display_city] = {"error": f"Could not fetch weather for {display_city}"}

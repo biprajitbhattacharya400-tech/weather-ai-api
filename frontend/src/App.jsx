@@ -837,95 +837,117 @@ function App() {
                  )}
 
                  {/* TAB: HOURLY (Overlay Graph) */}
-                 {activeCompareTab === 'hourly' && (
-                    <div className="compare-chart tesla-glass" style={{padding: '1.5rem'}}>
-                      <h3 className="chart-title"><ActivitySquare size={16} /> 12-Hour Temp Comparison</h3>
-                      <div style={{ width: '100%', height: 300 }}>
-                        <ResponsiveContainer>
-                          <AreaChart 
-                             margin={{ top: 10, right: 10, left: -25, bottom: 0 }}
-                             /* We need to format the data to interleave both cities */
-                             data={compareData[Object.keys(compareData)[0]].forecast.map((f, i) => {
-                               const cityA = Object.keys(compareData)[0];
-                               const cityB = Object.keys(compareData)[1];
-                               return {
-                                 time: f.time,
-                                 [cityA]: Math.round(f.temperature),
-                                 [cityB]: Math.round(compareData[cityB].forecast[i]?.temperature)
-                               };
-                             })}
-                          >
-                             <defs>
-                               <linearGradient id="colorA" x1="0" y1="0" x2="0" y2="1">
-                                 <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.5}/>
-                                 <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
-                               </linearGradient>
-                               <linearGradient id="colorB" x1="0" y1="0" x2="0" y2="1">
-                                 <stop offset="5%" stopColor="#ec4899" stopOpacity={0.5}/>
-                                 <stop offset="95%" stopColor="#ec4899" stopOpacity={0}/>
-                               </linearGradient>
-                             </defs>
-                             <XAxis dataKey="time" tick={{fill: 'rgba(255,255,255,0.6)', fontSize: 12}} tickFormatter={(v) => new Date(v.replace(' ', 'T')).toLocaleTimeString([], {hour: '2-digit'})} axisLine={false} tickLine={false} />
-                             <YAxis tick={{fill: 'rgba(255,255,255,0.6)', fontSize: 12}} axisLine={false} tickLine={false} />
-                             <Tooltip contentStyle={{ background: 'rgba(15, 23, 42, 0.85)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '12px' }} />
-                             <Area type="monotone" dataKey={Object.keys(compareData)[0]} stroke="#8b5cf6" fill="url(#colorA)" strokeWidth={3} />
-                             <Area type="monotone" dataKey={Object.keys(compareData)[1]} stroke="#ec4899" fill="url(#colorB)" strokeWidth={3} />
-                          </AreaChart>
-                        </ResponsiveContainer>
-                      </div>
-                      <div className="chart-legend">
-                         <span style={{color: '#8b5cf6', fontWeight: 600}}>— {Object.keys(compareData)[0]}</span>
-                         <span style={{color: '#ec4899', fontWeight: 600}}>— {Object.keys(compareData)[1]}</span>
-                      </div>
-                    </div>
-                 )}
+                 {activeCompareTab === 'hourly' && (() => {
+                      const keys = Object.keys(compareData || {});
+                      if (keys.length < 2) return null;
+                      const cityA = compareData[keys[0]];
+                      const cityB = compareData[keys[1]];
+                      if (cityA?.error || cityB?.error || !cityA?.forecast || !cityB?.forecast) {
+                         return <div className="error-message">Unable to render graph. Hourly data missing.</div>;
+                      }
+                      
+                      return (
+                        <div className="compare-chart tesla-glass" style={{padding: '1.5rem'}}>
+                          <h3 className="chart-title"><ActivitySquare size={16} /> 12-Hour Temp Comparison</h3>
+                          <div style={{ width: '100%', height: 300 }}>
+                            <ResponsiveContainer>
+                              <AreaChart 
+                                 margin={{ top: 10, right: 10, left: -25, bottom: 0 }}
+                                 data={cityA.forecast.map((f, i) => {
+                                   return {
+                                     time: f.time,
+                                     [keys[0]]: Math.round(f.temperature),
+                                     [keys[1]]: Math.round(cityB.forecast[i]?.temperature ?? 0)
+                                   };
+                                 })}
+                              >
+                                 <defs>
+                                   <linearGradient id="colorA" x1="0" y1="0" x2="0" y2="1">
+                                     <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.5}/>
+                                     <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
+                                   </linearGradient>
+                                   <linearGradient id="colorB" x1="0" y1="0" x2="0" y2="1">
+                                     <stop offset="5%" stopColor="#ec4899" stopOpacity={0.5}/>
+                                     <stop offset="95%" stopColor="#ec4899" stopOpacity={0}/>
+                                   </linearGradient>
+                                 </defs>
+                                 <XAxis dataKey="time" tick={{fill: 'rgba(255,255,255,0.6)', fontSize: 12}} tickFormatter={(v) => new Date(v.replace(' ', 'T')).toLocaleTimeString([], {hour: '2-digit'})} axisLine={false} tickLine={false} />
+                                 <YAxis tick={{fill: 'rgba(255,255,255,0.6)', fontSize: 12}} axisLine={false} tickLine={false} />
+                                 <Tooltip contentStyle={{ background: 'rgba(15, 23, 42, 0.85)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '12px' }} />
+                                 <Area type="monotone" dataKey={keys[0]} stroke="#8b5cf6" fill="url(#colorA)" strokeWidth={3} />
+                                 <Area type="monotone" dataKey={keys[1]} stroke="#ec4899" fill="url(#colorB)" strokeWidth={3} />
+                              </AreaChart>
+                            </ResponsiveContainer>
+                          </div>
+                          <div className="chart-legend">
+                             <span style={{color: '#8b5cf6', fontWeight: 600}}>— {keys[0]}</span>
+                             <span style={{color: '#ec4899', fontWeight: 600}}>— {keys[1]}</span>
+                          </div>
+                        </div>
+                      );
+                 })()}
 
                  {/* TAB: WEEKLY (Table) */}
-                 {activeCompareTab === 'weekly' && (
-                    <div className="compare-weekly tesla-glass">
-                      <h3 className="chart-title"><CalendarDays size={16} /> 5-Day Comparison</h3>
-                      <div className="compare-table">
-                         <div className="compare-table-header">
-                           <span>Day</span>
-                           <span style={{textAlign: 'center', color: '#8b5cf6'}}>{Object.keys(compareData)[0]}</span>
-                           <span style={{textAlign: 'center', color: '#ec4899'}}>{Object.keys(compareData)[1]}</span>
-                         </div>
-                         {compareData[Object.keys(compareData)[0]].daily.map((d, i) => {
-                            const cityA = Object.keys(compareData)[0];
-                            const cityB = Object.keys(compareData)[1];
-                            const dt = new Date(d.date.replace(' ', 'T'));
-                            const dayName = dt.toLocaleDateString([], { weekday: 'long' });
-                            return (
-                              <div key={i} className="compare-table-row">
-                                 <span className="compare-day-name">{dayName}</span>
-                                 <div className="compare-day-temps">
-                                   <span style={{color: '#8b5cf6'}}>{Math.round(d.temp_min)}° - {Math.round(d.temp_max)}°</span>
-                                   <div className="mini-icon">{getWeatherIcon(d.condition, 16)}</div>
-                                 </div>
-                                 <div className="compare-day-temps">
-                                   <span style={{color: '#ec4899'}}>{Math.round(compareData[cityB].daily[i]?.temp_min)}° - {Math.round(compareData[cityB].daily[i]?.temp_max)}°</span>
-                                   <div className="mini-icon">{getWeatherIcon(compareData[cityB].daily[i]?.condition, 16)}</div>
-                                 </div>
-                              </div>
-                            )
-                         })}
-                      </div>
-                    </div>
-                 )}
+                 {activeCompareTab === 'weekly' && (() => {
+                      const keys = Object.keys(compareData || {});
+                      if (keys.length < 2) return null;
+                      const cityA = compareData[keys[0]];
+                      const cityB = compareData[keys[1]];
+                      if (cityA?.error || cityB?.error || !cityA?.daily || !cityB?.daily) {
+                         return <div className="error-message">Unable to render table. Weekly data missing.</div>;
+                      }
+                      
+                      return (
+                        <div className="compare-weekly tesla-glass">
+                          <h3 className="chart-title"><CalendarDays size={16} /> 5-Day Comparison</h3>
+                          <div className="compare-table">
+                             <div className="compare-table-header">
+                               <span>Day</span>
+                               <span style={{textAlign: 'center', color: '#8b5cf6'}}>{keys[0]}</span>
+                               <span style={{textAlign: 'center', color: '#ec4899'}}>{keys[1]}</span>
+                             </div>
+                             {cityA.daily.map((d, i) => {
+                                const dt = new Date(d.date.replace(' ', 'T'));
+                                const dayName = dt.toLocaleDateString([], { weekday: 'long' });
+                                return (
+                                  <div key={i} className="compare-table-row">
+                                     <span className="compare-day-name">{dayName}</span>
+                                     <div className="compare-day-temps">
+                                       <span style={{color: '#8b5cf6'}}>{Math.round(d.temp_min)}° - {Math.round(d.temp_max)}°</span>
+                                       <div className="mini-icon">{getWeatherIcon(d.condition, 16)}</div>
+                                     </div>
+                                     <div className="compare-day-temps">
+                                       <span style={{color: '#ec4899'}}>{Math.round(cityB.daily[i]?.temp_min ?? 0)}° - {Math.round(cityB.daily[i]?.temp_max ?? 0)}°</span>
+                                       <div className="mini-icon">{getWeatherIcon(cityB.daily[i]?.condition, 16)}</div>
+                                     </div>
+                                  </div>
+                                )
+                             })}
+                          </div>
+                        </div>
+                      );
+                 })()}
 
                  {/* TAB: INSIGHTS */}
-                 {activeCompareTab === 'insights' && (
-                    <div className="compare-insights">
-                       <div key="insight-A" className="insight-card">
-                         <div className="insight-header"><Sparkles size={18} /> {Object.keys(compareData)[0]} Insight</div>
-                         <p className="insight-text">{compareData[Object.keys(compareData)[0]].insight}</p>
-                       </div>
-                       <div key="insight-B" className="insight-card" style={{marginTop: '1.5rem'}}>
-                         <div className="insight-header" style={{color: '#ec4899'}}><Sparkles size={18} /> {Object.keys(compareData)[1]} Insight</div>
-                         <p className="insight-text">{compareData[Object.keys(compareData)[1]].insight}</p>
-                       </div>
-                    </div>
-                 )}
+                 {activeCompareTab === 'insights' && (() => {
+                      const keys = Object.keys(compareData || {});
+                      if (keys.length < 2) return null;
+                      const cityA = compareData[keys[0]];
+                      const cityB = compareData[keys[1]];
+                      
+                      return (
+                        <div className="compare-insights">
+                           <div key="insight-A" className="insight-card">
+                             <div className="insight-header"><Sparkles size={18} /> {keys[0]} Insight</div>
+                             <p className="insight-text">{cityA?.insight ?? "No insights available."}</p>
+                           </div>
+                           <div key="insight-B" className="insight-card" style={{marginTop: '1.5rem'}}>
+                             <div className="insight-header" style={{color: '#ec4899'}}><Sparkles size={18} /> {keys[1]} Insight</div>
+                             <p className="insight-text">{cityB?.insight ?? "No insights available."}</p>
+                           </div>
+                        </div>
+                      );
+                 })()}
 
                  {/* COMPARED BARS (ALWAYS VISIBLE IN OVERVIEW) */}
                  {activeCompareTab === 'overview' && (() => {
