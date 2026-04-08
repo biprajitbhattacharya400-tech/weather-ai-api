@@ -30,13 +30,14 @@ body {
   min-height: 100vh;
   width: 100%;
   display: flex;
-  align-items: flex-start;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   position: relative;
   transition: background-color 1.5s ease-in-out;
   padding: 4rem 1rem 2rem 1rem;
   background-color: #0f172a;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 /* New Rich Blob Backgrounds */
@@ -103,6 +104,8 @@ body {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+  flex: 1;
+  padding-bottom: 4rem;
 }
 
 .header {
@@ -948,9 +951,11 @@ body {
   text-align: center;
   color: rgba(255,255,255,0.6);
   font-size: 0.95rem;
-  margin-top: 1rem;
+  margin-top: auto;
   font-weight: 400;
   animation: slideUpFade 1s both;
+  z-index: 10;
+  padding-top: 2rem;
 }
 .footer-text span {
   color: #ef4444;
