@@ -570,12 +570,12 @@ function App() {
                   <div className="desktop-info-panel">
                     <div className="desktop-section-title"><ActivitySquare size={16} /> Atmosphere Snapshot</div>
                     <div className="desktop-metrics-list">
-                      <div className="desktop-metric-row"><span><Droplets size={16} /> Humidity</span><strong>{weatherData.humidity ?? '--'}%</strong></div>
-                      <div className="desktop-metric-row"><span><Wind size={16} /> Wind</span><strong>{weatherData.wind_speed ? Math.round(weatherData.wind_speed * 3.6) : '--'} km/h</strong></div>
-                      <div className="desktop-metric-row"><span><Activity size={16} /> Air Quality</span><strong>{weatherData.aqi || '--'}</strong></div>
-                      <div className="desktop-metric-row"><span><Sun size={16} /> UV Index</span><strong>{weatherData.uv_index ?? '--'}</strong></div>
-                      <div className="desktop-metric-row"><span><Thermometer size={16} /> Feels Like</span><strong>{weatherData.feels_like ? Math.round(weatherData.feels_like) : '--'}°</strong></div>
-                      <div className="desktop-metric-row"><span><Eye size={16} /> Visibility</span><strong>{weatherData.visibility ? (weatherData.visibility / 1000).toFixed(1) : '--'} km</strong></div>
+                      <div className="desktop-metric-mini"><span><Droplets size={14} /> Humidity</span><strong>{weatherData.humidity ?? '--'}%</strong></div>
+                      <div className="desktop-metric-mini"><span><Wind size={14} /> Wind</span><strong>{weatherData.wind_speed ? Math.round(weatherData.wind_speed * 3.6) : '--'} km/h</strong></div>
+                      <div className="desktop-metric-mini"><span><Activity size={14} /> AQI</span><strong>{weatherData.aqi || '--'}</strong></div>
+                      <div className="desktop-metric-mini"><span><Sun size={14} /> UV</span><strong>{weatherData.uv_index ?? '--'}</strong></div>
+                      <div className="desktop-metric-mini"><span><Eye size={14} /> Visibility</span><strong>{weatherData.visibility ? (weatherData.visibility / 1000).toFixed(1) : '--'} km</strong></div>
+                      <div className="desktop-metric-mini"><span><Thermometer size={14} /> Feels Like</span><strong>{weatherData.feels_like ? Math.round(weatherData.feels_like) : '--'}°</strong></div>
                     </div>
 
                     {weatherData.forecast && weatherData.forecast.length > 0 && (

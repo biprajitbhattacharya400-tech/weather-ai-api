@@ -213,7 +213,7 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.2); /* Crisp premium outline */
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); /* Clean, classic Apple-style soft shadow instead of messy inset math */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   transition: background 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
   will-change: transform, box-shadow; /* Instructs GPU to allocate memory for butter-smooth states */
 }
@@ -322,7 +322,7 @@ body {
 }
 
 .search-button:active:not(:disabled) {
-  transform: translateY(2px) scale(0.95);
+  transform: translateY(1px) scale(0.97);
   box-shadow: 0 5px 15px rgba(236, 72, 153, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.2);
 }
 
@@ -2141,7 +2141,7 @@ body {
 }
 
 .search-button:active:not(:disabled) {
-  transform: scale(0.98);
+  transform: scale(0.97);
 }
 
 .desktop-metric-card,
@@ -2339,6 +2339,11 @@ body {
   animation: gradientShift 10s ease infinite;
 }
 
+.mobile-weather-hero {
+  align-items: center;
+  text-align: center;
+}
+
 .Night .mobile-weather-hero,
 .Night .desktop-main-card {
   background: linear-gradient(140deg, #2a2754, #151533 50%, #0b1122 100%);
@@ -2389,14 +2394,14 @@ body {
 
 .mobile-temp-value,
 .desktop-main-temp {
-  font-size: clamp(6.25rem, 24vw, 8.4rem);
+  font-size: clamp(5.6rem, 21vw, 7.5rem);
   line-height: 0.82;
   letter-spacing: -0.055em;
   animation: tempIn 0.55s ease both;
 }
 
 .desktop-main-temp {
-  font-size: clamp(6.6rem, 9vw, 9rem);
+  font-size: clamp(5.8rem, 8vw, 7.5rem);
 }
 
 .mobile-temp-wrap {
@@ -2407,8 +2412,13 @@ body {
 .desktop-main-middle {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: 12px;
+}
+
+.desktop-main-top {
+  justify-content: center;
+  text-align: center;
 }
 
 .mobile-main-conditionline,
@@ -2416,8 +2426,8 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 0.96rem;
   font-weight: 500;
   margin-top: 4px;
   position: relative;
@@ -2428,8 +2438,9 @@ body {
 .desktop-support-line {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 12px;
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(255, 255, 255, 0.66);
   font-size: 0.84rem;
   position: relative;
   z-index: 2;
@@ -2458,32 +2469,31 @@ body {
 
 .desktop-metrics-list {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-2);
 }
 
-.desktop-metric-row {
+.desktop-metric-mini {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 8px 0;
 }
 
-.desktop-metric-row span {
+.desktop-metric-mini span {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.84rem;
-  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.62);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-.desktop-metric-row strong {
-  font-size: 1.08rem;
-  font-weight: 600;
+.desktop-metric-mini strong {
+  font-size: 1.03rem;
+  font-weight: 500;
 }
 
 .desktop-chart-wrap,
@@ -2493,23 +2503,23 @@ body {
 }
 
 .desktop-chart-wrap {
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .desktop-week-wrap {
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-.desktop-metric-row,
+.desktop-metric-mini,
 .desktop-week-row,
 .mobile-hourly-item,
 .desktop-info-panel {
-  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
 }
 
 .desktop-week-row:hover,
 .mobile-hourly-item:hover {
-  transform: translateY(-6px);
+  transform: translateY(-4px);
 }
 
 .mobile-bottom-sheet {
@@ -2536,10 +2546,10 @@ body {
 }
 
 .desktop-week-row {
-  background: rgba(255, 255, 255, 0.02);
+  background: transparent;
   border: none;
-  padding: 10px 8px;
-  border-radius: 12px;
+  padding: 8px 2px;
+  border-radius: 10px;
 }
 
 .desktop-week-row strong {
@@ -2621,7 +2631,7 @@ body {
 
 @media (max-width: 1024px) {
   .desktop-metrics-list {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
