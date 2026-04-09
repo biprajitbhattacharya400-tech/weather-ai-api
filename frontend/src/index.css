@@ -946,6 +946,41 @@ body {
   font-weight: 700;
 }
 
+/* Cycling Tagline */
+@keyframes fadeSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  80% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+.cycling-tagline {
+  text-align: center;
+  font-size: 0.875rem; /* text-sm */
+  color: rgba(255, 255, 255, 0.5); /* text-white/50 */
+  font-weight: 500;
+  letter-spacing: 0.05em; /* tracking-wide */
+  margin-top: 1.25rem; /* ~20px */
+  margin-bottom: auto; /* Allow pushing below content */
+}
+
+.cycling-tagline-text {
+  display: inline-block;
+  animation: fadeSlide 3s ease-in-out infinite;
+}
+
 /* Footer string */
 .footer-text {
   text-align: center;
@@ -1593,5 +1628,364 @@ body {
   
   .detail-value {
     font-size: 1.15rem;
+  }
+}
+
+/* --------------------------------
+   Search Result Redesign
+--------------------------------- */
+.weather-experience {
+  width: 100%;
+}
+
+.mobile-weather-card {
+  display: flex;
+  flex-direction: column;
+  min-height: min(86vh, 760px);
+  border-radius: 32px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: linear-gradient(165deg, rgba(118, 178, 255, 0.45), rgba(32, 64, 128, 0.35) 45%, rgba(15, 20, 45, 0.58));
+  box-shadow: 0 28px 60px rgba(6, 10, 25, 0.5);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.mobile-weather-hero {
+  flex: 1;
+  padding: 1.25rem 1.25rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  background:
+    radial-gradient(circle at 85% 10%, rgba(255, 255, 255, 0.25), transparent 30%),
+    radial-gradient(circle at 15% 75%, rgba(152, 206, 255, 0.25), transparent 40%);
+}
+
+.mobile-weather-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.mobile-location-label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.mobile-date-label {
+  margin-top: 0.35rem;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.9rem;
+}
+
+.mobile-condition-chip {
+  align-self: flex-start;
+  padding: 0.42rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.mobile-temp-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 2.5rem;
+}
+
+.mobile-temp-value {
+  font-size: clamp(5rem, 22vw, 7.5rem);
+  line-height: 0.85;
+  letter-spacing: -0.06em;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.96);
+  text-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+}
+
+.mobile-temp-side {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  align-items: flex-end;
+  color: #fff;
+  animation: icon-float 5.5s ease-in-out infinite;
+}
+
+.mobile-high-low {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 14px;
+  padding: 0.45rem 0.6rem;
+  font-size: 0.84rem;
+}
+
+.mobile-high-low span {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.mobile-ai-line {
+  margin-top: 1rem;
+  color: rgba(255, 255, 255, 0.88);
+  font-weight: 400;
+  line-height: 1.5;
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 16px;
+  padding: 0.8rem 0.9rem;
+}
+
+.mobile-hourly-glass {
+  background: rgba(255, 255, 255, 0.8);
+  color: #0a0f1d;
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
+  padding: 1rem 1rem 1.1rem;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.mobile-hourly-title {
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+}
+
+.mobile-hourly-scroll {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(62px, 1fr));
+  gap: 0.6rem;
+}
+
+.mobile-hourly-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.74rem;
+  padding: 0.6rem 0.4rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.mobile-hourly-item strong {
+  font-size: 1.1rem;
+}
+
+.desktop-weather-grid {
+  display: none;
+}
+
+.desktop-main-card,
+.desktop-metric-card,
+.desktop-chart-card,
+.desktop-weekly-card {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.03));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+  border-radius: 28px;
+}
+
+.desktop-main-card {
+  padding: 1.5rem;
+  min-height: 100%;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 80% 15%, rgba(255, 255, 255, 0.24), transparent 28%),
+    linear-gradient(165deg, rgba(110, 172, 255, 0.4), rgba(23, 49, 103, 0.45) 45%, rgba(9, 12, 28, 0.7));
+}
+
+.desktop-main-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.desktop-location {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 1.03rem;
+  font-weight: 600;
+}
+
+.desktop-date {
+  margin-top: 0.35rem;
+  font-size: 0.86rem;
+  color: rgba(255, 255, 255, 0.74);
+}
+
+.desktop-condition {
+  border: 1px solid rgba(255, 255, 255, 0.23);
+  border-radius: 999px;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.desktop-main-middle {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+}
+
+.desktop-main-temp {
+  font-size: clamp(4rem, 7vw, 6.2rem);
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+  font-weight: 700;
+}
+
+.desktop-main-icon {
+  animation: icon-float 6s ease-in-out infinite;
+}
+
+.desktop-main-insight {
+  margin-top: 1.4rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.desktop-right-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.desktop-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.desktop-metric-card {
+  padding: 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.desktop-metric-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 22px 38px rgba(0, 0, 0, 0.38);
+}
+
+.desktop-metric-card span {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.desktop-metric-card strong {
+  font-size: 1.12rem;
+  color: #fff;
+}
+
+.desktop-chart-card,
+.desktop-weekly-card {
+  padding: 1.1rem 1.2rem;
+}
+
+.desktop-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 700;
+}
+
+.desktop-week-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.desktop-week-row {
+  display: grid;
+  grid-template-columns: 0.8fr 0.45fr 0.8fr 1fr;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 14px;
+  padding: 0.68rem 0.75rem;
+}
+
+.desktop-week-icon {
+  display: flex;
+  justify-content: center;
+}
+
+.desktop-week-pop {
+  display: flex;
+  align-items: center;
+  gap: 0.24rem;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 0.84rem;
+}
+
+@keyframes icon-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@media (min-width: 768px) {
+  .mobile-weather-card {
+    display: none;
+  }
+
+  .desktop-weather-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: 20px;
+    animation: slideUpFade 0.6s ease both;
+  }
+
+  .desktop-metrics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1025px) {
+  .desktop-weather-grid {
+    grid-template-columns: 1fr 1.5fr;
+  }
+}
+
+@media (max-width: 767px) {
+  .main-container.dashboard-wrapper {
+    max-width: 540px !important;
+  }
+
+  .header,
+  .tabs-wrapper,
+  .search-container,
+  .smart-alerts-container {
+    margin-bottom: 0.55rem;
   }
 }
