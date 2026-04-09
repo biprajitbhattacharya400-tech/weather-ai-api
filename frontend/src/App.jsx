@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Search, MapPin, CloudRain, CloudLightning, CloudSnow, Cloud, Sun, Sparkles, AlertCircle, LayoutDashboard, Droplets, Wind, Thermometer, Eye, Activity, Sunrise, Sunset, CalendarDays, ActivitySquare, ArrowDown, ArrowUp } from 'lucide-react';
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { motion } from 'framer-motion';
 import './index.css';
 import './weather-fx.css';
@@ -495,18 +495,21 @@ function App() {
                         <p className="mobile-location-label"><MapPin size={14} /> {weatherData.city}</p>
                         <p className="mobile-date-label">{formatDate()}</p>
                       </div>
-                      <div className="mobile-condition-chip">{weatherData.condition}</div>
                     </div>
 
                     <div className="mobile-temp-wrap">
                       <div className="mobile-temp-value">{Math.round(weatherData.temperature)}°</div>
-                      <div className="mobile-temp-side">
-                        <div>{getWeatherIcon(weatherData.condition, 56)}</div>
-                        <div className="mobile-high-low">
-                          <span><ArrowUp size={14} /> {Math.round(weatherData.temp_max || weatherData.temperature)}°</span>
-                          <span><ArrowDown size={14} /> {Math.round(weatherData.temp_min || weatherData.temperature)}°</span>
-                        </div>
-                      </div>
+                    </div>
+
+                    <div className="mobile-main-conditionline">
+                      {getWeatherIcon(weatherData.condition, 20)}
+                      <span>{weatherData.condition}</span>
+                    </div>
+
+                    <div className="mobile-support-line">
+                      <span><Thermometer size={14} /> Feels {weatherData.feels_like ? Math.round(weatherData.feels_like) : '--'}°</span>
+                      <span><ArrowUp size={13} /> {Math.round(weatherData.temp_max || weatherData.temperature)}°</span>
+                      <span><ArrowDown size={13} /> {Math.round(weatherData.temp_min || weatherData.temperature)}°</span>
                     </div>
 
                     <p className="mobile-ai-line">{weatherData.insight}</p>
@@ -548,11 +551,18 @@ function App() {
                         <p className="desktop-location"><MapPin size={14} /> {weatherData.city}</p>
                         <p className="desktop-date">{formatDate()}</p>
                       </div>
-                      <div className="desktop-condition">{weatherData.condition}</div>
                     </div>
                     <div className="desktop-main-middle">
                       <div className="desktop-main-temp">{Math.round(weatherData.temperature)}°</div>
-                      <div className="desktop-main-icon">{getWeatherIcon(weatherData.condition, 126)}</div>
+                      <div className="desktop-main-conditionline">
+                        {getWeatherIcon(weatherData.condition, 22)}
+                        <span>{weatherData.condition}</span>
+                      </div>
+                      <div className="desktop-support-line">
+                        <span><Thermometer size={14} /> Feels {weatherData.feels_like ? Math.round(weatherData.feels_like) : '--'}°</span>
+                        <span><ArrowUp size={13} /> {Math.round(weatherData.temp_max || weatherData.temperature)}°</span>
+                        <span><ArrowDown size={13} /> {Math.round(weatherData.temp_min || weatherData.temperature)}°</span>
+                      </div>
                     </div>
                     <p className="desktop-main-insight">{weatherData.insight}</p>
                   </div>
@@ -573,24 +583,24 @@ function App() {
                         <div className="desktop-section-title"><ActivitySquare size={16} /> 24-Hour Temperature Trend</div>
                         <div style={{ width: '100%', height: 230 }}>
                           <ResponsiveContainer>
-                            <AreaChart data={weatherData.forecast.slice(0, 8)} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                            <LineChart data={weatherData.forecast.slice(0, 8)} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                               <defs>
-                                <linearGradient id="desktopTemp" x1="0" y1="0" x2="0" y2="1">
-                                  <stop offset="5%" stopColor="#6ca9ff" stopOpacity={0.65} />
-                                  <stop offset="95%" stopColor="#6ca9ff" stopOpacity={0.02} />
+                                <linearGradient id="desktopTempGlow" x1="0" y1="0" x2="1" y2="0">
+                                  <stop offset="0%" stopColor="#b6ccff" stopOpacity={0.9} />
+                                  <stop offset="100%" stopColor="#8cb6ff" stopOpacity={0.85} />
                                 </linearGradient>
                               </defs>
                               <XAxis
                                 dataKey="time"
-                                tick={{ fill: 'rgba(255,255,255,0.7)', fontSize: 12 }}
+                                tick={{ fill: 'rgba(255,255,255,0.52)', fontSize: 11 }}
                                 tickFormatter={(value) => new Date(value.replace(' ', 'T')).toLocaleTimeString([], { hour: '2-digit' })}
                                 axisLine={false}
                                 tickLine={false}
                               />
-                              <YAxis tick={{ fill: 'rgba(255,255,255,0.65)', fontSize: 12 }} axisLine={false} tickLine={false} />
+                              <YAxis tick={{ fill: 'rgba(255,255,255,0.48)', fontSize: 11 }} axisLine={false} tickLine={false} />
                               <Tooltip contentStyle={{ background: 'rgba(9, 15, 30, 0.86)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '12px' }} />
-                              <Area type="monotone" dataKey="temperature" stroke="#9bc6ff" strokeWidth={3} fill="url(#desktopTemp)" />
-                            </AreaChart>
+                              <Line type="monotone" dataKey="temperature" stroke="url(#desktopTempGlow)" strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
+                            </LineChart>
                           </ResponsiveContainer>
                         </div>
                       </div>

@@ -2399,6 +2399,49 @@ body {
   font-size: clamp(6.6rem, 9vw, 9rem);
 }
 
+.mobile-temp-wrap {
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.desktop-main-middle {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.mobile-main-conditionline,
+.desktop-main-conditionline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
+  font-weight: 500;
+  margin-top: 4px;
+  position: relative;
+  z-index: 2;
+}
+
+.mobile-support-line,
+.desktop-support-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.84rem;
+  position: relative;
+  z-index: 2;
+}
+
+.mobile-support-line span,
+.desktop-support-line span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .desktop-weather-grid {
   align-items: stretch;
 }
@@ -2425,7 +2468,7 @@ body {
   align-items: center;
   gap: 10px;
   padding: 10px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .desktop-metric-row span {
@@ -2447,6 +2490,14 @@ body {
 .desktop-week-wrap {
   padding-top: var(--space-1);
   animation: slideUpFade 0.5s ease both;
+}
+
+.desktop-chart-wrap {
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.desktop-week-wrap {
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .desktop-metric-row,
@@ -2484,6 +2535,18 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.09);
 }
 
+.desktop-week-row {
+  background: rgba(255, 255, 255, 0.02);
+  border: none;
+  padding: 10px 8px;
+  border-radius: 12px;
+}
+
+.desktop-week-row strong {
+  font-size: 0.96rem;
+  font-weight: 500;
+}
+
 .mobile-metric-strip {
   display: flex;
   flex-wrap: wrap;
@@ -2506,6 +2569,15 @@ body {
 .desktop-info-panel,
 .mobile-weather-card {
   animation: slideUpFade 0.45s ease both;
+}
+
+.desktop-info-panel,
+.desktop-week-row,
+.mobile-hourly-item,
+.mobile-bottom-sheet,
+.desktop-chart-wrap,
+.desktop-week-wrap {
+  box-shadow: none;
 }
 
 .night-stars {
@@ -2560,5 +2632,9 @@ body {
 
   .mobile-weather-card {
     min-height: 90vh;
+  }
+
+  .mobile-main-conditionline {
+    font-size: 0.95rem;
   }
 }
