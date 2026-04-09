@@ -1989,3 +1989,299 @@ body {
     margin-bottom: 0.55rem;
   }
 }
+
+/* --------------------------------
+   Premium Polish Layer
+--------------------------------- */
+:root {
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --radius-lg: 24px;
+  --radius-xl: 28px;
+  --glass-premium: rgba(255, 255, 255, 0.08);
+  --glass-border-premium: rgba(255, 255, 255, 0.12);
+  --neutral-text-muted: rgba(255, 255, 255, 0.62);
+  --shadow-premium: 0 10px 30px rgba(0, 0, 0, 0.2), 0 24px 60px rgba(0, 0, 0, 0.12);
+  --gradient-brand: linear-gradient(140deg, #7cb2ff 0%, #4e79d7 48%, #253a70 100%);
+}
+
+.app-wrapper {
+  background: linear-gradient(135deg, #1a2b53, #111a33 52%, #0c1427);
+  background-size: 200% 200%;
+  animation: bgShift 16s ease-in-out infinite;
+}
+
+.app-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  z-index: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.75) 0.35px, transparent 0.35px);
+  background-size: 3px 3px;
+}
+
+.Clear,
+.Default {
+  --bg-a: #345b9f;
+  --bg-b: #17284f;
+  --bg-c: #0f1932;
+}
+
+.Rain,
+.Clouds {
+  --bg-a: #3b557f;
+  --bg-b: #1c2f4f;
+  --bg-c: #121d31;
+}
+
+.Thunderstorm,
+.Snow {
+  --bg-a: #32446c;
+  --bg-b: #172644;
+  --bg-c: #0d1528;
+}
+
+.app-wrapper.Clear,
+.app-wrapper.Default,
+.app-wrapper.Rain,
+.app-wrapper.Clouds,
+.app-wrapper.Thunderstorm,
+.app-wrapper.Snow {
+  background: linear-gradient(140deg, var(--bg-a), var(--bg-b) 52%, var(--bg-c));
+  background-size: 180% 180%;
+}
+
+.header h1 {
+  letter-spacing: -0.035em;
+  font-weight: 700;
+}
+
+.header p,
+.date-info,
+.desktop-date,
+.mobile-date-label,
+.desktop-main-insight,
+.mobile-ai-line,
+.detail-label,
+.stat-label,
+.time-meridiem,
+.desktop-week-pop,
+.cycling-tagline {
+  color: var(--neutral-text-muted);
+}
+
+.main-container {
+  gap: var(--space-3);
+}
+
+.search-form {
+  gap: var(--space-2);
+}
+
+.input-group,
+.search-button,
+.weather-card,
+.tesla-glass,
+.insight-card,
+.mobile-weather-card,
+.desktop-main-card,
+.desktop-metric-card,
+.desktop-chart-card,
+.desktop-weekly-card,
+.stat-card,
+.compare-overview-table,
+.compare-weekly,
+.compare-bars-section {
+  border-radius: var(--radius-lg);
+}
+
+.weather-card,
+.tesla-glass,
+.insight-card,
+.desktop-main-card,
+.desktop-metric-card,
+.desktop-chart-card,
+.desktop-weekly-card,
+.stat-card,
+.compare-overview-table,
+.compare-weekly,
+.compare-bars-section,
+.input-group {
+  background: var(--glass-premium);
+  border: 1px solid var(--glass-border-premium);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-premium);
+}
+
+.weather-card,
+.mobile-weather-card,
+.desktop-main-card {
+  border-radius: var(--radius-xl);
+}
+
+.search-button {
+  background: var(--gradient-brand);
+  box-shadow: 0 10px 28px rgba(22, 50, 102, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+}
+
+.search-button:hover:not(:disabled) {
+  transform: translateY(-4px);
+  filter: brightness(1.06);
+  box-shadow: 0 14px 34px rgba(22, 50, 102, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.search-button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.desktop-metric-card,
+.detail-item,
+.forecast-item,
+.daily-row,
+.stat-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+.desktop-metric-card:hover,
+.detail-item:hover,
+.forecast-item:hover,
+.daily-row:hover,
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.25);
+}
+
+.mobile-weather-hero,
+.desktop-main-card {
+  background: var(--gradient-brand);
+}
+
+.mobile-temp-value,
+.desktop-main-temp,
+.temperature {
+  font-weight: 700;
+  text-shadow: 0 0 38px rgba(157, 195, 255, 0.26), 0 10px 26px rgba(0, 0, 0, 0.28);
+}
+
+.mobile-weather-top,
+.desktop-main-top,
+.desktop-main-middle,
+.compare-summary-block,
+.weather-details-grid,
+.desktop-right-stack,
+.desktop-metrics-grid {
+  gap: var(--space-2);
+}
+
+.mobile-weather-hero,
+.desktop-main-card,
+.desktop-chart-card,
+.desktop-weekly-card,
+.chart-container,
+.forecast-section,
+.daily-forecast-panel,
+.compare-overview-table,
+.compare-weekly,
+.compare-bars-section,
+.insight-card,
+.weather-card {
+  padding: var(--space-3);
+}
+
+.mobile-hourly-glass,
+.ctable-row,
+.compare-bar-container,
+.daily-row,
+.forecast-item,
+.detail-item,
+.stat-card {
+  padding: var(--space-2);
+}
+
+.chart-title,
+.desktop-section-title,
+.forecast-title,
+.detail-label,
+.stat-label {
+  font-weight: 500;
+}
+
+.skeleton-line,
+.weather-skeleton-tile,
+.weather-skeleton-card {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+}
+
+.weather-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  animation: slideUpFade 0.35s ease both;
+}
+
+.weather-skeleton-card {
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-height: 220px;
+}
+
+.skeleton-line {
+  height: 14px;
+}
+
+.skeleton-line-sm { width: 35%; }
+.skeleton-line-md { width: 60%; }
+.skeleton-line-lg { width: 75%; height: 64px; border-radius: 20px; }
+
+.weather-skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.weather-skeleton-tile {
+  min-height: 96px;
+}
+
+.skeleton-line::after,
+.weather-skeleton-tile::after,
+.weather-skeleton-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
+@keyframes bgShift {
+  0% { background-position: 0% 40%; }
+  50% { background-position: 100% 60%; }
+  100% { background-position: 0% 40%; }
+}
+
+@media (max-width: 767px) {
+  .app-wrapper {
+    padding: var(--space-3) var(--space-2) var(--space-3);
+  }
+
+  .mobile-temp-value {
+    font-size: clamp(5rem, 24vw, 7rem);
+  }
+}

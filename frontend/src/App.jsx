@@ -433,6 +433,22 @@ function App() {
 
             {renderError()}
 
+            {loading && !weatherData && !error && (
+              <div className="weather-skeleton" aria-hidden="true">
+                <div className="weather-skeleton-card">
+                  <div className="skeleton-line skeleton-line-sm"></div>
+                  <div className="skeleton-line skeleton-line-lg"></div>
+                  <div className="skeleton-line skeleton-line-md"></div>
+                </div>
+                <div className="weather-skeleton-grid">
+                  <div className="weather-skeleton-tile"></div>
+                  <div className="weather-skeleton-tile"></div>
+                  <div className="weather-skeleton-tile"></div>
+                  <div className="weather-skeleton-tile"></div>
+                </div>
+              </div>
+            )}
+
             {/* FEATURE 1: SMART ALERTS */}
             {weatherData && (
                <div className="smart-alerts-container">
