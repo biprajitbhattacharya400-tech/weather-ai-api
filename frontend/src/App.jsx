@@ -202,11 +202,14 @@ function App() {
       setBgClass('Default'); return;
     }
     const cond = condition.toLowerCase();
+    const hour = new Date().getHours();
+    const isNightHour = hour >= 19 || hour < 6;
     if (cond.includes('rain') || cond.includes('drizzle') || cond.includes('shower')) setBgClass('Rain');
     else if (cond.includes('thunder') || cond.includes('storm')) setBgClass('Thunderstorm');
     else if (cond.includes('snow') || cond.includes('ice')) setBgClass('Snow');
     else if (cond.includes('cloud') || cond.includes('overcast') || cond.includes('fog') || cond.includes('mist')) setBgClass('Clouds');
-    else if (cond.includes('clear') || cond.includes('sun')) setBgClass('Clear');
+    else if (cond.includes('clear') || cond.includes('sun')) setBgClass(isNightHour ? 'Night' : 'Clear');
+    else if (isNightHour) setBgClass('Night');
     else setBgClass('Default');
   };
 
@@ -257,6 +260,13 @@ function App() {
           <div className="weather-fx" style={{animation: 'slideUpFade 1s ease'}}>
              <div className="cloud-layer"></div>
              <div className="cloud-layer cloud-2"></div>
+          </div>
+        );
+      case 'Night':
+        return (
+          <div className="weather-fx" style={{animation: 'slideUpFade 1s ease'}}>
+             <div className="night-stars"></div>
+             <div className="night-moon-glow"></div>
           </div>
         );
       default: return null;
@@ -479,6 +489,7 @@ function App() {
               <div className="weather-experience" style={{animation: 'slideUpFade 0.65s ease both'}}>
                 <section className="mobile-weather-card">
                   <div className="mobile-weather-hero">
+                    <div className="temp-halo" aria-hidden="true"></div>
                     <div className="mobile-weather-top">
                       <div>
                         <p className="mobile-location-label"><MapPin size={14} /> {weatherData.city}</p>
@@ -501,27 +512,37 @@ function App() {
                     <p className="mobile-ai-line">{weatherData.insight}</p>
                   </div>
 
-                  {weatherData.forecast && weatherData.forecast.length > 0 && (
-                    <div className="mobile-hourly-glass">
-                      <div className="mobile-hourly-title">Weather Today</div>
-                      <div className="mobile-hourly-scroll">
-                        {weatherData.forecast.slice(0, 8).map((item, index) => {
-                          const dateObj = new Date(item.time.replace(' ', 'T'));
-                          return (
-                            <div key={index} className="mobile-hourly-item">
-                              <span>{dateObj.toLocaleTimeString([], { hour: '2-digit' })}</span>
-                              {getWeatherIcon(item.condition, 20)}
-                              <strong>{Math.round(item.temperature)}°</strong>
-                            </div>
-                          );
-                        })}
-                      </div>
+                  <div className="mobile-bottom-sheet">
+                    {weatherData.forecast && weatherData.forecast.length > 0 && (
+                      <>
+                        <div className="mobile-hourly-title">Weather Today</div>
+                        <div className="mobile-hourly-scroll">
+                          {weatherData.forecast.slice(0, 8).map((item, index) => {
+                            const dateObj = new Date(item.time.replace(' ', 'T'));
+                            return (
+                              <div key={index} className="mobile-hourly-item">
+                                <span>{dateObj.toLocaleTimeString([], { hour: '2-digit' })}</span>
+                                {getWeatherIcon(item.condition, 20)}
+                                <strong>{Math.round(item.temperature)}°</strong>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </>
+                    )}
+
+                    <div className="mobile-metric-strip">
+                      <span><Droplets size={14} /> {weatherData.humidity ?? '--'}%</span>
+                      <span><Wind size={14} /> {weatherData.wind_speed ? Math.round(weatherData.wind_speed * 3.6) : '--'} km/h</span>
+                      <span><Activity size={14} /> AQI {weatherData.aqi || '--'}</span>
+                      <span><Sun size={14} /> UV {weatherData.uv_index ?? '--'}</span>
                     </div>
-                  )}
+                  </div>
                 </section>
 
                 <section className="desktop-weather-grid">
                   <div className="desktop-main-card">
+                    <div className="temp-halo" aria-hidden="true"></div>
                     <div className="desktop-main-top">
                       <div>
                         <p className="desktop-location"><MapPin size={14} /> {weatherData.city}</p>
@@ -536,18 +557,19 @@ function App() {
                     <p className="desktop-main-insight">{weatherData.insight}</p>
                   </div>
 
-                  <div className="desktop-right-stack">
-                    <div className="desktop-metrics-grid">
-                      <div className="desktop-metric-card"><Droplets size={18} /><span>Humidity</span><strong>{weatherData.humidity ?? '--'}%</strong></div>
-                      <div className="desktop-metric-card"><Wind size={18} /><span>Wind</span><strong>{weatherData.wind_speed ? Math.round(weatherData.wind_speed * 3.6) : '--'} km/h</strong></div>
-                      <div className="desktop-metric-card"><Activity size={18} /><span>AQI</span><strong>{weatherData.aqi || '--'}</strong></div>
-                      <div className="desktop-metric-card"><Sun size={18} /><span>UV Index</span><strong>{weatherData.uv_index ?? '--'}</strong></div>
-                      <div className="desktop-metric-card"><Thermometer size={18} /><span>Feels Like</span><strong>{weatherData.feels_like ? Math.round(weatherData.feels_like) : '--'}°</strong></div>
-                      <div className="desktop-metric-card"><Eye size={18} /><span>Visibility</span><strong>{weatherData.visibility ? (weatherData.visibility / 1000).toFixed(1) : '--'} km</strong></div>
+                  <div className="desktop-info-panel">
+                    <div className="desktop-section-title"><ActivitySquare size={16} /> Atmosphere Snapshot</div>
+                    <div className="desktop-metrics-list">
+                      <div className="desktop-metric-row"><span><Droplets size={16} /> Humidity</span><strong>{weatherData.humidity ?? '--'}%</strong></div>
+                      <div className="desktop-metric-row"><span><Wind size={16} /> Wind</span><strong>{weatherData.wind_speed ? Math.round(weatherData.wind_speed * 3.6) : '--'} km/h</strong></div>
+                      <div className="desktop-metric-row"><span><Activity size={16} /> Air Quality</span><strong>{weatherData.aqi || '--'}</strong></div>
+                      <div className="desktop-metric-row"><span><Sun size={16} /> UV Index</span><strong>{weatherData.uv_index ?? '--'}</strong></div>
+                      <div className="desktop-metric-row"><span><Thermometer size={16} /> Feels Like</span><strong>{weatherData.feels_like ? Math.round(weatherData.feels_like) : '--'}°</strong></div>
+                      <div className="desktop-metric-row"><span><Eye size={16} /> Visibility</span><strong>{weatherData.visibility ? (weatherData.visibility / 1000).toFixed(1) : '--'} km</strong></div>
                     </div>
 
                     {weatherData.forecast && weatherData.forecast.length > 0 && (
-                      <div className="desktop-chart-card">
+                      <div className="desktop-chart-wrap">
                         <div className="desktop-section-title"><ActivitySquare size={16} /> 24-Hour Temperature Trend</div>
                         <div style={{ width: '100%', height: 230 }}>
                           <ResponsiveContainer>
@@ -575,7 +597,7 @@ function App() {
                     )}
 
                     {weatherData.daily && weatherData.daily.length > 0 && (
-                      <div className="desktop-weekly-card">
+                      <div className="desktop-week-wrap">
                         <div className="desktop-section-title"><CalendarDays size={16} /> 5-Day Forecast</div>
                         <div className="desktop-week-list">
                           {weatherData.daily.slice(0, 5).map((item, idx) => {
