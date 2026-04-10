@@ -140,9 +140,11 @@ body {
   transition: transform 280ms ease, box-shadow 280ms ease;
 }
 
-.soft-hover-lift:hover {
-  transform: translateY(-3px) scale(1.015);
-  box-shadow: 0 10px 20px rgba(44, 61, 92, 0.12);
+@media (hover: hover) and (pointer: fine) {
+  .soft-hover-lift:hover {
+    transform: translateY(-3px) scale(1.015);
+    box-shadow: 0 10px 20px rgba(44, 61, 92, 0.12);
+  }
 }
 
 .soft-button {
@@ -152,6 +154,10 @@ body {
 .soft-button:hover {
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.38), 0 8px 24px rgba(106, 131, 177, 0.2);
   transform: translateY(-1px);
+}
+
+.soft-button:active {
+  transform: scale(0.985);
 }
 
 .focus-glow {

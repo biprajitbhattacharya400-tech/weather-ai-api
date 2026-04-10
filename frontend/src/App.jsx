@@ -451,7 +451,18 @@ function App() {
 
   const centerPanel = activeTab === 'single' && hasSearched ? <HourlyStrip hourly={hourly} /> : null;
 
-  const mobilePanel = activeTab === 'single' && hasSearched ? <ForecastPanel hourly={hourly} /> : null;
+  const mobilePanel = activeTab === 'single' && hasSearched ? (
+    <div className="space-y-4">
+      <ForecastPanel hourly={hourly} />
+      <UnifiedInfoSurface
+        graphPoints={graphPoints}
+        metrics={metrics}
+        daily={daily}
+        showMetrics={false}
+        className="rounded-[30px] p-5"
+      />
+    </div>
+  ) : null;
 
   const footer = (
     <p className="text-xs tracking-wide text-inkSecondary/78">

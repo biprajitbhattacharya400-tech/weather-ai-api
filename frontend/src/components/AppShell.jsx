@@ -2,7 +2,7 @@ import WeatherAtmosphere from './WeatherAtmosphere';
 
 function AppShell({ condition, topBar, hero, centerPanel, desktopPanel, mobilePanel, footer }) {
   return (
-    <main className="relative flex min-h-screen flex-col overflow-hidden text-inkPrimary pb-[env(safe-area-inset-bottom)]">
+    <main className="relative flex min-h-screen flex-col overflow-x-hidden text-inkPrimary pb-[env(safe-area-inset-bottom)]">
       <WeatherAtmosphere condition={condition} />
 
       <div className="relative z-10 mx-auto w-full max-w-[1440px] flex-1 px-5 pb-8 pt-20 md:px-10 md:pt-24 lg:grid lg:grid-cols-[minmax(0,0.98fr)_minmax(320px,0.8fr)_minmax(320px,0.72fr)] lg:gap-8 lg:px-14 lg:pb-24 xl:gap-10">
