@@ -69,8 +69,44 @@ function App() {
   const [historyData, setHistoryData] = useState([]);
   const [analyticsData, setAnalyticsData] = useState(null);
   const [loadingDashboard, setLoadingDashboard] = useState(false);
+  const [introPhase, setIntroPhase] = useState('checking');
 
   const canShowSuggestions = !hasSearched && activeTab === 'single' && showSuggestions;
+
+  useEffect(() => {
+    let fadeTimer;
+    let doneTimer;
+
+    try {
+      const introSeen = localStorage.getItem('weather-intro-seen');
+      if (introSeen === '1') {
+        setIntroPhase('done');
+        return undefined;
+      }
+    } catch {
+      setIntroPhase('done');
+      return undefined;
+    }
+
+    setIntroPhase('visible');
+    fadeTimer = setTimeout(() => {
+      setIntroPhase('fading');
+    }, 2000);
+
+    doneTimer = setTimeout(() => {
+      setIntroPhase('done');
+      try {
+        localStorage.setItem('weather-intro-seen', '1');
+      } catch {
+        // Ignore storage failures and continue with a non-blocking UX.
+      }
+    }, 2700);
+
+    return () => {
+      clearTimeout(fadeTimer);
+      clearTimeout(doneTimer);
+    };
+  }, []);
 
   const fetchWeather = async (city) => {
     if (!city.trim()) return;
@@ -364,8 +400,24 @@ function App() {
   );
 
   const homeHero = (
-    <div className="fade-soft mx-auto flex w-full max-w-3xl flex-col items-center gap-6 text-center lg:mx-0 lg:items-start lg:text-left">
-      <h1 className="text-4xl font-semibold tracking-[-0.03em] text-inkPrimary sm:text-5xl md:text-6xl">
+    <div className="fade-soft mx-auto flex w-full max-w-3xl flex-col items-center gap-5 text-center lg:mx-0 lg:items-start lg:text-left sm:gap-6">
+      <div className="relative h-10 w-full sm:h-12 md:h-14">
+        {introPhase !== 'done' ? (
+          <p
+            className={`font-tagline-script absolute left-0 right-0 text-3xl leading-none text-inkSecondary/85 transition-all duration-700 ease-in-out sm:text-4xl md:text-[2.85rem] ${
+              introPhase === 'visible' ? 'translate-y-0 opacity-100' : '-translate-y-2 opacity-0'
+            }`}
+          >
+            Weather, designed as a product.
+          </p>
+        ) : null}
+      </div>
+
+      <h1
+        className={`text-4xl font-semibold tracking-[-0.03em] text-inkPrimary transition-all duration-700 ease-in-out sm:text-5xl md:text-6xl ${
+          introPhase === 'done' ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'
+        }`}
+      >
         Where weather meets experience
       </h1>
       <p className="max-w-2xl text-sm text-inkSecondary/90 sm:text-base">

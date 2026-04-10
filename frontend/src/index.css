@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Parisienne&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
 
 :root {
@@ -25,6 +25,12 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: #d7e1ef;
+}
+
+.font-tagline-script {
+  font-family: 'Parisienne', cursive;
+  font-style: italic;
+  letter-spacing: 0.01em;
 }
 
 .glass-lite {
