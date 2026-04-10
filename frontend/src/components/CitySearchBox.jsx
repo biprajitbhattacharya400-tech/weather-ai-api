@@ -51,7 +51,7 @@ function CitySearchBox({
       </form>
 
       {showSuggestions ? (
-        <div className="autocomplete-pop glass-lite absolute left-0 right-0 top-[calc(100%+12px)] z-20 mb-16 overflow-hidden rounded-3xl py-2 shadow-ambient">
+        <div className="autocomplete-pop glass-lite mt-3 mb-20 z-20 overflow-hidden rounded-3xl py-2 shadow-ambient md:absolute md:left-0 md:right-0 md:top-[calc(100%+12px)] md:mb-0">
           {suggestions.length > 0 ? (
             suggestions.map((item) => (
               <button

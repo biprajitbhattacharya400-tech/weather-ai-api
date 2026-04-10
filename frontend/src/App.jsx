@@ -20,11 +20,27 @@ const EMPTY_WEATHER = {
   pressure: 1012,
   feels_like: 25,
   condition: 'Clear',
+  insight: 'Search for a city to unlock a tailored weather insight.',
   forecast: [],
   daily: [],
 };
 
 const formatHour = (value) => new Date(value).toLocaleTimeString([], { hour: 'numeric' });
+
+const buildAiTip = (weatherData) => {
+  const condition = String(weatherData?.condition || '').toLowerCase();
+  const humidity = Number(weatherData?.humidity || 0);
+  const wind = Number(weatherData?.wind_speed || 0);
+  const temp = Number(weatherData?.temperature || 0);
+
+  if (condition.includes('rain')) return 'Carry compact rain protection and favor routes with sheltered segments.';
+  if (condition.includes('snow')) return 'Layer up and budget extra travel time for slower road and foot traffic.';
+  if (condition.includes('clear') && temp >= 30) return 'Plan outdoor time earlier or later in the day and hydrate consistently.';
+  if (humidity >= 80) return 'Humidity is elevated, so comfort can feel warmer than the reported temperature.';
+  if (wind >= 25) return 'Gusts are strong enough to reduce comfort; secure loose items before heading out.';
+
+  return 'Conditions are relatively stable and favorable for routine outdoor plans.';
+};
 
 function App() {
   const [activeTab, setActiveTab] = useState('single');
@@ -49,6 +65,8 @@ function App() {
   const [analyticsData, setAnalyticsData] = useState(null);
   const [loadingDashboard, setLoadingDashboard] = useState(false);
 
+  const canShowSuggestions = !hasSearched && activeTab === 'single' && showSuggestions;
+
   const fetchWeather = async (city) => {
     if (!city.trim()) return;
 
@@ -66,6 +84,7 @@ function App() {
       setWeather({ ...EMPTY_WEATHER, ...data });
       setHasSearched(true);
       setShowSuggestions(false);
+      setSuggestions([]);
     } catch (requestError) {
       setSingleError(requestError.message || 'Unable to load weather right now.');
     } finally {
@@ -74,7 +93,7 @@ function App() {
   };
 
   const fetchSuggestions = async (searchTerm) => {
-    if (!searchTerm.trim() || searchTerm.trim().length < 2 || activeTab !== 'single') {
+    if (!searchTerm.trim() || searchTerm.trim().length < 2 || activeTab !== 'single' || hasSearched) {
       setSuggestions([]);
       setShowSuggestions(false);
       return;
@@ -100,12 +119,18 @@ function App() {
   };
 
   useEffect(() => {
+    if (activeTab !== 'single' || hasSearched) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
     const timeout = setTimeout(() => {
       fetchSuggestions(query);
     }, 220);
 
     return () => clearTimeout(timeout);
-  }, [query, activeTab]);
+  }, [query, activeTab, hasSearched]);
 
   const fetchCompare = async () => {
     if (!compareLeft.trim() || !compareRight.trim()) return;
@@ -166,6 +191,8 @@ function App() {
 
   const onPickSuggestion = (item) => {
     setQuery(item.name);
+    setShowSuggestions(false);
+    setSuggestions([]);
     fetchWeather(item.name);
   };
 
@@ -180,6 +207,8 @@ function App() {
       }
     }
 
+    setShowSuggestions(false);
+    setSuggestions([]);
     fetchWeather(query);
   };
 
@@ -277,13 +306,14 @@ function App() {
             value={query}
             onChange={(event) => {
               setQuery(event.target.value);
-              setShowSuggestions(true);
+              setShowSuggestions(false);
+              setSuggestions([]);
             }}
             onSubmit={onSubmitSingle}
             onSuggestionPick={onPickSuggestion}
             onKeyDown={onSingleKeyDown}
-            suggestions={suggestions}
-            showSuggestions={showSuggestions}
+            suggestions={[]}
+            showSuggestions={false}
             loading={loadingSingle}
             placeholder="Search for a city..."
             large={false}
@@ -331,13 +361,14 @@ function App() {
           value={query}
           onChange={(event) => {
             setQuery(event.target.value);
+            setHasSearched(false);
             setShowSuggestions(true);
           }}
           onSubmit={onSubmitSingle}
           onSuggestionPick={onPickSuggestion}
           onKeyDown={onSingleKeyDown}
           suggestions={suggestions}
-          showSuggestions={showSuggestions}
+          showSuggestions={canShowSuggestions}
           loading={loadingSingle}
           placeholder="Search for a city..."
           large
@@ -357,6 +388,8 @@ function App() {
       condition={weather.condition}
       tempMin={weather.temp_min}
       tempMax={weather.temp_max}
+      insight={weather.insight}
+      tip={buildAiTip(weather)}
     />
   );
 

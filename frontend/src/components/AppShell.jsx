@@ -8,7 +8,7 @@ function AppShell({ condition, topBar, hero, desktopPanel, mobilePanel, footer }
       <div className="relative z-10 mx-auto min-h-screen w-full max-w-[1440px] px-5 pb-24 pt-20 md:px-10 md:pt-24 lg:grid lg:grid-cols-[minmax(0,1.18fr)_minmax(360px,0.82fr)] lg:gap-12 lg:px-14 lg:pb-24">
         <div className="relative z-30 mb-9 lg:col-span-2 lg:mb-1">{topBar}</div>
 
-        <section className={`flex min-h-[68vh] justify-center pb-40 ${desktopPanel ? 'items-center lg:min-h-0 lg:justify-start lg:pb-0' : 'items-start pt-10 sm:pt-14 lg:col-span-2 lg:min-h-0 lg:justify-start lg:pt-16 lg:pb-0'}`}>
+        <section className={`flex min-h-[68vh] justify-center pb-44 ${desktopPanel ? 'items-center lg:min-h-0 lg:justify-start lg:pb-0' : 'items-start pt-3 sm:pt-6 lg:col-span-2 lg:min-h-0 lg:justify-start lg:pt-12 lg:pb-0'}`}>
           {hero}
         </section>
 

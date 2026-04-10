@@ -1,4 +1,4 @@
-import { Cloud, CloudRain, CloudSnow, Sun } from 'lucide-react';
+import { Cloud, CloudRain, CloudSnow, Sparkles, Sun } from 'lucide-react';
 
 const iconByCondition = (condition) => {
   const c = (condition || '').toLowerCase();
@@ -8,13 +8,22 @@ const iconByCondition = (condition) => {
   return Sun;
 };
 
-function WeatherHero({ city, temperature, condition, tempMin, tempMax }) {
+function WeatherHero({ city, temperature, condition, tempMin, tempMax, insight, tip }) {
   const Icon = iconByCondition(condition);
   const now = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 
   return (
     <section className="relative flex w-full max-w-2xl flex-col items-center lg:items-start">
       <p className="text-sm font-medium tracking-wide text-inkSecondary/85">{city} · {now}</p>
+
+      <div className="fade-soft mt-5 w-full max-w-2xl rounded-2xl bg-white/20 px-4 py-3">
+        <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.16em] text-inkTertiary">
+          <Sparkles size={13} />
+          <span>AI Insight</span>
+        </div>
+        <p className="mt-2 text-base font-medium text-inkSecondary">{insight || 'No AI insight available yet for this location.'}</p>
+        <p className="mt-1.5 text-sm text-inkTertiary">{tip || 'Use compare mode to evaluate conditions between two cities.'}</p>
+      </div>
 
       <div className="relative mt-8">
         <div className="absolute inset-0 -z-10 rounded-full bg-white/62 blur-[74px]" />
