@@ -1,5 +1,5 @@
 import { Cloud, CloudRain, CloudSnow, LineChart, Sun } from 'lucide-react';
-import { Line, ResponsiveContainer, Tooltip, XAxis, YAxis, LineChart as RechartLineChart } from 'recharts';
+import { Area, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, LineChart as RechartLineChart } from 'recharts';
 
 const iconByCondition = (condition) => {
   const c = (condition || '').toLowerCase();
@@ -54,7 +54,7 @@ function DifferenceBar({ label, leftValue, rightValue, leftUnit, rightUnit }) {
 function CitySnapshot({ city }) {
   if (!city || city.error) {
     return (
-      <article className="rounded-[30px] bg-white/17 p-6">
+      <article className="glass-lite soft-hover-lift rounded-[30px] p-6">
         <p className="text-base font-medium text-inkSecondary">Unavailable</p>
       </article>
     );
@@ -63,14 +63,14 @@ function CitySnapshot({ city }) {
   const Icon = iconByCondition(city.condition);
 
   return (
-    <article className="rounded-[30px] bg-white/17 p-6">
+    <article className="glass-lite soft-hover-lift rounded-[30px] p-6">
       <p className="text-sm font-medium text-inkSecondary">{city.city}</p>
       <div className="mt-4 flex items-end justify-between">
         <div>
           <p className="text-6xl font-semibold leading-[0.9] tracking-[-0.04em] text-inkPrimary">{Math.round(city.temperature)}°</p>
           <p className="mt-2 text-sm text-inkTertiary">Feels like {Math.round(city.feels_like)}°</p>
         </div>
-        <div className="rounded-2xl bg-white/40 p-3 text-inkSecondary">
+        <div className="icon-float rounded-2xl bg-white/40 p-3 text-inkSecondary">
           <Icon size={22} />
         </div>
       </div>
@@ -93,9 +93,9 @@ function CompareView({ cities, loading, error }) {
   const hourly = buildHourly(cityA, cityB);
 
   return (
-    <section className="glass-lite fade-soft w-full max-w-6xl rounded-[34px] p-6 shadow-ambient md:p-8">
+    <section className="glass-lite fade-soft weather-refresh w-full max-w-6xl rounded-[34px] p-6 shadow-ambient md:p-8">
       <div className="space-y-8">
-        <div className="rounded-2xl bg-white/20 px-4 py-3">
+        <div className="insight-enter rounded-2xl border-l-2 border-sky-300/60 bg-[linear-gradient(90deg,rgba(125,211,252,0.12),rgba(255,255,255,0.14)_22%,rgba(255,255,255,0.08))] px-4 py-3 shadow-[0_10px_30px_rgba(56,189,248,0.12)]">
           <p className="text-xs uppercase tracking-[0.16em] text-inkTertiary">Insight</p>
           <p className="mt-2 text-sm text-inkSecondary">{insight}</p>
         </div>
@@ -108,14 +108,20 @@ function CompareView({ cities, loading, error }) {
           <CitySnapshot city={cityB} />
         </div>
 
-        <div className="rounded-[30px] bg-white/17 p-5 md:p-6">
+        <div className="glass-lite soft-hover-lift rounded-[30px] p-5 md:p-6">
           <div className="mb-3 flex items-center gap-2 text-xs uppercase tracking-[0.16em] text-inkTertiary">
             <LineChart size={14} />
             <span>Hourly Comparison</span>
           </div>
-          <div className="h-48 w-full rounded-2xl bg-white/16 p-2">
+          <div className="h-48 w-full rounded-2xl border border-white/14 bg-[linear-gradient(180deg,rgba(255,255,255,0.1),rgba(255,255,255,0.03))] p-2">
             <ResponsiveContainer>
               <RechartLineChart data={hourly} margin={{ top: 12, right: 10, bottom: 4, left: 0 }}>
+                <defs>
+                  <linearGradient id="compareFill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="rgba(95, 125, 178, 0.24)" />
+                    <stop offset="100%" stopColor="rgba(95, 125, 178, 0.02)" />
+                  </linearGradient>
+                </defs>
                 <XAxis dataKey="hour" tick={{ fill: '#69778f', fontSize: 11 }} axisLine={false} tickLine={false} />
                 <YAxis hide />
                 <Tooltip
@@ -128,14 +134,23 @@ function CompareView({ cities, loading, error }) {
                     fontSize: '12px',
                   }}
                 />
-                <Line type="monotone" dataKey="leftTemp" stroke="#4f5f7d" strokeWidth={2.4} dot={false} />
-                <Line type="monotone" dataKey="rightTemp" stroke="#7f8ea8" strokeWidth={2.2} dot={false} />
+                <Area
+                  type="monotone"
+                  dataKey="leftTemp"
+                  stroke="none"
+                  fill="url(#compareFill)"
+                  isAnimationActive
+                  animationDuration={900}
+                  animationEasing="ease-out"
+                />
+                <Line type="monotone" dataKey="leftTemp" stroke="#4f5f7d" strokeWidth={2.4} dot={false} isAnimationActive animationDuration={1050} animationEasing="ease-out" />
+                <Line type="monotone" dataKey="rightTemp" stroke="#7f8ea8" strokeWidth={2.2} dot={false} isAnimationActive animationDuration={1150} animationEasing="ease-out" />
               </RechartLineChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        <div className="space-y-4 rounded-[30px] bg-white/17 p-5 md:p-6">
+        <div className="glass-lite soft-hover-lift space-y-4 rounded-[30px] p-5 md:p-6">
           <p className="text-xs uppercase tracking-[0.16em] text-inkTertiary">Difference Overview</p>
           <DifferenceBar
             label="Humidity"
