@@ -239,13 +239,22 @@ function App() {
     const source = weather.forecast?.slice(0, 8) || [];
 
     if (source.length > 0) {
-      return source;
+      return source.map((entry) => {
+        const rawPop = Number(entry.pop ?? 0);
+        const pop = rawPop <= 1 ? Math.round(rawPop * 100) : Math.round(rawPop);
+
+        return {
+          ...entry,
+          pop: Math.max(0, Math.min(100, pop)),
+        };
+      });
     }
 
     return Array.from({ length: 8 }).map((_, index) => ({
       time: new Date(Date.now() + index * 60 * 60 * 1000).toISOString(),
       temperature: weather.temperature - 2 + index * 0.5,
       condition: weather.condition,
+      pop: 0,
     }));
   }, [weather]);
 
