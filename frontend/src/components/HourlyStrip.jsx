@@ -17,19 +17,20 @@ function HourlyStrip({ hourly }) {
   return (
     <section className="glass-lite fade-soft w-full rounded-[28px] px-4 py-4 shadow-ambient">
       <p className="px-1 text-[11px] font-medium uppercase tracking-[0.16em] text-inkTertiary">Hourly Forecast</p>
-      <div className="mt-3 flex gap-2 overflow-x-auto px-1 pb-1">
-        {hourly.map((item) => {
+      <div className="smooth-scroll-x mt-3 flex gap-2 overflow-x-auto px-1 pb-1">
+        {hourly.map((item, index) => {
           const Icon = iconByCondition(item.condition);
           const rainPercent = Math.max(0, Math.min(100, Math.round(Number(item.pop ?? 0))));
           return (
             <article
               key={item.time}
-              className="soft-hover-lift min-w-[90px] rounded-[20px] bg-white/26 px-3 py-2.5 text-center"
+              className="soft-hover-lift stagger-fade min-w-[90px] rounded-[20px] bg-white/26 px-3 py-2.5 text-center"
+              style={{ animationDelay: `${index * 60}ms` }}
             >
               <p className="text-[11px] font-medium text-inkTertiary">{formatHour(item.time)}</p>
               <Icon className="mx-auto mt-1.5 text-inkSecondary" size={15} />
               <p className="mt-1 text-sm font-semibold text-inkPrimary">{Math.round(item.temperature)}°</p>
-              <p className="mt-1 text-[11px] font-medium text-sky-700/90">Rain chance: {rainPercent}%</p>
+              <p className="mt-1 text-[11px] font-medium text-sky-700/90">🌧 {rainPercent}%</p>
             </article>
           );
         })}

@@ -41,7 +41,7 @@ function WeatherHero({ city, temperature, condition, tempMin, tempMax, humidity,
   }, [temperature]);
 
   return (
-    <section className="fade-soft relative flex w-full max-w-2xl flex-col items-center lg:items-start">
+    <section className="fade-soft weather-refresh relative flex w-full max-w-2xl flex-col items-center lg:items-start">
       <p className="text-sm font-medium tracking-wide text-inkSecondary/85">{city} · {now}</p>
 
       <div className="fade-soft mt-6 w-full max-w-xl rounded-2xl border-l-2 border-sky-300/60 bg-[linear-gradient(90deg,rgba(125,211,252,0.12),rgba(255,255,255,0.14)_22%,rgba(255,255,255,0.08))] px-4 py-3 shadow-[0_10px_30px_rgba(56,189,248,0.12)]">
@@ -70,7 +70,7 @@ function WeatherHero({ city, temperature, condition, tempMin, tempMax, humidity,
       </p>
 
       <p className="mt-5 mb-3 text-sm font-medium text-inkSecondary/82">
-        Humidity {Math.round(humidity ?? 0)}% <span className="px-1.5 text-inkTertiary">•</span> Wind {Math.round(windSpeed ?? 0)} m/s <span className="px-1.5 text-inkTertiary">•</span> AQI {Math.round(aqi ?? 42)} <span className="px-1.5 text-inkTertiary">•</span> Rain chance: {Math.round(rainChance ?? 0)}%
+        Humidity {Math.round(humidity ?? 0)}% <span className="px-1.5 text-inkTertiary">•</span> Wind {Math.round(windSpeed ?? 0)} m/s <span className="px-1.5 text-inkTertiary">•</span> AQI {Math.round(aqi ?? 42)} <span className="px-1.5 text-inkTertiary">•</span> <span className="text-sky-700/90">🌧 {Math.round(rainChance ?? 0)}%</span>
       </p>
     </section>
   );

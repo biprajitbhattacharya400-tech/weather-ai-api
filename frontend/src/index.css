@@ -47,6 +47,22 @@ body {
   animation: fadeSoft 520ms ease;
 }
 
+@keyframes weatherRefresh {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.weather-refresh {
+  animation: weatherRefresh 580ms ease;
+}
+
 @keyframes autocompletePop {
   from {
     opacity: 0;
@@ -138,12 +154,48 @@ body {
   transform: translateY(-1px);
 }
 
+.focus-glow {
+  transition: box-shadow 260ms ease, border-color 260ms ease;
+}
+
+.focus-glow:focus {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.55), 0 0 0 4px rgba(125, 165, 226, 0.18);
+}
+
+@keyframes staggerFade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stagger-fade {
+  animation: staggerFade 440ms ease both;
+}
+
+.smooth-scroll-x {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+}
+
+.smooth-scroll-x > * {
+  scroll-snap-align: start;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .fade-soft,
   .autocomplete-pop,
+  .weather-refresh,
   .atmo-blob,
   .atmo-blob-slow,
   .rain-streaks,
+  .stagger-fade,
   .soft-hover-lift,
   .soft-button {
     animation: none !important;

@@ -27,6 +27,9 @@ function TemperatureGraph({ points }) {
               strokeWidth={6}
               dot={false}
               activeDot={false}
+              isAnimationActive
+              animationDuration={900}
+              animationEasing="ease-out"
             />
             <Line
               type="monotone"
@@ -35,6 +38,9 @@ function TemperatureGraph({ points }) {
               strokeWidth={2.4}
               dot={false}
               activeDot={{ r: 3, fill: '#111827' }}
+              isAnimationActive
+              animationDuration={1050}
+              animationEasing="ease-out"
             />
           </LineChart>
         </ResponsiveContainer>

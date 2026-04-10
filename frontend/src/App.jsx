@@ -342,14 +342,14 @@ function App() {
             value={compareLeft}
             onChange={(event) => setCompareLeft(event.target.value)}
             placeholder="First city"
-            className="w-full rounded-xl bg-white/30 px-3 py-2 text-sm font-medium text-inkPrimary placeholder:text-inkTertiary focus:outline-none"
+            className="focus-glow w-full rounded-xl bg-white/30 px-3 py-2 text-sm font-medium text-inkPrimary placeholder:text-inkTertiary focus:outline-none"
             aria-label="First city"
           />
           <input
             value={compareRight}
             onChange={(event) => setCompareRight(event.target.value)}
             placeholder="Second city"
-            className="w-full rounded-xl bg-white/30 px-3 py-2 text-sm font-medium text-inkPrimary placeholder:text-inkTertiary focus:outline-none"
+            className="focus-glow w-full rounded-xl bg-white/30 px-3 py-2 text-sm font-medium text-inkPrimary placeholder:text-inkTertiary focus:outline-none"
             aria-label="Second city"
           />
           <button
