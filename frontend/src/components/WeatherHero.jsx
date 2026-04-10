@@ -41,7 +41,7 @@ function WeatherHero({ city, temperature, condition, tempMin, tempMax, humidity,
         H {Math.round(tempMax)}° · L {Math.round(tempMin)}°
       </p>
 
-      <p className="mt-4 text-sm font-medium text-inkSecondary/88">
+      <p className="mt-5 mb-3 text-sm font-medium text-inkSecondary/82">
         Humidity {Math.round(humidity ?? 0)}% <span className="px-1.5 text-inkTertiary">•</span> Wind {Math.round(windSpeed ?? 0)} m/s <span className="px-1.5 text-inkTertiary">•</span> AQI {Math.round(aqi ?? 42)}
       </p>
     </section>
