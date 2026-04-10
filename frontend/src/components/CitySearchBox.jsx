@@ -32,7 +32,7 @@ function CitySearchBox({
   large = false,
 }) {
   return (
-    <div className={`relative w-full ${showSuggestions ? 'pb-20 md:pb-24' : ''}`}>
+    <div className={`relative w-full ${showSuggestions ? 'pb-20 md:pb-0' : ''}`}>
       <form onSubmit={onSubmit} className={`glass-lite flex w-full items-center gap-3 rounded-full shadow-ambient ${large ? 'px-4 py-3.5' : 'px-3 py-2'}`}>
         <input
           value={value}
