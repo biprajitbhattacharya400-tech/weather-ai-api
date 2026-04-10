@@ -13,7 +13,11 @@ function WeatherHero({ city, temperature, condition, tempMin, tempMax, humidity,
   const Icon = iconByCondition(condition);
   const now = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
   const [displayTemp, setDisplayTemp] = useState(Math.round(temperature || 0));
+  const [displayHumidity, setDisplayHumidity] = useState(Math.round(humidity || 0));
+  const [displayAqi, setDisplayAqi] = useState(Math.round(aqi || 42));
   const frameRef = useRef(0);
+
+  const aqiTone = displayAqi <= 60 ? 'bg-emerald-100/80 text-emerald-700' : displayAqi <= 120 ? 'bg-amber-100/85 text-amber-700' : 'bg-rose-100/85 text-rose-700';
 
   useEffect(() => {
     const target = Math.round(temperature || 0);
@@ -40,11 +44,53 @@ function WeatherHero({ city, temperature, condition, tempMin, tempMax, humidity,
     return () => cancelAnimationFrame(frameRef.current);
   }, [temperature]);
 
+  useEffect(() => {
+    const target = Math.round(humidity || 0);
+    const start = displayHumidity;
+    const delta = target - start;
+    if (delta === 0) return undefined;
+
+    const duration = 560;
+    const startedAt = performance.now();
+    let frame = 0;
+
+    const tick = (nowMs) => {
+      const progress = Math.min(1, (nowMs - startedAt) / duration);
+      const eased = 1 - (1 - progress) * (1 - progress);
+      setDisplayHumidity(Math.round(start + delta * eased));
+      if (progress < 1) frame = requestAnimationFrame(tick);
+    };
+
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [humidity]);
+
+  useEffect(() => {
+    const target = Math.round(aqi || 42);
+    const start = displayAqi;
+    const delta = target - start;
+    if (delta === 0) return undefined;
+
+    const duration = 600;
+    const startedAt = performance.now();
+    let frame = 0;
+
+    const tick = (nowMs) => {
+      const progress = Math.min(1, (nowMs - startedAt) / duration);
+      const eased = 1 - (1 - progress) * (1 - progress);
+      setDisplayAqi(Math.round(start + delta * eased));
+      if (progress < 1) frame = requestAnimationFrame(tick);
+    };
+
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [aqi]);
+
   return (
     <section className="fade-soft weather-refresh relative flex w-full max-w-2xl flex-col items-center lg:items-start">
       <p className="text-sm font-medium tracking-wide text-inkSecondary/85">{city} · {now}</p>
 
-      <div className="fade-soft mt-6 w-full max-w-xl rounded-2xl border-l-2 border-sky-300/60 bg-[linear-gradient(90deg,rgba(125,211,252,0.12),rgba(255,255,255,0.14)_22%,rgba(255,255,255,0.08))] px-4 py-3 shadow-[0_10px_30px_rgba(56,189,248,0.12)]">
+      <div className="insight-enter mt-6 w-full max-w-xl rounded-2xl border-l-2 border-sky-300/60 bg-[linear-gradient(90deg,rgba(125,211,252,0.12),rgba(255,255,255,0.14)_22%,rgba(255,255,255,0.08))] px-4 py-3 shadow-[0_10px_30px_rgba(56,189,248,0.12)]">
         <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.16em] text-inkTertiary">
           <Sparkles size={13} />
           <span>AI Insight</span>
@@ -70,7 +116,7 @@ function WeatherHero({ city, temperature, condition, tempMin, tempMax, humidity,
       </p>
 
       <p className="mt-5 mb-3 text-sm font-medium text-inkSecondary/82">
-        Humidity {Math.round(humidity ?? 0)}% <span className="px-1.5 text-inkTertiary">•</span> Wind {Math.round(windSpeed ?? 0)} m/s <span className="px-1.5 text-inkTertiary">•</span> AQI {Math.round(aqi ?? 42)} <span className="px-1.5 text-inkTertiary">•</span> <span className="text-sky-700/90">🌧 {Math.round(rainChance ?? 0)}%</span>
+        Humidity {displayHumidity}% <span className="px-1.5 text-inkTertiary">•</span> Wind {Math.round(windSpeed ?? 0)} m/s <span className="px-1.5 text-inkTertiary">•</span> <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold ${aqiTone}`}>AQI {displayAqi}</span> <span className="px-1.5 text-inkTertiary">•</span> <span className="inline-flex items-center rounded-full bg-sky-100/80 px-2 py-0.5 text-[11px] font-semibold text-sky-700">🌧 {Math.round(rainChance ?? 0)}%</span>
       </p>
     </section>
   );

@@ -15,6 +15,10 @@ body,
   min-height: 100%;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
   font-family: 'Plus Jakarta Sans', sans-serif;
@@ -79,6 +83,38 @@ body {
   animation: autocompletePop 240ms ease;
 }
 
+@keyframes sectionEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section-enter {
+  animation: sectionEnter 620ms ease both;
+}
+
+@keyframes insightEnter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.insight-enter {
+  animation: insightEnter 560ms ease both;
+}
+
 @keyframes blobFloat {
   0% {
     transform: translate3d(0, 0, 0) scale(1);
@@ -134,6 +170,47 @@ body {
     transparent 16px
   );
   animation: rainStreak 1.2s linear infinite;
+}
+
+.grain-overlay {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 0.6px, transparent 0.6px);
+  background-size: 2px 2px;
+  opacity: 0.24;
+}
+
+@keyframes starTwinkle {
+  0%,
+  100% {
+    opacity: 0.24;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.night-stars {
+  background-image:
+    radial-gradient(circle at 14% 24%, rgba(235, 241, 255, 0.6) 1px, transparent 1.4px),
+    radial-gradient(circle at 28% 48%, rgba(235, 241, 255, 0.5) 1px, transparent 1.4px),
+    radial-gradient(circle at 43% 20%, rgba(235, 241, 255, 0.55) 1px, transparent 1.4px),
+    radial-gradient(circle at 61% 36%, rgba(235, 241, 255, 0.45) 1px, transparent 1.4px),
+    radial-gradient(circle at 77% 21%, rgba(235, 241, 255, 0.52) 1px, transparent 1.4px),
+    radial-gradient(circle at 86% 53%, rgba(235, 241, 255, 0.38) 1px, transparent 1.4px);
+  animation: starTwinkle 4.2s ease-in-out infinite;
+}
+
+.cursor-glow {
+  pointer-events: none;
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(217, 231, 255, 0.26), transparent 70%);
+  filter: blur(2px);
+  transform: translate(-50%, -50%);
+  transition: opacity 260ms ease;
+  z-index: 4;
 }
 
 .soft-hover-lift {
@@ -194,13 +271,30 @@ body {
   scroll-snap-align: start;
 }
 
+.hourly-preci-bar {
+  height: 4px;
+  width: 100%;
+  border-radius: 999px;
+  background: rgba(207, 228, 255, 0.5);
+  overflow: hidden;
+}
+
+.hourly-preci-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(125, 191, 255, 0.7), rgba(56, 161, 255, 0.9));
+}
+
 @media (prefers-reduced-motion: reduce) {
   .fade-soft,
   .autocomplete-pop,
   .weather-refresh,
+  .section-enter,
+  .insight-enter,
   .atmo-blob,
   .atmo-blob-slow,
   .rain-streaks,
+  .night-stars,
   .stagger-fade,
   .soft-hover-lift,
   .soft-button {

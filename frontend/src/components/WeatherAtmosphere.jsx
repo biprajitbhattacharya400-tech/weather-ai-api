@@ -28,22 +28,26 @@ const resolveCondition = (condition = '') => {
   return 'default';
 };
 
-function WeatherAtmosphere({ condition }) {
+function WeatherAtmosphere({ condition, parallaxOffset = 0 }) {
   const key = resolveCondition(condition);
   const gradient = CONDITION_STYLES[key] || CONDITION_STYLES.default;
   const bloom = BLOOM_STYLES[key] || BLOOM_STYLES.default;
   const isRainy = key === 'rain' || key === 'thunderstorm';
+  const isNight = key === 'night';
+  const shift = Math.min(parallaxOffset * 0.05, 20);
 
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
       <div className={`absolute inset-0 bg-gradient-to-b ${gradient} transition-all duration-[1800ms] ease-out`} />
 
       <div className="absolute inset-0 opacity-45 transition-opacity duration-[1500ms] bg-[radial-gradient(circle_at_14%_12%,rgba(255,255,255,0.2),transparent_44%)]" />
-      <div className="atmo-blob absolute -left-24 -top-10 h-[20rem] w-[20rem] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.18),transparent_68%)]" />
-      <div className="atmo-blob-slow absolute -right-28 bottom-[-4.5rem] h-[23rem] w-[23rem] rounded-full bg-[radial-gradient(circle,rgba(201,219,248,0.18),transparent_70%)]" />
-      <div className="atmo-blob absolute right-[24%] top-[36%] h-[13rem] w-[13rem] rounded-full bg-[radial-gradient(circle,rgba(247,251,255,0.12),transparent_72%)]" />
+      <div className="atmo-blob absolute -left-24 -top-10 h-[20rem] w-[20rem] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.18),transparent_68%)]" style={{ transform: `translateY(${shift * 0.55}px)` }} />
+      <div className="atmo-blob-slow absolute -right-28 bottom-[-4.5rem] h-[23rem] w-[23rem] rounded-full bg-[radial-gradient(circle,rgba(201,219,248,0.18),transparent_70%)]" style={{ transform: `translateY(${-shift * 0.4}px)` }} />
+      <div className="atmo-blob absolute right-[24%] top-[36%] h-[13rem] w-[13rem] rounded-full bg-[radial-gradient(circle,rgba(247,251,255,0.12),transparent_72%)]" style={{ transform: `translateY(${shift * 0.22}px)` }} />
 
       <div className={`absolute inset-0 animate-breathe ${bloom}`} />
+      <div className="grain-overlay absolute inset-0" />
+      {isNight ? <div className="night-stars absolute inset-0 opacity-60" /> : null}
       {isRainy ? <div className="rain-streaks absolute inset-0 opacity-30" /> : null}
     </div>
   );
