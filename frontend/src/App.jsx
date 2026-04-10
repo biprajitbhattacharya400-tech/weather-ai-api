@@ -366,7 +366,7 @@ function App() {
   const homeHero = (
     <div className="fade-soft mx-auto flex w-full max-w-3xl flex-col items-center gap-6 text-center lg:mx-0 lg:items-start lg:text-left">
       <h1 className="text-4xl font-semibold tracking-[-0.03em] text-inkPrimary sm:text-5xl md:text-6xl">
-        Weather, designed as a product.
+        Where weather meets experience
       </h1>
       <p className="max-w-2xl text-sm text-inkSecondary/90 sm:text-base">
         Search any city to begin a calm, immersive weather experience.
