@@ -32,7 +32,7 @@ function ForecastPanel({ hourly }) {
               <p className="text-xs font-medium text-inkTertiary">{formatHour(item.time)}</p>
               <Icon className="mx-auto mt-1.5 text-inkSecondary" size={16} />
               <p className="mt-1.5 text-sm font-semibold text-inkPrimary">{Math.round(item.temperature)}°</p>
-              <p className="mt-1 inline-flex items-center rounded-full bg-sky-100/80 px-2 py-0.5 text-[11px] font-semibold text-sky-700">🌧 {rainPercent}%</p>
+              <p className="shimmer-pill mt-1 inline-flex items-center rounded-full bg-sky-100/80 px-2 py-0.5 text-[11px] font-semibold text-sky-700">🌧 {rainPercent}%</p>
               <div className="hourly-preci-bar mt-1.5">
                 <div className="hourly-preci-fill" style={{ width: `${rainPercent}%` }} />
               </div>

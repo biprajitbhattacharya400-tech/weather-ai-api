@@ -38,6 +38,27 @@ function AppShell({ condition, topBar, hero, centerPanel, desktopPanel, mobilePa
 
   const heroShift = useMemo(() => Math.max(-18, -scrollY * 0.04), [scrollY]);
 
+  useEffect(() => {
+    const revealTargets = document.querySelectorAll('.scroll-reveal');
+    if (revealTargets.length === 0) return undefined;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.14, rootMargin: '0px 0px -7% 0px' },
+    );
+
+    revealTargets.forEach((target) => observer.observe(target));
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <main
       className="relative flex min-h-screen flex-col overflow-x-hidden text-inkPrimary pb-[env(safe-area-inset-bottom)]"
@@ -50,22 +71,22 @@ function AppShell({ condition, topBar, hero, centerPanel, desktopPanel, mobilePa
       {showCursorGlow ? <div className="cursor-glow" style={{ left: cursor.x, top: cursor.y }} /> : null}
 
       <div className="relative z-10 mx-auto w-full max-w-[1440px] flex-1 px-5 pb-8 pt-20 md:px-10 md:pt-24 lg:grid lg:grid-cols-[minmax(0,0.98fr)_minmax(320px,0.8fr)_minmax(320px,0.72fr)] lg:gap-8 lg:px-14 lg:pb-24 xl:gap-10">
-        <div className="section-enter relative z-30 mb-9 lg:col-span-3 lg:mb-1">{topBar}</div>
+        <div className="scroll-reveal relative z-30 mb-9 lg:col-span-3 lg:mb-1">{topBar}</div>
 
-        <section style={{ transform: `translateY(${heroShift}px)` }} className={`section-enter flex min-h-[68vh] justify-center pb-44 ${desktopPanel ? 'items-start lg:min-h-0 lg:justify-start lg:pb-0' : 'items-start pt-3 sm:pt-6 lg:col-span-3 lg:min-h-0 lg:justify-start lg:pt-12 lg:pb-0'}`}>
+        <section style={{ transform: `translateY(${heroShift}px)` }} className={`scroll-reveal flex min-h-[68vh] justify-center pb-44 ${desktopPanel ? 'items-start lg:min-h-0 lg:justify-start lg:pb-0' : 'items-start pt-3 sm:pt-6 lg:col-span-3 lg:min-h-0 lg:justify-start lg:pt-12 lg:pb-0'}`}>
           {hero}
         </section>
 
-        {centerPanel ? <section className="section-enter hidden lg:block lg:pt-6" style={{ animationDelay: '80ms' }}>{centerPanel}</section> : null}
+        {centerPanel ? <section className="scroll-reveal hidden lg:block lg:pt-6" style={{ transitionDelay: '90ms' }}>{centerPanel}</section> : null}
 
-        {desktopPanel ? <aside className="section-enter hidden lg:flex lg:items-stretch" style={{ animationDelay: '140ms' }}>{desktopPanel}</aside> : null}
+        {desktopPanel ? <aside className="scroll-reveal hidden lg:flex lg:items-stretch" style={{ transitionDelay: '140ms' }}>{desktopPanel}</aside> : null}
       </div>
 
       {mobilePanel ? (
-        <div className="section-enter relative z-20 mt-8 mb-6 px-4 lg:hidden" style={{ animationDelay: '120ms' }}>{mobilePanel}</div>
+        <div className="scroll-reveal relative z-20 mt-8 mb-6 px-4 lg:hidden" style={{ transitionDelay: '120ms' }}>{mobilePanel}</div>
       ) : null}
 
-      {footer ? <div className="section-enter relative z-30 mt-auto px-4 pb-[calc(0.9rem+env(safe-area-inset-bottom))] pt-2 text-center" style={{ animationDelay: '180ms' }}>{footer}</div> : null}
+      {footer ? <div className="scroll-reveal revealed relative z-30 mt-auto px-4 pb-[calc(0.9rem+env(safe-area-inset-bottom))] pt-2 text-center" style={{ transitionDelay: '180ms' }}>{footer}</div> : null}
     </main>
   );
 }

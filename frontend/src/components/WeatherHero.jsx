@@ -101,13 +101,13 @@ function WeatherHero({ city, temperature, condition, tempMin, tempMax, humidity,
 
       <div className="relative mt-11">
         <div className="absolute inset-0 -z-10 rounded-full bg-white/62 blur-[74px]" />
-        <h1 className="text-[108px] font-semibold leading-[0.88] tracking-[-0.045em] text-inkPrimary sm:text-[126px] md:text-[142px] lg:text-[160px]">
+        <h1 className="temp-breathe text-[108px] font-semibold leading-[0.88] tracking-[-0.045em] text-inkPrimary sm:text-[126px] md:text-[142px] lg:text-[160px]">
           {displayTemp}°
         </h1>
       </div>
 
       <div className="mt-4 flex items-center gap-2 text-[22px] font-medium text-inkSecondary/92">
-        <Icon size={20} strokeWidth={2} />
+        <Icon size={20} strokeWidth={2} className="icon-float" />
         <span>{condition || 'Clear'}</span>
       </div>
 
@@ -116,7 +116,7 @@ function WeatherHero({ city, temperature, condition, tempMin, tempMax, humidity,
       </p>
 
       <p className="mt-5 mb-3 text-sm font-medium text-inkSecondary/82">
-        Humidity {displayHumidity}% <span className="px-1.5 text-inkTertiary">•</span> Wind {Math.round(windSpeed ?? 0)} m/s <span className="px-1.5 text-inkTertiary">•</span> <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold ${aqiTone}`}>AQI {displayAqi}</span> <span className="px-1.5 text-inkTertiary">•</span> <span className="inline-flex items-center rounded-full bg-sky-100/80 px-2 py-0.5 text-[11px] font-semibold text-sky-700">🌧 {Math.round(rainChance ?? 0)}%</span>
+        Humidity {displayHumidity}% <span className="px-1.5 text-inkTertiary">•</span> Wind {Math.round(windSpeed ?? 0)} m/s <span className="px-1.5 text-inkTertiary">•</span> <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold ${aqiTone}`}><span className="h-1.5 w-1.5 rounded-full bg-current shadow-[0_0_8px_currentColor]" />AQI {displayAqi}</span> <span className="px-1.5 text-inkTertiary">•</span> <span className="shimmer-pill inline-flex items-center rounded-full bg-sky-100/80 px-2 py-0.5 text-[11px] font-semibold text-sky-700">🌧 {Math.round(rainChance ?? 0)}%</span>
       </p>
     </section>
   );

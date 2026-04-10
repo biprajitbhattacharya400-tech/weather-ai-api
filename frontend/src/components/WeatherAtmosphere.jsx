@@ -1,3 +1,5 @@
+import { useEffect, useRef } from 'react';
+
 const CONDITION_STYLES = {
   clear: 'from-[#d5e6fb] via-[#c3d6ee] to-[#b4c3e0]',
   clouds: 'from-[#c7d1df] via-[#b5bece] to-[#9da8ba]',
@@ -29,12 +31,72 @@ const resolveCondition = (condition = '') => {
 };
 
 function WeatherAtmosphere({ condition, parallaxOffset = 0 }) {
+  const canvasRef = useRef(null);
   const key = resolveCondition(condition);
   const gradient = CONDITION_STYLES[key] || CONDITION_STYLES.default;
   const bloom = BLOOM_STYLES[key] || BLOOM_STYLES.default;
   const isRainy = key === 'rain' || key === 'thunderstorm';
   const isNight = key === 'night';
+  const isClear = key === 'clear';
+  const isCloudy = key === 'clouds';
   const shift = Math.min(parallaxOffset * 0.05, 20);
+
+  useEffect(() => {
+    if (!isRainy) return undefined;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return undefined;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return undefined;
+
+    let frame = 0;
+    let drops = [];
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      drops = Array.from({ length: Math.max(45, Math.floor(canvas.width / 20)) }).map(() => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        len: 8 + Math.random() * 12,
+        speed: 2.2 + Math.random() * 2.8,
+      }));
+    };
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = 'rgba(212, 227, 255, 0.18)';
+      ctx.lineWidth = 1;
+
+      for (const d of drops) {
+        ctx.beginPath();
+        ctx.moveTo(d.x, d.y);
+        ctx.lineTo(d.x - 1.5, d.y + d.len);
+        ctx.stroke();
+
+        d.y += d.speed;
+        d.x -= 0.3;
+
+        if (d.y > canvas.height + 12 || d.x < -12) {
+          d.x = Math.random() * canvas.width + 8;
+          d.y = -Math.random() * 40;
+        }
+      }
+
+      frame = requestAnimationFrame(draw);
+    };
+
+    resize();
+    window.addEventListener('resize', resize);
+    frame = requestAnimationFrame(draw);
+
+    return () => {
+      window.removeEventListener('resize', resize);
+      cancelAnimationFrame(frame);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    };
+  }, [isRainy]);
 
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -46,9 +108,12 @@ function WeatherAtmosphere({ condition, parallaxOffset = 0 }) {
       <div className="atmo-blob absolute right-[24%] top-[36%] h-[13rem] w-[13rem] rounded-full bg-[radial-gradient(circle,rgba(247,251,255,0.12),transparent_72%)]" style={{ transform: `translateY(${shift * 0.22}px)` }} />
 
       <div className={`absolute inset-0 animate-breathe ${bloom}`} />
+      {isClear ? <div className="sunny-particles absolute inset-0 opacity-30" /> : null}
+      {isCloudy ? <div className="cloud-layers absolute inset-0 opacity-56" /> : null}
       <div className="grain-overlay absolute inset-0" />
       {isNight ? <div className="night-stars absolute inset-0 opacity-60" /> : null}
       {isRainy ? <div className="rain-streaks absolute inset-0 opacity-30" /> : null}
+      {isRainy ? <canvas ref={canvasRef} className="absolute inset-0 opacity-40" /> : null}
     </div>
   );
 }
