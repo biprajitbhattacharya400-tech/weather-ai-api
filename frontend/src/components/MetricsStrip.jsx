@@ -1,12 +1,12 @@
 function MetricsStrip({ metrics }) {
   return (
-    <section>
-      <p className="mb-3 text-xs font-medium uppercase tracking-[0.16em] text-inkTertiary">Now</p>
-      <div className="grid grid-cols-2 gap-x-8 gap-y-5">
+    <section className="space-y-4">
+      <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-inkTertiary">Now</p>
+      <div className="grid grid-cols-2 gap-x-10 gap-y-7">
         {metrics.map((metric) => (
           <article key={metric.label} className="min-w-0">
             <p className="text-xs font-medium text-inkTertiary">{metric.label}</p>
-            <p className="mt-1 text-xl font-medium text-inkPrimary">{metric.value}</p>
+            <p className="mt-1 text-[22px] font-medium text-inkPrimary">{metric.value}</p>
           </article>
         ))}
       </div>

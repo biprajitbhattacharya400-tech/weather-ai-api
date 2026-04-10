@@ -13,22 +13,22 @@ function WeatherHero({ city, temperature, condition, tempMin, tempMax }) {
   const now = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 
   return (
-    <section className="relative flex w-full max-w-xl flex-col items-center lg:items-start">
-      <p className="text-sm font-medium tracking-wide text-inkSecondary/90">{city} · {now}</p>
+    <section className="relative flex w-full max-w-2xl flex-col items-center lg:items-start">
+      <p className="text-sm font-medium tracking-wide text-inkSecondary/85">{city} · {now}</p>
 
-      <div className="relative mt-6">
-        <div className="absolute inset-0 -z-10 rounded-full bg-white/55 blur-3xl" />
-        <h1 className="text-[94px] font-semibold leading-[0.92] tracking-[-0.04em] text-inkPrimary sm:text-[110px] md:text-[124px] lg:text-[132px]">
+      <div className="relative mt-8">
+        <div className="absolute inset-0 -z-10 rounded-full bg-white/62 blur-[74px]" />
+        <h1 className="text-[108px] font-semibold leading-[0.88] tracking-[-0.045em] text-inkPrimary sm:text-[126px] md:text-[142px] lg:text-[160px]">
           {Math.round(temperature)}°
         </h1>
       </div>
 
-      <div className="mt-3 flex items-center gap-2 text-xl font-medium text-inkSecondary">
+      <div className="mt-4 flex items-center gap-2 text-[22px] font-medium text-inkSecondary/92">
         <Icon size={20} strokeWidth={2} />
         <span>{condition || 'Clear'}</span>
       </div>
 
-      <p className="mt-4 text-sm font-medium text-inkTertiary">
+      <p className="mt-6 text-sm font-medium tracking-wide text-inkTertiary">
         H {Math.round(tempMax)}° · L {Math.round(tempMin)}°
       </p>
     </section>

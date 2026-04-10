@@ -1,11 +1,21 @@
 const CONDITION_STYLES = {
-  clear: 'from-[#c7dbf5] via-[#b8c5e8] to-[#a5a7ce]',
-  clouds: 'from-[#c4d0e3] via-[#b4bed5] to-[#9ea7c0]',
-  rain: 'from-[#a0b5d4] via-[#8e9fc1] to-[#7e88aa]',
-  thunderstorm: 'from-[#97a1c4] via-[#848db0] to-[#70779b]',
-  snow: 'from-[#d5deee] via-[#c4cfdf] to-[#aeb8cb]',
-  night: 'from-[#7d87ad] via-[#6b7598] to-[#565e84]',
-  default: 'from-[#c5d8f2] via-[#b4c2e2] to-[#a2abce]',
+  clear: 'from-[#c9dbf2] via-[#b9c9e5] to-[#aab2d1]',
+  clouds: 'from-[#c6d2e2] via-[#b5bfd1] to-[#9da7bd]',
+  rain: 'from-[#9db2cf] via-[#899dbf] to-[#7384a7]',
+  thunderstorm: 'from-[#939ec2] via-[#808ab0] to-[#68739a]',
+  snow: 'from-[#d5dfed] via-[#c4cfde] to-[#acb7ca]',
+  night: 'from-[#7581ab] via-[#626d95] to-[#4f5a83]',
+  default: 'from-[#c7d8ef] via-[#b6c4e1] to-[#a2adcf]',
+};
+
+const BLOOM_STYLES = {
+  clear: 'bg-[radial-gradient(circle_at_48%_12%,rgba(255,255,255,0.52),transparent_45%)]',
+  clouds: 'bg-[radial-gradient(circle_at_50%_9%,rgba(255,255,255,0.34),transparent_42%)]',
+  rain: 'bg-[radial-gradient(circle_at_50%_8%,rgba(215,226,247,0.24),transparent_42%)]',
+  thunderstorm: 'bg-[radial-gradient(circle_at_50%_8%,rgba(209,220,246,0.2),transparent_44%)]',
+  snow: 'bg-[radial-gradient(circle_at_50%_8%,rgba(255,255,255,0.48),transparent_47%)]',
+  night: 'bg-[radial-gradient(circle_at_50%_8%,rgba(205,214,242,0.22),transparent_44%)]',
+  default: 'bg-[radial-gradient(circle_at_50%_9%,rgba(255,255,255,0.3),transparent_46%)]',
 };
 
 const resolveCondition = (condition = '') => {
@@ -21,13 +31,15 @@ const resolveCondition = (condition = '') => {
 function WeatherAtmosphere({ condition }) {
   const key = resolveCondition(condition);
   const gradient = CONDITION_STYLES[key] || CONDITION_STYLES.default;
+  const bloom = BLOOM_STYLES[key] || BLOOM_STYLES.default;
 
   return (
     <div className="absolute inset-0 overflow-hidden">
-      <div className={`absolute inset-0 bg-gradient-to-b ${gradient} transition-colors duration-700`} />
-      <div className="absolute -left-16 top-10 h-64 w-64 animate-drift rounded-full bg-white/30 blur-3xl" />
-      <div className="absolute -right-24 bottom-4 h-72 w-72 animate-drift rounded-full bg-[#f7fbff]/35 blur-3xl" />
-      <div className="absolute inset-0 animate-breathe bg-[radial-gradient(circle_at_50%_10%,rgba(255,255,255,0.33),transparent_48%)]" />
+      <div className={`absolute inset-0 bg-gradient-to-b ${gradient} transition-colors duration-[1600ms]`} />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_16%_84%,rgba(255,255,255,0.22),transparent_42%)]" />
+      <div className="absolute -left-24 top-4 h-72 w-72 animate-drift rounded-full bg-white/28 blur-3xl" />
+      <div className="absolute -right-20 bottom-0 h-80 w-80 animate-drift rounded-full bg-[#f8fbff]/34 blur-3xl" />
+      <div className={`absolute inset-0 animate-breathe ${bloom}`} />
     </div>
   );
 }

@@ -2,9 +2,9 @@ import { Line, LineChart, ResponsiveContainer, Tooltip } from 'recharts';
 
 function TemperatureGraph({ points }) {
   return (
-    <section>
-      <p className="mb-3 text-xs font-medium uppercase tracking-[0.16em] text-inkTertiary">Trend</p>
-      <div className="h-36 w-full">
+    <section className="space-y-3">
+      <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-inkTertiary">Temperature Trend</p>
+      <div className="h-40 w-full rounded-2xl bg-white/20 px-2 py-1">
         <ResponsiveContainer>
           <LineChart data={points} margin={{ top: 10, right: 8, bottom: 2, left: 8 }}>
             <Tooltip
@@ -23,8 +23,8 @@ function TemperatureGraph({ points }) {
             <Line
               type="monotone"
               dataKey="temperature"
-              stroke="#5B6474"
-              strokeWidth={2.4}
+              stroke="#4f5f7d"
+              strokeWidth={2.6}
               dot={false}
               activeDot={{ r: 3, fill: '#111827' }}
             />
