@@ -4,7 +4,7 @@ function TemperatureGraph({ points }) {
   return (
     <section className="space-y-3">
       <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-inkTertiary">Temperature Trend</p>
-      <div className="h-40 w-full rounded-2xl bg-white/20 px-2 py-1">
+      <div className="h-40 w-full rounded-2xl border border-white/18 bg-[linear-gradient(180deg,rgba(255,255,255,0.15),rgba(255,255,255,0.05))] px-1 py-1">
         <ResponsiveContainer>
           <LineChart data={points} margin={{ top: 10, right: 8, bottom: 2, left: 8 }}>
             <Tooltip

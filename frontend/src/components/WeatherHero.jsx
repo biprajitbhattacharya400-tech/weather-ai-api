@@ -8,7 +8,7 @@ const iconByCondition = (condition) => {
   return Sun;
 };
 
-function WeatherHero({ city, temperature, condition, tempMin, tempMax, insight, tip }) {
+function WeatherHero({ city, temperature, condition, tempMin, tempMax, humidity, windSpeed, aqi, insight, tip }) {
   const Icon = iconByCondition(condition);
   const now = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 
@@ -16,7 +16,7 @@ function WeatherHero({ city, temperature, condition, tempMin, tempMax, insight, 
     <section className="relative flex w-full max-w-2xl flex-col items-center lg:items-start">
       <p className="text-sm font-medium tracking-wide text-inkSecondary/85">{city} · {now}</p>
 
-      <div className="fade-soft mt-5 w-full max-w-2xl rounded-2xl bg-white/20 px-4 py-3">
+      <div className="fade-soft mt-6 w-full max-w-xl rounded-2xl border-l-2 border-sky-300/60 bg-white/18 px-4 py-3 shadow-[0_10px_30px_rgba(56,189,248,0.12)]">
         <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.16em] text-inkTertiary">
           <Sparkles size={13} />
           <span>AI Insight</span>
@@ -25,7 +25,7 @@ function WeatherHero({ city, temperature, condition, tempMin, tempMax, insight, 
         <p className="mt-1.5 text-sm text-inkTertiary">{tip || 'Use compare mode to evaluate conditions between two cities.'}</p>
       </div>
 
-      <div className="relative mt-8">
+      <div className="relative mt-11">
         <div className="absolute inset-0 -z-10 rounded-full bg-white/62 blur-[74px]" />
         <h1 className="text-[108px] font-semibold leading-[0.88] tracking-[-0.045em] text-inkPrimary sm:text-[126px] md:text-[142px] lg:text-[160px]">
           {Math.round(temperature)}°
@@ -39,6 +39,10 @@ function WeatherHero({ city, temperature, condition, tempMin, tempMax, insight, 
 
       <p className="mt-6 text-sm font-medium tracking-wide text-inkTertiary">
         H {Math.round(tempMax)}° · L {Math.round(tempMin)}°
+      </p>
+
+      <p className="mt-4 text-sm font-medium text-inkSecondary/88">
+        Humidity {Math.round(humidity ?? 0)}% <span className="px-1.5 text-inkTertiary">•</span> Wind {Math.round(windSpeed ?? 0)} m/s <span className="px-1.5 text-inkTertiary">•</span> AQI {Math.round(aqi ?? 42)}
       </p>
     </section>
   );

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import AppShell from './components/AppShell';
 import WeatherHero from './components/WeatherHero';
 import ForecastPanel from './components/ForecastPanel';
+import HourlyStrip from './components/HourlyStrip';
 import UnifiedInfoSurface from './components/UnifiedInfoSurface';
 import ModeTabs from './components/ModeTabs';
 import CompareView from './components/CompareView';
@@ -397,6 +398,9 @@ function App() {
       condition={weather.condition}
       tempMin={weather.temp_min}
       tempMax={weather.temp_max}
+      humidity={weather.humidity}
+      windSpeed={weather.wind_speed}
+      aqi={weather.aqi}
       insight={weather.insight}
       tip={buildAiTip(weather)}
     />
@@ -438,6 +442,8 @@ function App() {
     <UnifiedInfoSurface graphPoints={graphPoints} metrics={metrics} daily={daily} />
   ) : null;
 
+  const centerPanel = activeTab === 'single' && hasSearched ? <HourlyStrip hourly={hourly} /> : null;
+
   const mobilePanel = activeTab === 'single' && hasSearched ? <ForecastPanel hourly={hourly} /> : null;
 
   const footer = (
@@ -451,6 +457,7 @@ function App() {
       condition={currentCondition}
       topBar={topBar}
       hero={hero}
+      centerPanel={centerPanel}
       desktopPanel={desktopPanel}
       mobilePanel={mobilePanel}
       footer={footer}
