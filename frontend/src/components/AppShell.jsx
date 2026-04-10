@@ -21,7 +21,7 @@ function AppShell({ condition, topBar, hero, centerPanel, desktopPanel, mobilePa
         <div className="relative z-20 mt-8 mb-6 px-4 lg:hidden">{mobilePanel}</div>
       ) : null}
 
-      {footer ? <div className="mt-auto px-4 pb-[calc(0.9rem+env(safe-area-inset-bottom))] pt-2 text-center">{footer}</div> : null}
+      {footer ? <div className="relative z-30 mt-auto px-4 pb-[calc(0.9rem+env(safe-area-inset-bottom))] pt-2 text-center">{footer}</div> : null}
     </main>
   );
 }

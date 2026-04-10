@@ -447,7 +447,7 @@ function App() {
   const mobilePanel = activeTab === 'single' && hasSearched ? <ForecastPanel hourly={hourly} /> : null;
 
   const footer = (
-    <p className="text-xs tracking-wide text-inkSecondary/60">
+    <p className="text-xs tracking-wide text-inkSecondary/78">
       Made with <span aria-hidden="true">&#10084;</span> by Biprajit
     </p>
   );
