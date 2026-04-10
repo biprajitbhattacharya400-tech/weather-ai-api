@@ -6,6 +6,7 @@ import UnifiedInfoSurface from './components/UnifiedInfoSurface';
 import ModeTabs from './components/ModeTabs';
 import CompareView from './components/CompareView';
 import DashboardView from './components/DashboardView';
+import CitySearchBox from './components/CitySearchBox';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'https://weather-ai-api-lxdy.onrender.com';
 
@@ -28,13 +29,18 @@ const formatHour = (value) => new Date(value).toLocaleTimeString([], { hour: 'nu
 function App() {
   const [activeTab, setActiveTab] = useState('single');
 
-  const [query, setQuery] = useState('Tokyo');
+  const [query, setQuery] = useState('');
   const [weather, setWeather] = useState(EMPTY_WEATHER);
+  const [hasSearched, setHasSearched] = useState(false);
   const [loadingSingle, setLoadingSingle] = useState(false);
   const [singleError, setSingleError] = useState('');
 
-  const [compareLeft, setCompareLeft] = useState('Tokyo');
-  const [compareRight, setCompareRight] = useState('London');
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [highlightedSuggestion, setHighlightedSuggestion] = useState(0);
+
+  const [compareLeft, setCompareLeft] = useState('Dharmanagar');
+  const [compareRight, setCompareRight] = useState('Barasat');
   const [compareCities, setCompareCities] = useState([]);
   const [loadingCompare, setLoadingCompare] = useState(false);
   const [compareError, setCompareError] = useState('');
@@ -58,12 +64,48 @@ function App() {
       }
 
       setWeather({ ...EMPTY_WEATHER, ...data });
+      setHasSearched(true);
+      setShowSuggestions(false);
     } catch (requestError) {
       setSingleError(requestError.message || 'Unable to load weather right now.');
     } finally {
       setLoadingSingle(false);
     }
   };
+
+  const fetchSuggestions = async (searchTerm) => {
+    if (!searchTerm.trim() || searchTerm.trim().length < 2 || activeTab !== 'single') {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE}/weather/search/coords?q=${encodeURIComponent(searchTerm.trim())}`);
+      const data = await response.json();
+
+      if (!response.ok || !Array.isArray(data)) {
+        setSuggestions([]);
+        setShowSuggestions(false);
+        return;
+      }
+
+      setSuggestions(data.slice(0, 6));
+      setShowSuggestions(true);
+      setHighlightedSuggestion(0);
+    } catch {
+      setSuggestions([]);
+      setShowSuggestions(false);
+    }
+  };
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      fetchSuggestions(query);
+    }, 220);
+
+    return () => clearTimeout(timeout);
+  }, [query, activeTab]);
 
   const fetchCompare = async () => {
     if (!compareLeft.trim() || !compareRight.trim()) return;
@@ -114,10 +156,6 @@ function App() {
   };
 
   useEffect(() => {
-    fetchWeather('Tokyo');
-  }, []);
-
-  useEffect(() => {
     if (activeTab === 'compare' && compareCities.length === 0) {
       fetchCompare();
     }
@@ -126,14 +164,46 @@ function App() {
     }
   }, [activeTab]);
 
+  const onPickSuggestion = (item) => {
+    setQuery(item.name);
+    fetchWeather(item.name);
+  };
+
   const onSubmitSingle = (event) => {
     event.preventDefault();
+
+    if (showSuggestions && suggestions.length > 0) {
+      const picked = suggestions[Math.max(0, Math.min(highlightedSuggestion, suggestions.length - 1))];
+      if (picked) {
+        onPickSuggestion(picked);
+        return;
+      }
+    }
+
     fetchWeather(query);
   };
 
   const onSubmitCompare = (event) => {
     event.preventDefault();
     fetchCompare();
+  };
+
+  const onSingleKeyDown = (event) => {
+    if (!showSuggestions || suggestions.length === 0) return;
+
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      setHighlightedSuggestion((prev) => (prev + 1) % suggestions.length);
+    }
+
+    if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      setHighlightedSuggestion((prev) => (prev - 1 + suggestions.length) % suggestions.length);
+    }
+
+    if (event.key === 'Escape') {
+      setShowSuggestions(false);
+    }
   };
 
   const hourly = useMemo(() => {
@@ -190,7 +260,9 @@ function App() {
   const conditionFromCompare = compareCities[0]?.condition || weather.condition;
   const currentCondition =
     activeTab === 'single'
-      ? weather.condition
+      ? hasSearched
+        ? weather.condition
+        : 'default'
       : activeTab === 'compare'
         ? conditionFromCompare
         : conditionFromDashboard;
@@ -199,22 +271,24 @@ function App() {
     <div className="flex w-full flex-col items-center gap-4 lg:items-start">
       <ModeTabs activeTab={activeTab} onChange={setActiveTab} />
 
-      {activeTab === 'single' ? (
-        <form onSubmit={onSubmitSingle} className="glass-lite flex w-full max-w-md items-center gap-3 rounded-full px-3 py-2 shadow-ambient">
-          <input
+      {activeTab === 'single' && hasSearched ? (
+        <div className="w-full max-w-xl">
+          <CitySearchBox
             value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search city"
-            className="w-full bg-transparent px-3 text-sm font-medium text-inkPrimary placeholder:text-inkTertiary focus:outline-none"
-            aria-label="Search city"
+            onChange={(event) => {
+              setQuery(event.target.value);
+              setShowSuggestions(true);
+            }}
+            onSubmit={onSubmitSingle}
+            onSuggestionPick={onPickSuggestion}
+            onKeyDown={onSingleKeyDown}
+            suggestions={suggestions}
+            showSuggestions={showSuggestions}
+            loading={loadingSingle}
+            placeholder="Search for a city..."
+            large={false}
           />
-          <button
-            type="submit"
-            className="rounded-full bg-white/70 px-4 py-2 text-sm font-semibold text-inkSecondary transition hover:bg-white"
-          >
-            {loadingSingle ? 'Loading' : 'Search'}
-          </button>
-        </form>
+        </div>
       ) : null}
 
       {activeTab === 'compare' ? (
@@ -241,6 +315,34 @@ function App() {
           </button>
         </form>
       ) : null}
+    </div>
+  );
+
+  const homeHero = (
+    <div className="fade-soft mx-auto flex w-full max-w-3xl flex-col items-center gap-6 text-center lg:mx-0 lg:items-start lg:text-left">
+      <h1 className="text-4xl font-semibold tracking-[-0.03em] text-inkPrimary sm:text-5xl md:text-6xl">
+        Weather, designed as a product.
+      </h1>
+      <p className="max-w-2xl text-sm text-inkSecondary/90 sm:text-base">
+        Search any city to begin a calm, immersive weather experience.
+      </p>
+      <div className="w-full max-w-2xl">
+        <CitySearchBox
+          value={query}
+          onChange={(event) => {
+            setQuery(event.target.value);
+            setShowSuggestions(true);
+          }}
+          onSubmit={onSubmitSingle}
+          onSuggestionPick={onPickSuggestion}
+          onKeyDown={onSingleKeyDown}
+          suggestions={suggestions}
+          showSuggestions={showSuggestions}
+          loading={loadingSingle}
+          placeholder="Search for a city..."
+          large
+        />
+      </div>
     </div>
   );
 
@@ -281,9 +383,26 @@ function App() {
     </div>
   );
 
-  const hero = activeTab === 'single' ? singleHero : activeTab === 'compare' ? compareHero : dashboardHero;
-  const desktopPanel = activeTab === 'single' ? <UnifiedInfoSurface graphPoints={graphPoints} metrics={metrics} daily={daily} /> : null;
-  const mobilePanel = activeTab === 'single' ? <ForecastPanel hourly={hourly} /> : null;
+  const hero =
+    activeTab === 'single'
+      ? hasSearched
+        ? singleHero
+        : homeHero
+      : activeTab === 'compare'
+        ? compareHero
+        : dashboardHero;
+
+  const desktopPanel = activeTab === 'single' && hasSearched ? (
+    <UnifiedInfoSurface graphPoints={graphPoints} metrics={metrics} daily={daily} />
+  ) : null;
+
+  const mobilePanel = activeTab === 'single' && hasSearched ? <ForecastPanel hourly={hourly} /> : null;
+
+  const footer = (
+    <p className="text-xs tracking-wide text-inkSecondary/60">
+      Made with <span aria-hidden="true">&#10084;</span> by Biprajit
+    </p>
+  );
 
   return (
     <AppShell
@@ -292,6 +411,7 @@ function App() {
       hero={hero}
       desktopPanel={desktopPanel}
       mobilePanel={mobilePanel}
+      footer={footer}
     />
   );
 }

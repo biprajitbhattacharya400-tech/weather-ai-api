@@ -45,3 +45,19 @@ body {
 .fade-soft {
   animation: fadeSoft 520ms ease;
 }
+
+@keyframes autocompletePop {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.autocomplete-pop {
+  animation: autocompletePop 240ms ease;
+}
