@@ -32,7 +32,7 @@ function CitySearchBox({
   large = false,
 }) {
   return (
-    <div className="relative w-full">
+    <div className={`relative w-full ${showSuggestions ? 'pb-20 md:pb-24' : ''}`}>
       <form onSubmit={onSubmit} className={`glass-lite flex w-full items-center gap-3 rounded-full shadow-ambient ${large ? 'px-4 py-3.5' : 'px-3 py-2'}`}>
         <input
           value={value}
@@ -51,7 +51,7 @@ function CitySearchBox({
       </form>
 
       {showSuggestions ? (
-        <div className="autocomplete-pop glass-lite absolute left-0 right-0 top-[calc(100%+12px)] z-30 overflow-hidden rounded-3xl py-2 shadow-ambient">
+        <div className="autocomplete-pop glass-lite absolute left-0 right-0 top-[calc(100%+12px)] z-20 mb-16 overflow-hidden rounded-3xl py-2 shadow-ambient">
           {suggestions.length > 0 ? (
             suggestions.map((item) => (
               <button
