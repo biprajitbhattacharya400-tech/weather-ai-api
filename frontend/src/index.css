@@ -24,10 +24,11 @@ body {
 }
 
 .glass-lite {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.44), rgba(255, 255, 255, 0.2));
-  border: 1px solid rgba(255, 255, 255, 0.26);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.12));
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 @keyframes fadeSoft {
@@ -60,4 +61,92 @@ body {
 
 .autocomplete-pop {
   animation: autocompletePop 240ms ease;
+}
+
+@keyframes blobFloat {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(8px, -12px, 0) scale(1.03);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes blobFloatSlow {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(-10px, 10px, 0) scale(1.04);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes rainStreak {
+  0% {
+    transform: translateY(-35%);
+  }
+
+  100% {
+    transform: translateY(35%);
+  }
+}
+
+.atmo-blob {
+  animation: blobFloat 12s ease-in-out infinite;
+}
+
+.atmo-blob-slow {
+  animation: blobFloatSlow 15s ease-in-out infinite;
+}
+
+.rain-streaks {
+  background-image: repeating-linear-gradient(
+    180deg,
+    rgba(214, 227, 255, 0.12) 0,
+    rgba(214, 227, 255, 0.12) 2px,
+    transparent 2px,
+    transparent 16px
+  );
+  animation: rainStreak 1.2s linear infinite;
+}
+
+.soft-hover-lift {
+  transition: transform 280ms ease, box-shadow 280ms ease;
+}
+
+.soft-hover-lift:hover {
+  transform: translateY(-3px) scale(1.015);
+  box-shadow: 0 10px 20px rgba(44, 61, 92, 0.12);
+}
+
+.soft-button {
+  transition: background-color 220ms ease, box-shadow 280ms ease, transform 280ms ease;
+}
+
+.soft-button:hover {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.38), 0 8px 24px rgba(106, 131, 177, 0.2);
+  transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-soft,
+  .autocomplete-pop,
+  .atmo-blob,
+  .atmo-blob-slow,
+  .rain-streaks,
+  .soft-hover-lift,
+  .soft-button {
+    animation: none !important;
+    transition: none !important;
+  }
 }

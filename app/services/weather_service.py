@@ -35,3 +35,26 @@ def get_weather(lat: Optional[float] = None, lon: Optional[float] = None, city: 
         return {"error": "Failed to fetch weather data"}
 
     return response.json()
+
+
+def get_air_quality(lat: Optional[float], lon: Optional[float]) -> int:
+    if lat is None or lon is None:
+        return 42
+
+    url = f"http://api.openweathermap.org/data/2.5/air_pollution?lat={lat}&lon={lon}&appid={settings.WEATHER_API_KEY}"
+
+    try:
+        response = requests.get(url, timeout=8)
+        if response.status_code != 200:
+            return 42
+
+        payload = response.json()
+        aqi_bucket = payload.get("list", [{}])[0].get("main", {}).get("aqi")
+        if not isinstance(aqi_bucket, int):
+            return 42
+
+        # Convert OpenWeather 1-5 bucket to familiar AQI-like scale.
+        bucket_map = {1: 35, 2: 75, 3: 125, 4: 175, 5: 250}
+        return bucket_map.get(aqi_bucket, 42)
+    except Exception:
+        return 42

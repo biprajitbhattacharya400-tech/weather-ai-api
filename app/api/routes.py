@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.models.weather import WeatherLog
-from app.services.weather_service import get_weather, search_cities
+from app.services.weather_service import get_air_quality, get_weather, search_cities
 from app.services.llm_service import generate_llm_insight  # NEW
 from app.services.cache_service import get_cache, set_cache
 
@@ -58,6 +58,9 @@ def compare_weather(cities: str = Query(...), db: Session = Depends(get_db)):
 
             temp_val = first["main"]["temp"]
             condition_main = first["weather"][0]["main"]
+            city_data = data.get("city", {})
+            coord = city_data.get("coord", {})
+            aqi_value = get_air_quality(coord.get("lat"), coord.get("lon"))
             
             uv_index = 0
             if condition_main == "Clear":
@@ -81,7 +84,7 @@ def compare_weather(cities: str = Query(...), db: Session = Depends(get_db)):
                 "condition": condition_main,
                 "uv_index": uv_index,
                 "dew_point": dew_point,
-                "aqi": 42,
+                "aqi": aqi_value,
                 "insight": llm_insight,
                 "forecast": [
                     {
@@ -195,6 +198,8 @@ def weather(city: str, lat: float = Query(None), lon: float = Query(None), db: S
     # Rain Probability (POP provided by openweathermap)
     pop_current = int(first.get("pop", 0) * 100)
     city_data = data.get("city", {})
+    coord = city_data.get("coord", {})
+    aqi_value = get_air_quality(coord.get("lat"), coord.get("lon"))
 
     response = {
         "city": display_city,
@@ -209,7 +214,7 @@ def weather(city: str, lat: float = Query(None), lon: float = Query(None), db: S
         "condition": condition_main,
         "uv_index": uv_index,
         "dew_point": dew_point,
-        "aqi": 42, # Realistic safe baseline AQI
+        "aqi": aqi_value,
         "pop": pop_current,
         "sunrise": city_data.get("sunrise", 0),
         "sunset": city_data.get("sunset", 0),

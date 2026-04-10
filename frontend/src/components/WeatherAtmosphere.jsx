@@ -1,21 +1,21 @@
 const CONDITION_STYLES = {
-  clear: 'from-[#c9dbf2] via-[#b9c9e5] to-[#aab2d1]',
-  clouds: 'from-[#c6d2e2] via-[#b5bfd1] to-[#9da7bd]',
-  rain: 'from-[#9db2cf] via-[#899dbf] to-[#7384a7]',
-  thunderstorm: 'from-[#939ec2] via-[#808ab0] to-[#68739a]',
-  snow: 'from-[#d5dfed] via-[#c4cfde] to-[#acb7ca]',
-  night: 'from-[#7581ab] via-[#626d95] to-[#4f5a83]',
-  default: 'from-[#c7d8ef] via-[#b6c4e1] to-[#a2adcf]',
+  clear: 'from-[#d5e6fb] via-[#c3d6ee] to-[#b4c3e0]',
+  clouds: 'from-[#c7d1df] via-[#b5bece] to-[#9da8ba]',
+  rain: 'from-[#8ea4c1] via-[#7d92b1] to-[#647695]',
+  thunderstorm: 'from-[#7f8cad] via-[#6d799a] to-[#576284]',
+  snow: 'from-[#dbe4f0] via-[#cdd8e7] to-[#b7c2d5]',
+  night: 'from-[#2f3b67] via-[#283359] to-[#1f2748]',
+  default: 'from-[#cddcf0] via-[#bccce5] to-[#aab8d5]',
 };
 
 const BLOOM_STYLES = {
-  clear: 'bg-[radial-gradient(circle_at_48%_12%,rgba(255,255,255,0.52),transparent_45%)]',
-  clouds: 'bg-[radial-gradient(circle_at_50%_9%,rgba(255,255,255,0.34),transparent_42%)]',
-  rain: 'bg-[radial-gradient(circle_at_50%_8%,rgba(215,226,247,0.24),transparent_42%)]',
-  thunderstorm: 'bg-[radial-gradient(circle_at_50%_8%,rgba(209,220,246,0.2),transparent_44%)]',
-  snow: 'bg-[radial-gradient(circle_at_50%_8%,rgba(255,255,255,0.48),transparent_47%)]',
-  night: 'bg-[radial-gradient(circle_at_50%_8%,rgba(205,214,242,0.22),transparent_44%)]',
-  default: 'bg-[radial-gradient(circle_at_50%_9%,rgba(255,255,255,0.3),transparent_46%)]',
+  clear: 'bg-[radial-gradient(circle_at_52%_12%,rgba(255,248,223,0.26),transparent_48%)]',
+  clouds: 'bg-[radial-gradient(circle_at_50%_10%,rgba(255,255,255,0.2),transparent_45%)]',
+  rain: 'bg-[radial-gradient(circle_at_50%_9%,rgba(207,219,240,0.16),transparent_44%)]',
+  thunderstorm: 'bg-[radial-gradient(circle_at_50%_9%,rgba(199,212,238,0.14),transparent_46%)]',
+  snow: 'bg-[radial-gradient(circle_at_50%_9%,rgba(255,255,255,0.26),transparent_48%)]',
+  night: 'bg-[radial-gradient(circle_at_50%_8%,rgba(178,191,236,0.12),transparent_48%)]',
+  default: 'bg-[radial-gradient(circle_at_50%_10%,rgba(255,255,255,0.18),transparent_47%)]',
 };
 
 const resolveCondition = (condition = '') => {
@@ -32,14 +32,19 @@ function WeatherAtmosphere({ condition }) {
   const key = resolveCondition(condition);
   const gradient = CONDITION_STYLES[key] || CONDITION_STYLES.default;
   const bloom = BLOOM_STYLES[key] || BLOOM_STYLES.default;
+  const isRainy = key === 'rain' || key === 'thunderstorm';
 
   return (
-    <div className="absolute inset-0 overflow-hidden">
-      <div className={`absolute inset-0 bg-gradient-to-b ${gradient} transition-colors duration-[1600ms]`} />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_16%_84%,rgba(255,255,255,0.22),transparent_42%)]" />
-      <div className="absolute -left-24 top-4 h-72 w-72 animate-drift rounded-full bg-white/28 blur-3xl" />
-      <div className="absolute -right-20 bottom-0 h-80 w-80 animate-drift rounded-full bg-[#f8fbff]/34 blur-3xl" />
+    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      <div className={`absolute inset-0 bg-gradient-to-b ${gradient} transition-all duration-[1800ms] ease-out`} />
+
+      <div className="absolute inset-0 opacity-45 transition-opacity duration-[1500ms] bg-[radial-gradient(circle_at_14%_12%,rgba(255,255,255,0.2),transparent_44%)]" />
+      <div className="atmo-blob absolute -left-24 -top-10 h-[20rem] w-[20rem] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.18),transparent_68%)]" />
+      <div className="atmo-blob-slow absolute -right-28 bottom-[-4.5rem] h-[23rem] w-[23rem] rounded-full bg-[radial-gradient(circle,rgba(201,219,248,0.18),transparent_70%)]" />
+      <div className="atmo-blob absolute right-[24%] top-[36%] h-[13rem] w-[13rem] rounded-full bg-[radial-gradient(circle,rgba(247,251,255,0.12),transparent_72%)]" />
+
       <div className={`absolute inset-0 animate-breathe ${bloom}`} />
+      {isRainy ? <div className="rain-streaks absolute inset-0 opacity-30" /> : null}
     </div>
   );
 }

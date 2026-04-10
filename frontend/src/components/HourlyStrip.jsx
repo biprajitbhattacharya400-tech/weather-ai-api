@@ -20,14 +20,16 @@ function HourlyStrip({ hourly }) {
       <div className="mt-3 flex gap-2 overflow-x-auto px-1 pb-1">
         {hourly.map((item) => {
           const Icon = iconByCondition(item.condition);
+          const rainPercent = Math.max(0, Math.min(100, Math.round(Number(item.pop ?? 0))));
           return (
             <article
               key={item.time}
-              className="min-w-[76px] rounded-full bg-white/30 px-3 py-2.5 text-center"
+              className="soft-hover-lift min-w-[90px] rounded-[20px] bg-white/26 px-3 py-2.5 text-center"
             >
               <p className="text-[11px] font-medium text-inkTertiary">{formatHour(item.time)}</p>
               <Icon className="mx-auto mt-1.5 text-inkSecondary" size={15} />
               <p className="mt-1 text-sm font-semibold text-inkPrimary">{Math.round(item.temperature)}°</p>
+              <p className="mt-1 text-[11px] font-medium text-sky-700/90">Rain chance: {rainPercent}%</p>
             </article>
           );
         })}

@@ -21,6 +21,10 @@ const EMPTY_WEATHER = {
   pressure: 1012,
   feels_like: 25,
   condition: 'Clear',
+  pop: 0,
+  sunrise: 0,
+  sunset: 0,
+  aqi: 42,
   insight: 'Search for a city to unlock a tailored weather insight.',
   forecast: [],
   daily: [],
@@ -297,11 +301,12 @@ function App() {
 
   const conditionFromDashboard = recentSearches[0]?.condition || 'Clear';
   const conditionFromCompare = compareCities[0]?.condition || weather.condition;
+  const nowUnix = Math.floor(Date.now() / 1000);
+  const isNightNow = Boolean(weather.sunrise && weather.sunset && (nowUnix < weather.sunrise || nowUnix > weather.sunset));
+  const singleCondition = hasSearched ? (isNightNow ? 'night' : weather.condition) : 'default';
   const currentCondition =
     activeTab === 'single'
-      ? hasSearched
-        ? weather.condition
-        : 'default'
+      ? singleCondition
       : activeTab === 'compare'
         ? conditionFromCompare
         : conditionFromDashboard;
@@ -349,7 +354,7 @@ function App() {
           />
           <button
             type="submit"
-            className="rounded-xl bg-white/70 px-4 py-2 text-sm font-semibold text-inkSecondary transition hover:bg-white"
+            className="soft-button rounded-xl bg-white/70 px-4 py-2 text-sm font-semibold text-inkSecondary hover:bg-white"
           >
             {loadingCompare ? 'Loading' : 'Compare'}
           </button>
@@ -393,6 +398,7 @@ function App() {
     </div>
   ) : (
     <WeatherHero
+      key={`${weather.city}-${Math.round(weather.temperature)}`}
       city={weather.city}
       temperature={weather.temperature}
       condition={weather.condition}
@@ -401,6 +407,7 @@ function App() {
       humidity={weather.humidity}
       windSpeed={weather.wind_speed}
       aqi={weather.aqi}
+      rainChance={weather.pop}
       insight={weather.insight}
       tip={buildAiTip(weather)}
     />

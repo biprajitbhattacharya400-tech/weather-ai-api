@@ -14,7 +14,7 @@ function ModeTabs({ activeTab, onChange }) {
             key={tab.id}
             type="button"
             onClick={() => onChange(tab.id)}
-            className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+            className={`soft-button rounded-full px-4 py-2 text-sm font-medium transition-colors ${
               selected
                 ? 'bg-white/75 text-inkPrimary'
                 : 'text-inkSecondary hover:bg-white/30 hover:text-inkPrimary'
