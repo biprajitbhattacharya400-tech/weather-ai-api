@@ -15,11 +15,13 @@ function AppShell({ condition, topBar, hero, centerPanel, desktopPanel, mobilePa
   const [scrollY, setScrollY] = useState(0);
   const [cursor, setCursor] = useState({ x: 0, y: 0 });
   const [showCursorGlow, setShowCursorGlow] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
     const updateCapability = () => {
       const pointerFine = window.matchMedia('(pointer:fine)').matches;
       setShowCursorGlow(pointerFine && window.innerWidth >= 1024);
+      setIsDesktop(window.innerWidth >= 1024);
     };
 
     updateCapability();
@@ -46,7 +48,7 @@ function AppShell({ condition, topBar, hero, centerPanel, desktopPanel, mobilePa
     };
   }, []);
 
-  const heroShift = useMemo(() => Math.max(-18, -scrollY * 0.04), [scrollY]);
+  const heroShift = useMemo(() => (isDesktop ? Math.max(-18, -scrollY * 0.04) : 0), [scrollY, isDesktop]);
   const weatherKey = useMemo(() => resolveWeatherKey(condition), [condition]);
 
   useEffect(() => {

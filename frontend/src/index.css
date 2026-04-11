@@ -381,9 +381,11 @@ body {
   transform: translateZ(0);
 }
 
-.soft-button:hover {
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.38), 0 10px 28px var(--wx-accent-soft);
-  transform: translateY(-1px) scale(1.02);
+@media (hover: hover) and (pointer: fine) {
+  .soft-button:hover {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.38), 0 10px 28px var(--wx-accent-soft);
+    transform: translateY(-1px) scale(1.02);
+  }
 }
 
 .soft-button:active {
@@ -401,6 +403,54 @@ body {
     transform: translateY(-3px) scale(1.02);
     background-color: rgba(255, 255, 255, 0.31);
     box-shadow: 0 12px 24px rgba(60, 83, 121, 0.14), inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+  }
+}
+
+.insight-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform 280ms ease, box-shadow 280ms ease, border-color 280ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .insight-card:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--wx-accent) 45%, rgba(255, 255, 255, 0.2));
+    box-shadow: 0 12px 30px var(--wx-accent-soft);
+  }
+}
+
+.insight-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -42%;
+  width: 42%;
+  background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.36), transparent);
+  opacity: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .insight-card:hover::after {
+    opacity: 1;
+    animation: insightSweep 820ms ease-in-out 1;
+  }
+}
+
+@keyframes insightSweep {
+  from {
+    left: -42%;
+  }
+
+  to {
+    left: 108%;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .insight-card::after {
+    display: none;
   }
 }
 
@@ -507,8 +557,8 @@ body {
   .glass-lite,
   .glass-strong,
   .glass-soft {
-    backdrop-filter: blur(9px);
-    -webkit-backdrop-filter: blur(9px);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
   }
 
   .soft-button:active {
@@ -520,5 +570,11 @@ body {
   .soft-hover-lift:active {
     transform: translateY(-2px) scale(1.01);
     box-shadow: 0 10px 20px rgba(60, 83, 121, 0.12);
+  }
+
+  .shimmer-pill,
+  .graph-sheen-line,
+  .cursor-glow {
+    animation: none !important;
   }
 }
