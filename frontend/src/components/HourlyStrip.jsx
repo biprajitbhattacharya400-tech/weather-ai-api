@@ -24,7 +24,7 @@ function HourlyStrip({ hourly }) {
           return (
             <article
               key={item.time}
-              className="soft-hover-lift stagger-fade min-w-[90px] rounded-[20px] bg-white/26 px-3 py-2.5 text-center"
+              className="hourly-card-hover stagger-fade min-w-[90px] rounded-[20px] bg-white/26 px-3 py-2.5 text-center"
               style={{ animationDelay: `${index * 60}ms` }}
             >
               <p className="text-[11px] font-medium text-inkTertiary">{formatHour(item.time)}</p>

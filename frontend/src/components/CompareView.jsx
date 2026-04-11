@@ -93,7 +93,7 @@ function CompareView({ cities, loading, error }) {
   const hourly = buildHourly(cityA, cityB);
 
   return (
-    <section className="glass-lite fade-soft weather-refresh w-full max-w-6xl rounded-[34px] p-6 shadow-ambient md:p-8">
+    <section className="glass-strong fade-soft weather-refresh w-full max-w-6xl rounded-[34px] p-6 shadow-ambient md:p-8">
       <div className="space-y-8">
         <div className="insight-enter rounded-2xl border-l-2 border-sky-300/60 bg-[linear-gradient(90deg,rgba(125,211,252,0.12),rgba(255,255,255,0.14)_22%,rgba(255,255,255,0.08))] px-4 py-3 shadow-[0_10px_30px_rgba(56,189,248,0.12)]">
           <p className="text-xs uppercase tracking-[0.16em] text-inkTertiary">Insight</p>

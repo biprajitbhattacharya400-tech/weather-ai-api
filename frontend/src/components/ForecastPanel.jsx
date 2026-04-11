@@ -26,7 +26,7 @@ function ForecastPanel({ hourly }) {
           return (
             <article
               key={item.time}
-              className="soft-hover-lift stagger-fade min-w-[92px] rounded-2xl bg-white/26 px-3 py-2.5 text-center"
+              className="hourly-card-hover stagger-fade min-w-[92px] rounded-2xl bg-white/26 px-3 py-2.5 text-center"
               style={{ animationDelay: `${index * 55}ms` }}
             >
               <p className="text-xs font-medium text-inkTertiary">{formatHour(item.time)}</p>
