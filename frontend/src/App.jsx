@@ -70,10 +70,48 @@ function App() {
   const [analyticsData, setAnalyticsData] = useState(null);
   const [loadingDashboard, setLoadingDashboard] = useState(false);
   const [introPhase, setIntroPhase] = useState('checking');
+  const [introFontReady, setIntroFontReady] = useState(false);
 
   const canShowSuggestions = !hasSearched && activeTab === 'single' && showSuggestions;
 
   useEffect(() => {
+    try {
+      if (localStorage.getItem('weather-intro-seen') === '1') {
+        setIntroPhase('done');
+      }
+    } catch {
+      setIntroPhase('done');
+    }
+  }, []);
+
+  useEffect(() => {
+    let timeoutId;
+    let cancelled = false;
+
+    const markReady = () => {
+      if (!cancelled) setIntroFontReady(true);
+    };
+
+    if (typeof document !== 'undefined' && document.fonts?.load) {
+      Promise.race([
+        document.fonts.load('1em Parisienne'),
+        new Promise((resolve) => {
+          timeoutId = setTimeout(resolve, 1200);
+        }),
+      ]).finally(markReady);
+    } else {
+      markReady();
+    }
+
+    return () => {
+      cancelled = true;
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!introFontReady || introPhase === 'done') return undefined;
+
     let fadeTimer;
     let doneTimer;
 
@@ -91,7 +129,7 @@ function App() {
     setIntroPhase('visible');
     fadeTimer = setTimeout(() => {
       setIntroPhase('fading');
-    }, 2000);
+    }, 2100);
 
     doneTimer = setTimeout(() => {
       setIntroPhase('done');
@@ -106,7 +144,7 @@ function App() {
       clearTimeout(fadeTimer);
       clearTimeout(doneTimer);
     };
-  }, []);
+  }, [introFontReady, introPhase]);
 
   const fetchWeather = async (city) => {
     if (!city.trim()) return;
@@ -402,10 +440,10 @@ function App() {
   const homeHero = (
     <div className="fade-soft mx-auto flex w-full max-w-3xl flex-col items-center gap-5 text-center lg:mx-0 lg:items-start lg:text-left sm:gap-6">
       <div className="relative h-10 w-full sm:h-12 md:h-14">
-        {introPhase !== 'done' ? (
+        {introPhase !== 'done' && introFontReady ? (
           <p
-            className={`font-tagline-script absolute left-0 right-0 text-3xl leading-none text-inkSecondary/85 transition-all duration-700 ease-in-out sm:text-4xl md:text-[2.85rem] ${
-              introPhase === 'visible' ? 'translate-y-0 opacity-100' : '-translate-y-2 opacity-0'
+            className={`font-tagline-script absolute left-0 right-0 text-3xl leading-none text-inkSecondary/85 transition-opacity duration-[600ms] ease-in-out sm:text-4xl md:text-[2.85rem] ${
+              introPhase === 'visible' ? 'opacity-100' : 'opacity-0'
             }`}
           >
             Weather, designed as a product.
@@ -414,8 +452,8 @@ function App() {
       </div>
 
       <h1
-        className={`text-4xl font-semibold tracking-[-0.03em] text-inkPrimary transition-all duration-700 ease-in-out sm:text-5xl md:text-6xl ${
-          introPhase === 'done' ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'
+        className={`text-4xl font-semibold tracking-[-0.03em] text-inkPrimary transition-opacity duration-[600ms] ease-in-out sm:text-5xl md:text-6xl ${
+          introPhase === 'done' ? 'opacity-100' : 'opacity-0'
         }`}
       >
         Where weather meets experience
