@@ -27,6 +27,59 @@ body {
   background: #d7e1ef;
 }
 
+.wx-clear {
+  --wx-accent: #c88a24;
+  --wx-accent-soft: rgba(250, 201, 95, 0.22);
+  --wx-graph: #8e6c2f;
+}
+
+.wx-clouds {
+  --wx-accent: #5f7694;
+  --wx-accent-soft: rgba(129, 157, 191, 0.2);
+  --wx-graph: #5a6f8f;
+}
+
+.wx-rain {
+  --wx-accent: #6971a1;
+  --wx-accent-soft: rgba(138, 148, 206, 0.22);
+  --wx-graph: #636d9d;
+}
+
+.wx-night {
+  --wx-accent: #8183d0;
+  --wx-accent-soft: rgba(133, 126, 214, 0.24);
+  --wx-graph: #7f83cb;
+}
+
+.wx-default {
+  --wx-accent: #5f7694;
+  --wx-accent-soft: rgba(129, 157, 191, 0.2);
+  --wx-graph: #5a6f8f;
+}
+
+.atmo-overlay {
+  background: radial-gradient(circle at 14% 12%, rgba(255, 255, 255, 0.2), transparent 44%);
+}
+
+@keyframes skyShift {
+  0% {
+    background-position: 0% 50%, 0% 50%;
+  }
+
+  50% {
+    background-position: 30% 45%, 12% 58%;
+  }
+
+  100% {
+    background-position: 50% 50%, 20% 40%;
+  }
+}
+
+.sky-drift {
+  background-size: 140% 140%, 140% 140%;
+  animation: skyShift 16s ease-in-out infinite alternate;
+}
+
 .font-tagline-script {
   font-family: 'Parisienne', cursive;
   font-style: italic;
@@ -323,10 +376,13 @@ body {
 
 .soft-button {
   transition: background-color 220ms ease, box-shadow 280ms ease, transform 280ms ease;
+  min-height: 44px;
+  will-change: transform, box-shadow;
+  transform: translateZ(0);
 }
 
 .soft-button:hover {
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.38), 0 8px 24px rgba(106, 131, 177, 0.2);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.38), 0 10px 28px var(--wx-accent-soft);
   transform: translateY(-1px) scale(1.02);
 }
 
@@ -336,6 +392,8 @@ body {
 
 .hourly-card-hover {
   transition: transform 300ms ease, box-shadow 300ms ease, background-color 280ms ease;
+  will-change: transform, box-shadow;
+  transform: translateZ(0);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -351,7 +409,22 @@ body {
 }
 
 .focus-glow:focus {
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.55), 0 0 0 4px rgba(125, 165, 226, 0.18);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.55), 0 0 0 4px var(--wx-accent-soft);
+}
+
+@keyframes caretPulse {
+  0%,
+  100% {
+    caret-color: rgba(78, 101, 132, 0.75);
+  }
+
+  50% {
+    caret-color: var(--wx-accent);
+  }
+}
+
+.caret-soft {
+  animation: caretPulse 1.6s ease-in-out infinite;
 }
 
 @keyframes staggerFade {
@@ -374,6 +447,7 @@ body {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   scroll-snap-type: x proximity;
+  touch-action: pan-x;
 }
 
 .smooth-scroll-x > * {
@@ -394,6 +468,17 @@ body {
   background: linear-gradient(90deg, rgba(125, 191, 255, 0.7), rgba(56, 161, 255, 0.9));
 }
 
+.graph-sheen-line {
+  stroke-dasharray: 8 12;
+  animation: graphSheen 8s linear infinite;
+}
+
+@keyframes graphSheen {
+  to {
+    stroke-dashoffset: -120;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .fade-soft,
   .autocomplete-pop,
@@ -409,10 +494,31 @@ body {
   .shimmer-pill,
   .rain-streaks,
   .night-stars,
+  .sky-drift,
   .stagger-fade,
   .soft-hover-lift,
   .soft-button {
     animation: none !important;
     transition: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .glass-lite,
+  .glass-strong,
+  .glass-soft {
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
+  }
+
+  .soft-button:active {
+    transform: scale(0.97);
+    transition-duration: 150ms;
+  }
+
+  .hourly-card-hover:active,
+  .soft-hover-lift:active {
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 10px 20px rgba(60, 83, 121, 0.12);
   }
 }

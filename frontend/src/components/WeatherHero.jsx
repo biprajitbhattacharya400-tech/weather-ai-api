@@ -90,7 +90,7 @@ function WeatherHero({ city, temperature, condition, tempMin, tempMax, humidity,
     <section className="fade-soft weather-refresh relative flex w-full max-w-2xl flex-col items-center lg:items-start">
       <p className="text-sm font-medium tracking-wide text-inkSecondary/85">{city} · {now}</p>
 
-      <div className="insight-enter mt-6 w-full max-w-xl rounded-2xl border-l-2 border-sky-300/60 bg-[linear-gradient(90deg,rgba(125,211,252,0.12),rgba(255,255,255,0.14)_22%,rgba(255,255,255,0.08))] px-4 py-3 shadow-[0_10px_30px_rgba(56,189,248,0.12)]">
+      <div className="glass-strong insight-card insight-enter mt-6 w-full max-w-xl rounded-2xl border-l-2 border-sky-300/60 bg-[linear-gradient(90deg,rgba(125,211,252,0.12),rgba(255,255,255,0.14)_22%,rgba(255,255,255,0.08))] px-4 py-3 shadow-[0_10px_30px_rgba(56,189,248,0.12)]">
         <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.16em] text-inkTertiary">
           <Sparkles size={13} />
           <span>AI Insight</span>
@@ -107,7 +107,7 @@ function WeatherHero({ city, temperature, condition, tempMin, tempMax, humidity,
       </div>
 
       <div className="mt-4 flex items-center gap-2 text-[22px] font-medium text-inkSecondary/92">
-        <Icon size={20} strokeWidth={2} className="icon-float" />
+        <Icon size={20} strokeWidth={2} className="icon-float" style={{ color: 'var(--wx-accent)' }} />
         <span>{condition || 'Clear'}</span>
       </div>
 
@@ -116,7 +116,7 @@ function WeatherHero({ city, temperature, condition, tempMin, tempMax, humidity,
       </p>
 
       <p className="mt-5 mb-3 text-sm font-medium text-inkSecondary/82">
-        Humidity {displayHumidity}% <span className="px-1.5 text-inkTertiary">•</span> Wind {Math.round(windSpeed ?? 0)} m/s <span className="px-1.5 text-inkTertiary">•</span> <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold ${aqiTone}`}><span className="h-1.5 w-1.5 rounded-full bg-current shadow-[0_0_8px_currentColor]" />AQI {displayAqi}</span> <span className="px-1.5 text-inkTertiary">•</span> <span className="shimmer-pill inline-flex items-center rounded-full bg-sky-100/80 px-2 py-0.5 text-[11px] font-semibold text-sky-700">🌧 {Math.round(rainChance ?? 0)}%</span>
+        Humidity {displayHumidity}% <span className="px-1.5 text-inkTertiary">•</span> Wind {Math.round(windSpeed ?? 0)} m/s <span className="px-1.5 text-inkTertiary">•</span> <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold ${aqiTone}`}><span className="h-1.5 w-1.5 rounded-full bg-current shadow-[0_0_8px_currentColor]" />AQI {displayAqi}</span> <span className="px-1.5 text-inkTertiary">•</span> <span className="shimmer-pill inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold" style={{ color: 'var(--wx-accent)', background: 'color-mix(in srgb, var(--wx-accent) 18%, rgba(255,255,255,0.72))' }}>🌧 {Math.round(rainChance ?? 0)}%</span>
       </p>
     </section>
   );

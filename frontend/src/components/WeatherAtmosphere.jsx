@@ -1,13 +1,20 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
-const CONDITION_STYLES = {
-  clear: 'from-[#d5e6fb] via-[#c3d6ee] to-[#b4c3e0]',
-  clouds: 'from-[#c7d1df] via-[#b5bece] to-[#9da8ba]',
-  rain: 'from-[#8ea4c1] via-[#7d92b1] to-[#647695]',
-  thunderstorm: 'from-[#7f8cad] via-[#6d799a] to-[#576284]',
-  snow: 'from-[#dbe4f0] via-[#cdd8e7] to-[#b7c2d5]',
-  night: 'from-[#2f3b67] via-[#283359] to-[#1f2748]',
-  default: 'from-[#cddcf0] via-[#bccce5] to-[#aab8d5]',
+const SKY_BY_PHASE = {
+  morning: 'linear-gradient(160deg, #c9dcf5 0%, #bfd5ef 42%, #f2d0bf 100%)',
+  noon: 'linear-gradient(170deg, #cbe1fb 0%, #c2d8f5 45%, #dbe8fb 100%)',
+  sunset: 'linear-gradient(170deg, #f0b39a 0%, #d6a7d8 48%, #8fa3d8 100%)',
+  night: 'linear-gradient(170deg, #1b2342 0%, #26315d 48%, #4c4f89 100%)',
+};
+
+const OVERLAY_BY_WEATHER = {
+  clear: 'radial-gradient(circle at 12% 8%, rgba(255, 237, 180, 0.24), transparent 42%)',
+  clouds: 'radial-gradient(circle at 14% 10%, rgba(232, 240, 252, 0.2), transparent 45%)',
+  rain: 'radial-gradient(circle at 18% 12%, rgba(183, 193, 224, 0.18), transparent 48%)',
+  thunderstorm: 'radial-gradient(circle at 18% 12%, rgba(169, 178, 215, 0.16), transparent 48%)',
+  snow: 'radial-gradient(circle at 14% 9%, rgba(247, 250, 255, 0.22), transparent 46%)',
+  night: 'radial-gradient(circle at 18% 10%, rgba(129, 120, 210, 0.18), transparent 48%)',
+  default: 'radial-gradient(circle at 14% 10%, rgba(233, 241, 253, 0.18), transparent 45%)',
 };
 
 const BLOOM_STYLES = {
@@ -30,16 +37,40 @@ const resolveCondition = (condition = '') => {
   return 'default';
 };
 
+const resolvePhase = (hour, weatherKey) => {
+  if (weatherKey === 'night') return 'night';
+  if (hour >= 5 && hour < 10) return 'morning';
+  if (hour >= 10 && hour < 16) return 'noon';
+  if (hour >= 16 && hour < 19) return 'sunset';
+  return 'night';
+};
+
 function WeatherAtmosphere({ condition, parallaxOffset = 0 }) {
   const canvasRef = useRef(null);
+  const [now, setNow] = useState(() => new Date());
   const key = resolveCondition(condition);
-  const gradient = CONDITION_STYLES[key] || CONDITION_STYLES.default;
+  const phase = resolvePhase(now.getHours(), key);
+  const skyGradient = SKY_BY_PHASE[phase] || SKY_BY_PHASE.noon;
+  const weatherOverlay = OVERLAY_BY_WEATHER[key] || OVERLAY_BY_WEATHER.default;
   const bloom = BLOOM_STYLES[key] || BLOOM_STYLES.default;
   const isRainy = key === 'rain' || key === 'thunderstorm';
   const isNight = key === 'night';
   const isClear = key === 'clear';
   const isCloudy = key === 'clouds';
   const shift = Math.min(parallaxOffset * 0.05, 20);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setNow(new Date());
+    }, 60000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const skyStyle = useMemo(
+    () => ({ backgroundImage: `${skyGradient}, ${weatherOverlay}` }),
+    [skyGradient, weatherOverlay],
+  );
 
   useEffect(() => {
     if (!isRainy) return undefined;
@@ -100,9 +131,9 @@ function WeatherAtmosphere({ condition, parallaxOffset = 0 }) {
 
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      <div className={`absolute inset-0 bg-gradient-to-b ${gradient} transition-all duration-[1800ms] ease-out`} />
+      <div className="sky-drift absolute inset-0 transition-all duration-[1800ms] ease-out" style={skyStyle} />
 
-      <div className="absolute inset-0 opacity-45 transition-opacity duration-[1500ms] bg-[radial-gradient(circle_at_14%_12%,rgba(255,255,255,0.2),transparent_44%)]" />
+      <div className="atmo-overlay absolute inset-0 opacity-45 transition-opacity duration-[1500ms]" />
       <div className="atmo-blob absolute -left-24 -top-10 h-[20rem] w-[20rem] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.18),transparent_68%)]" style={{ transform: `translateY(${shift * 0.55}px)` }} />
       <div className="atmo-blob-slow absolute -right-28 bottom-[-4.5rem] h-[23rem] w-[23rem] rounded-full bg-[radial-gradient(circle,rgba(201,219,248,0.18),transparent_70%)]" style={{ transform: `translateY(${-shift * 0.4}px)` }} />
       <div className="atmo-blob absolute right-[24%] top-[36%] h-[13rem] w-[13rem] rounded-full bg-[radial-gradient(circle,rgba(247,251,255,0.12),transparent_72%)]" style={{ transform: `translateY(${shift * 0.22}px)` }} />

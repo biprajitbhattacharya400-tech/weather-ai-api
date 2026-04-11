@@ -1,6 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
 import WeatherAtmosphere from './WeatherAtmosphere';
 
+const resolveWeatherKey = (condition = '') => {
+  const normalized = String(condition).toLowerCase();
+  if (normalized.includes('thunder')) return 'rain';
+  if (normalized.includes('rain') || normalized.includes('drizzle')) return 'rain';
+  if (normalized.includes('cloud') || normalized.includes('mist') || normalized.includes('fog')) return 'clouds';
+  if (normalized.includes('night')) return 'night';
+  if (normalized.includes('clear') || normalized.includes('sun')) return 'clear';
+  return 'default';
+};
+
 function AppShell({ condition, topBar, hero, centerPanel, desktopPanel, mobilePanel, footer }) {
   const [scrollY, setScrollY] = useState(0);
   const [cursor, setCursor] = useState({ x: 0, y: 0 });
@@ -37,6 +47,7 @@ function AppShell({ condition, topBar, hero, centerPanel, desktopPanel, mobilePa
   }, []);
 
   const heroShift = useMemo(() => Math.max(-18, -scrollY * 0.04), [scrollY]);
+  const weatherKey = useMemo(() => resolveWeatherKey(condition), [condition]);
 
   useEffect(() => {
     const nodes = Array.from(document.querySelectorAll('.scroll-reveal'));
@@ -76,7 +87,7 @@ function AppShell({ condition, topBar, hero, centerPanel, desktopPanel, mobilePa
 
   return (
     <main
-      className="relative flex min-h-screen flex-col overflow-x-hidden text-inkPrimary pb-[env(safe-area-inset-bottom)]"
+      className={`relative flex min-h-screen flex-col overflow-x-hidden text-inkPrimary pb-[env(safe-area-inset-bottom)] wx-${weatherKey}`}
       onMouseMove={(event) => {
         if (!showCursorGlow) return;
         setCursor({ x: event.clientX, y: event.clientY });

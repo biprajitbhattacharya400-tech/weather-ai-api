@@ -9,7 +9,7 @@ function TemperatureGraph({ points }) {
           <LineChart data={points} margin={{ top: 10, right: 8, bottom: 2, left: 8 }}>
             <defs>
               <linearGradient id="tempFill" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="rgba(95, 125, 178, 0.35)" />
+                <stop offset="0%" stopColor="color-mix(in srgb, var(--wx-graph) 38%, rgba(255,255,255,0.22))" />
                 <stop offset="100%" stopColor="rgba(95, 125, 178, 0.02)" />
               </linearGradient>
             </defs>
@@ -38,7 +38,7 @@ function TemperatureGraph({ points }) {
             <Line
               type="monotone"
               dataKey="temperature"
-              stroke="rgba(116, 143, 194, 0.35)"
+              stroke="color-mix(in srgb, var(--wx-graph) 54%, rgba(255,255,255,0.4))"
               strokeWidth={6}
               dot={false}
               activeDot={false}
@@ -49,12 +49,24 @@ function TemperatureGraph({ points }) {
             <Line
               type="monotone"
               dataKey="temperature"
-              stroke="#5b6f96"
+              stroke="var(--wx-graph)"
               strokeWidth={2.4}
               dot={false}
               activeDot={{ r: 3, fill: '#111827' }}
               isAnimationActive
               animationDuration={1050}
+              animationEasing="ease-out"
+            />
+            <Line
+              className="graph-sheen-line"
+              type="monotone"
+              dataKey="temperature"
+              stroke="color-mix(in srgb, white 62%, var(--wx-graph) 38%)"
+              strokeWidth={1.1}
+              dot={false}
+              activeDot={false}
+              isAnimationActive
+              animationDuration={1250}
               animationEasing="ease-out"
             />
           </LineChart>
