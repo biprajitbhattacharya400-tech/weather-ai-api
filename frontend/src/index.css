@@ -518,15 +518,19 @@ body {
   background: linear-gradient(90deg, rgba(125, 191, 255, 0.7), rgba(56, 161, 255, 0.9));
 }
 
-.graph-sheen-line {
-  stroke-dasharray: 8 12;
-  animation: graphSheen 8s linear infinite;
+@keyframes graphBreathe {
+  0%,
+  100% {
+    opacity: 0.88;
+  }
+
+  50% {
+    opacity: 1;
+  }
 }
 
-@keyframes graphSheen {
-  to {
-    stroke-dashoffset: -120;
-  }
+.graph-breathe-line {
+  animation: graphBreathe 6.8s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -542,6 +546,7 @@ body {
   .temp-breathe,
   .icon-float,
   .shimmer-pill,
+  .graph-breathe-line,
   .rain-streaks,
   .night-stars,
   .sky-drift,

@@ -4,13 +4,17 @@ function TemperatureGraph({ points }) {
   return (
     <section className="space-y-3">
       <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-inkTertiary">Temperature Trend</p>
-      <div className="h-40 w-full rounded-2xl border border-white/14 bg-[linear-gradient(180deg,rgba(255,255,255,0.1),rgba(255,255,255,0.03))] px-1 py-1">
+      <div className="h-40 w-full rounded-2xl border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] px-1 py-1">
         <ResponsiveContainer>
           <LineChart data={points} margin={{ top: 10, right: 8, bottom: 2, left: 8 }}>
             <defs>
               <linearGradient id="tempFill" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="color-mix(in srgb, var(--wx-graph) 38%, rgba(255,255,255,0.22))" />
-                <stop offset="100%" stopColor="rgba(95, 125, 178, 0.02)" />
+                <stop offset="0%" stopColor="rgba(124, 134, 184, 0.15)" />
+                <stop offset="100%" stopColor="rgba(124, 134, 184, 0)" />
+              </linearGradient>
+              <linearGradient id="tempStroke" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="#8FAFD9" />
+                <stop offset="100%" stopColor="#6D6BFF" />
               </linearGradient>
             </defs>
             <Tooltip
@@ -38,35 +42,24 @@ function TemperatureGraph({ points }) {
             <Line
               type="monotone"
               dataKey="temperature"
-              stroke="color-mix(in srgb, var(--wx-graph) 54%, rgba(255,255,255,0.4))"
-              strokeWidth={6}
+              stroke="rgba(124, 134, 184, 0.16)"
+              strokeWidth={8}
               dot={false}
               activeDot={false}
               isAnimationActive
-              animationDuration={900}
+              animationDuration={1000}
               animationEasing="ease-out"
             />
             <Line
+              className="graph-breathe-line"
               type="monotone"
               dataKey="temperature"
-              stroke="var(--wx-graph)"
-              strokeWidth={2.4}
+              stroke="url(#tempStroke)"
+              strokeWidth={2.3}
               dot={false}
-              activeDot={{ r: 3, fill: '#111827' }}
+              activeDot={{ r: 3, fill: '#6D6BFF' }}
               isAnimationActive
-              animationDuration={1050}
-              animationEasing="ease-out"
-            />
-            <Line
-              className="graph-sheen-line"
-              type="monotone"
-              dataKey="temperature"
-              stroke="color-mix(in srgb, white 62%, var(--wx-graph) 38%)"
-              strokeWidth={1.1}
-              dot={false}
-              activeDot={false}
-              isAnimationActive
-              animationDuration={1250}
+              animationDuration={1000}
               animationEasing="ease-out"
             />
           </LineChart>
