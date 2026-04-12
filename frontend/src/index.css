@@ -341,9 +341,11 @@ body {
   border-radius: 9999px;
   background: radial-gradient(circle, rgba(217, 231, 255, 0.26), transparent 70%);
   filter: blur(2px);
-  transform: translate(-50%, -50%);
+  transform: translate3d(0, 0, 0);
   transition: opacity 260ms ease;
   z-index: 4;
+  opacity: 0;
+  will-change: transform, opacity;
 }
 
 @keyframes heroBreathe {
@@ -375,6 +377,13 @@ body {
 
 .icon-float {
   animation: iconFloat 4.6s ease-in-out infinite;
+}
+
+.hourly-icon-float {
+  animation: iconFloat 4.6s ease-in-out infinite;
+  color: color-mix(in srgb, var(--wx-accent, #5f7694) 62%, #1f2f49 38%);
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 @keyframes shimmer {
@@ -575,8 +584,8 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.24);
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.08));
   box-shadow: 0 14px 34px rgba(56, 73, 104, 0.11), inset 0 1px 0 rgba(255, 255, 255, 0.24);
-  backdrop-filter: blur(11px);
-  -webkit-backdrop-filter: blur(11px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   transform: translateZ(0);
 }
 
@@ -972,8 +981,23 @@ body {
   .glass-lite,
   .glass-strong,
   .glass-soft {
-    backdrop-filter: blur(7px);
-    -webkit-backdrop-filter: blur(7px);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+  }
+
+  .conditions-shell {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  .atmo-blob,
+  .atmo-blob-slow,
+  .cloud-layers,
+  .sunny-particles,
+  .grain-overlay,
+  .night-stars,
+  .rain-streaks {
+    opacity: 0.6;
   }
 
   .soft-button:active {
@@ -991,6 +1015,11 @@ body {
   .graph-sheen-line,
   .cursor-glow {
     animation: none !important;
+  }
+
+  .hourly-icon-float,
+  .icon-float {
+    animation-duration: 6.2s;
   }
 
   .conditions-shell:active {

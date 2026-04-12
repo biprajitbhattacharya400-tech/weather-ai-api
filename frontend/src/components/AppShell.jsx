@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import WeatherAtmosphere from './WeatherAtmosphere';
 
 const resolveWeatherKey = (condition = '') => {
@@ -13,9 +13,11 @@ const resolveWeatherKey = (condition = '') => {
 
 function AppShell({ condition, topBar, hero, centerPanel, desktopPanel, mobilePanel, footer }) {
   const [scrollY, setScrollY] = useState(0);
-  const [cursor, setCursor] = useState({ x: 0, y: 0 });
   const [showCursorGlow, setShowCursorGlow] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
+  const cursorGlowRef = useRef(null);
+  const cursorFrameRef = useRef(0);
+  const cursorPosRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     const updateCapability = () => {
@@ -28,6 +30,16 @@ function AppShell({ condition, topBar, hero, centerPanel, desktopPanel, mobilePa
     window.addEventListener('resize', updateCapability);
 
     return () => window.removeEventListener('resize', updateCapability);
+  }, []);
+
+  useEffect(() => {
+    if (!showCursorGlow && cursorGlowRef.current) {
+      cursorGlowRef.current.style.opacity = '0';
+    }
+  }, [showCursorGlow]);
+
+  useEffect(() => () => {
+    if (cursorFrameRef.current) cancelAnimationFrame(cursorFrameRef.current);
   }, []);
 
   useEffect(() => {
@@ -92,11 +104,25 @@ function AppShell({ condition, topBar, hero, centerPanel, desktopPanel, mobilePa
       className={`relative flex min-h-screen flex-col overflow-x-hidden text-inkPrimary pb-[env(safe-area-inset-bottom)] wx-${weatherKey}`}
       onMouseMove={(event) => {
         if (!showCursorGlow) return;
-        setCursor({ x: event.clientX, y: event.clientY });
+
+        cursorPosRef.current = { x: event.clientX, y: event.clientY };
+        if (cursorFrameRef.current) return;
+
+        cursorFrameRef.current = requestAnimationFrame(() => {
+          cursorFrameRef.current = 0;
+          if (!cursorGlowRef.current) return;
+
+          const { x, y } = cursorPosRef.current;
+          cursorGlowRef.current.style.opacity = '1';
+          cursorGlowRef.current.style.transform = `translate3d(${x - 110}px, ${y - 110}px, 0)`;
+        });
+      }}
+      onMouseLeave={() => {
+        if (cursorGlowRef.current) cursorGlowRef.current.style.opacity = '0';
       }}
     >
       <WeatherAtmosphere condition={condition} parallaxOffset={scrollY} />
-      {showCursorGlow ? <div className="cursor-glow" style={{ left: cursor.x, top: cursor.y }} /> : null}
+      {showCursorGlow ? <div ref={cursorGlowRef} className="cursor-glow" /> : null}
 
       <div className="relative z-10 mx-auto w-full max-w-[1440px] flex-1 px-5 pb-8 pt-20 md:px-10 md:pt-24 lg:grid lg:grid-cols-[minmax(0,0.98fr)_minmax(320px,0.8fr)_minmax(320px,0.72fr)] lg:gap-8 lg:px-14 lg:pb-24 xl:gap-10">
         <div className="scroll-reveal revealed relative z-30 mb-5 lg:col-span-3 lg:mb-0">{topBar}</div>

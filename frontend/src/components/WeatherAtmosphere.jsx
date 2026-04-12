@@ -48,6 +48,7 @@ const resolvePhase = (hour, weatherKey) => {
 function WeatherAtmosphere({ condition, parallaxOffset = 0 }) {
   const canvasRef = useRef(null);
   const [now, setNow] = useState(() => new Date());
+  const [performanceMode, setPerformanceMode] = useState('full');
   const key = resolveCondition(condition);
   const phase = resolvePhase(now.getHours(), key);
   const skyGradient = SKY_BY_PHASE[phase] || SKY_BY_PHASE.noon;
@@ -58,6 +59,21 @@ function WeatherAtmosphere({ condition, parallaxOffset = 0 }) {
   const isClear = key === 'clear';
   const isCloudy = key === 'clouds';
   const shift = Math.min(parallaxOffset * 0.05, 20);
+
+  useEffect(() => {
+    const updateMode = () => {
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const isMobile = window.innerWidth < 900;
+      const lowCpu = typeof navigator.hardwareConcurrency === 'number' && navigator.hardwareConcurrency <= 4;
+      setPerformanceMode(reducedMotion || isMobile || lowCpu ? 'lite' : 'full');
+    };
+
+    updateMode();
+    window.addEventListener('resize', updateMode);
+    return () => window.removeEventListener('resize', updateMode);
+  }, []);
+
+  const enableCanvasRain = isRainy && performanceMode === 'full';
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -73,7 +89,7 @@ function WeatherAtmosphere({ condition, parallaxOffset = 0 }) {
   );
 
   useEffect(() => {
-    if (!isRainy) return undefined;
+    if (!enableCanvasRain) return undefined;
 
     const canvas = canvasRef.current;
     if (!canvas) return undefined;
@@ -87,7 +103,7 @@ function WeatherAtmosphere({ condition, parallaxOffset = 0 }) {
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      drops = Array.from({ length: Math.max(45, Math.floor(canvas.width / 20)) }).map(() => ({
+      drops = Array.from({ length: Math.max(28, Math.floor(canvas.width / 28)) }).map(() => ({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
         len: 8 + Math.random() * 12,
@@ -127,7 +143,7 @@ function WeatherAtmosphere({ condition, parallaxOffset = 0 }) {
       cancelAnimationFrame(frame);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     };
-  }, [isRainy]);
+  }, [enableCanvasRain]);
 
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -136,15 +152,15 @@ function WeatherAtmosphere({ condition, parallaxOffset = 0 }) {
       <div className="atmo-overlay absolute inset-0 opacity-45 transition-opacity duration-[1500ms]" />
       <div className="atmo-blob absolute -left-24 -top-10 h-[20rem] w-[20rem] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.18),transparent_68%)]" style={{ transform: `translateY(${shift * 0.55}px)` }} />
       <div className="atmo-blob-slow absolute -right-28 bottom-[-4.5rem] h-[23rem] w-[23rem] rounded-full bg-[radial-gradient(circle,rgba(201,219,248,0.18),transparent_70%)]" style={{ transform: `translateY(${-shift * 0.4}px)` }} />
-      <div className="atmo-blob absolute right-[24%] top-[36%] h-[13rem] w-[13rem] rounded-full bg-[radial-gradient(circle,rgba(247,251,255,0.12),transparent_72%)]" style={{ transform: `translateY(${shift * 0.22}px)` }} />
+      {performanceMode === 'full' ? <div className="atmo-blob absolute right-[24%] top-[36%] h-[13rem] w-[13rem] rounded-full bg-[radial-gradient(circle,rgba(247,251,255,0.12),transparent_72%)]" style={{ transform: `translateY(${shift * 0.22}px)` }} /> : null}
 
       <div className={`absolute inset-0 animate-breathe ${bloom}`} />
-      {isClear ? <div className="sunny-particles absolute inset-0 opacity-30" /> : null}
+      {isClear && performanceMode === 'full' ? <div className="sunny-particles absolute inset-0 opacity-30" /> : null}
       {isCloudy ? <div className="cloud-layers absolute inset-0 opacity-56" /> : null}
       <div className="grain-overlay absolute inset-0" />
-      {isNight ? <div className="night-stars absolute inset-0 opacity-60" /> : null}
+      {isNight && performanceMode === 'full' ? <div className="night-stars absolute inset-0 opacity-60" /> : null}
       {isRainy ? <div className="rain-streaks absolute inset-0 opacity-30" /> : null}
-      {isRainy ? <canvas ref={canvasRef} className="absolute inset-0 opacity-40" /> : null}
+      {enableCanvasRain ? <canvas ref={canvasRef} className="absolute inset-0 opacity-40" /> : null}
     </div>
   );
 }
