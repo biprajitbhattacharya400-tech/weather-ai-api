@@ -201,6 +201,53 @@ body {
   animation: insightEnter 560ms ease both;
 }
 
+@keyframes liveStripEnter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.live-strip-enter {
+  animation: liveStripEnter 620ms ease both;
+}
+
+@keyframes textSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.text-slide-up {
+  animation: textSlideUp 560ms ease both;
+}
+
+@keyframes livePulse {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.live-dot-pulse {
+  animation: livePulse 1.5s ease-in-out infinite;
+}
+
 @keyframes blobFloat {
   0% {
     transform: translate3d(0, 0, 0) scale(1);
@@ -539,6 +586,9 @@ body {
   .weather-refresh,
   .section-enter,
   .insight-enter,
+  .live-strip-enter,
+  .text-slide-up,
+  .live-dot-pulse,
   .atmo-blob,
   .atmo-blob-slow,
   .sunny-particles,

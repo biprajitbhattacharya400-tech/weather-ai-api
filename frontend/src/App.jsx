@@ -494,6 +494,7 @@ function App() {
       condition={weather.condition}
       tempMin={weather.temp_min}
       tempMax={weather.temp_max}
+      feelsLike={weather.feels_like}
       humidity={weather.humidity}
       windSpeed={weather.wind_speed}
       aqi={weather.aqi}

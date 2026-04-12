@@ -9,13 +9,34 @@ const iconByCondition = (condition) => {
   return Sun;
 };
 
-function WeatherHero({ city, temperature, condition, tempMin, tempMax, humidity, windSpeed, aqi, rainChance, insight, tip }) {
+const buildMoodText = (condition, temperature) => {
+  const hour = new Date().getHours();
+  const period = hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : 'evening';
+  const c = String(condition || '').toLowerCase();
+
+  if (c.includes('rain') || c.includes('drizzle')) {
+    return `Gentle ${period} rain with a calm atmosphere`;
+  }
+
+  if (c.includes('cloud') || c.includes('mist') || c.includes('fog')) {
+    return `Calm ${period} with light clouds`;
+  }
+
+  if ((temperature ?? 0) >= 30) {
+    return `Warm ${period} with clear skies`;
+  }
+
+  return `Soft ${period} weather with clear skies`;
+};
+
+function WeatherHero({ city, temperature, condition, tempMin, tempMax, feelsLike, humidity, windSpeed, aqi, rainChance, insight, tip }) {
   const Icon = iconByCondition(condition);
   const now = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
   const [displayTemp, setDisplayTemp] = useState(Math.round(temperature || 0));
   const [displayHumidity, setDisplayHumidity] = useState(Math.round(humidity || 0));
   const [displayAqi, setDisplayAqi] = useState(Math.round(aqi || 42));
   const frameRef = useRef(0);
+  const moodText = buildMoodText(condition, temperature);
 
   const aqiTone = displayAqi <= 60 ? 'bg-emerald-100/80 text-emerald-700' : displayAqi <= 120 ? 'bg-amber-100/85 text-amber-700' : 'bg-rose-100/85 text-rose-700';
 
@@ -118,6 +139,24 @@ function WeatherHero({ city, temperature, condition, tempMin, tempMax, humidity,
       <p className="mt-5 mb-3 text-sm font-medium text-inkSecondary/82">
         Humidity {displayHumidity}% <span className="px-1.5 text-inkTertiary">•</span> Wind {Math.round(windSpeed ?? 0)} m/s <span className="px-1.5 text-inkTertiary">•</span> <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold ${aqiTone}`}><span className="h-1.5 w-1.5 rounded-full bg-current shadow-[0_0_8px_currentColor]" />AQI {displayAqi}</span> <span className="px-1.5 text-inkTertiary">•</span> <span className="shimmer-pill inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold" style={{ color: 'var(--wx-accent)', background: 'color-mix(in srgb, var(--wx-accent) 18%, rgba(255,255,255,0.72))' }}>🌧 {Math.round(rainChance ?? 0)}%</span>
       </p>
+
+      <div className="glass-soft live-strip-enter w-full max-w-xl rounded-2xl px-4 py-3 shadow-ambient">
+        <div className="flex items-center justify-between gap-3">
+          <div className="text-slide-up flex items-center gap-2.5 text-sm font-medium text-inkSecondary">
+            <Icon size={14} className="icon-float" style={{ color: 'var(--wx-accent)' }} />
+            <span>{moodText}</span>
+          </div>
+          <div className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-inkSecondary/80">
+            <span className="live-dot-pulse h-2 w-2 rounded-full bg-emerald-500/85" />
+            <span>Live</span>
+          </div>
+        </div>
+        <div className="mt-2">
+          <span className="inline-flex items-center rounded-full bg-white/58 px-2.5 py-1 text-xs font-semibold text-inkSecondary">
+            Feels like {Math.round(feelsLike ?? temperature ?? 0)}°
+          </span>
+        </div>
+      </div>
     </section>
   );
 }
