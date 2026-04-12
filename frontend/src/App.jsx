@@ -32,6 +32,10 @@ const EMPTY_WEATHER = {
 
 const formatHour = (value) => new Date(value).toLocaleTimeString([], { hour: 'numeric' });
 
+const FRIENDLY_NAMES = ['Buddy', 'Friend', 'Mate', 'Boss', 'Champ', 'Pal'];
+
+const pickFriendlyName = () => FRIENDLY_NAMES[Math.floor(Math.random() * FRIENDLY_NAMES.length)];
+
 const getDayGreeting = (name = 'Biprajit') => {
   const hour = new Date().getHours();
     if (hour < 12) return `Good Morning, ${name}`;
@@ -114,6 +118,7 @@ const buildAiTip = (weatherData) => {
 
 function App() {
   const [activeTab, setActiveTab] = useState('single');
+  const [friendlyName] = useState(() => pickFriendlyName());
 
   const [query, setQuery] = useState('');
   const [weather, setWeather] = useState(EMPTY_WEATHER);
@@ -546,7 +551,7 @@ function App() {
 
   const homeHero = (
     <div className="fade-soft home-hero-wrap home-layout-limit mx-auto flex w-full flex-col items-start text-left lg:mx-0">
-      <p className="hero-greeting section-enter mt-7 text-xs font-medium tracking-[0.12em] text-white/68">{getDayGreeting('Biprajit')}</p>
+      <p className="hero-greeting section-enter mt-7 text-xs font-medium tracking-[0.12em] text-white/68">{getDayGreeting(friendlyName)}</p>
 
       <h1 className="hero-heading-clean hero-heading-enter mt-4 text-4xl font-semibold tracking-[-0.02em] leading-[1.15] sm:text-5xl md:text-6xl">
         Where weather meets experience

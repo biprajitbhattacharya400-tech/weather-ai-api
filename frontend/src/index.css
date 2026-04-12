@@ -81,27 +81,43 @@ body {
 }
 
 .glass-lite {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.08));
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: linear-gradient(150deg, rgba(20, 31, 50, 0.74), rgba(26, 41, 66, 0.56));
+  border: 1px solid rgba(206, 222, 248, 0.2);
+  box-shadow: inset 0 1px 0 rgba(229, 238, 255, 0.12), 0 10px 24px rgba(6, 12, 24, 0.18);
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
 }
 
 .glass-strong {
-  background: linear-gradient(150deg, rgba(255, 255, 255, 0.17), rgba(255, 255, 255, 0.12));
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.34), 0 14px 34px rgba(60, 79, 112, 0.12);
-  backdrop-filter: blur(13px);
-  -webkit-backdrop-filter: blur(13px);
+  background: linear-gradient(155deg, rgba(19, 30, 48, 0.86), rgba(23, 37, 61, 0.74));
+  border: 1px solid rgba(212, 227, 252, 0.2);
+  box-shadow: inset 0 1px 0 rgba(239, 245, 255, 0.14), 0 16px 36px rgba(6, 12, 24, 0.24);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .glass-soft {
-  background: linear-gradient(150deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.06));
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.24), 0 8px 22px rgba(68, 89, 126, 0.09);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: linear-gradient(156deg, rgba(21, 34, 55, 0.72), rgba(26, 42, 68, 0.58));
+  border: 1px solid rgba(204, 221, 248, 0.18);
+  box-shadow: inset 0 1px 0 rgba(235, 243, 255, 0.12), 0 10px 24px rgba(7, 13, 25, 0.18);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.text-inkPrimary {
+  color: rgba(244, 248, 255, 0.96) !important;
+}
+
+.text-inkSecondary {
+  color: rgba(228, 236, 250, 0.88) !important;
+}
+
+.text-inkTertiary {
+  color: rgba(196, 208, 232, 0.74) !important;
+}
+
+.placeholder\:text-inkTertiary::placeholder {
+  color: rgba(193, 206, 232, 0.62) !important;
 }
 
 @keyframes fadeSoft {
