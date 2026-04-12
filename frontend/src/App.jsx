@@ -55,6 +55,7 @@ const sanitizeCityPayload = (payload) => {
   return {
     ...payload,
     city: toCleanAsciiCity(payload.city),
+    insight: toCleanAsciiCity(payload.insight),
   };
 };
 
