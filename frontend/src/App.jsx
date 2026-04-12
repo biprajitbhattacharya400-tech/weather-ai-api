@@ -134,8 +134,6 @@ function App() {
   const [historyData, setHistoryData] = useState([]);
   const [analyticsData, setAnalyticsData] = useState(null);
   const [loadingDashboard, setLoadingDashboard] = useState(false);
-  const [introPhase, setIntroPhase] = useState('checking');
-  const [introFontReady, setIntroFontReady] = useState(false);
   const [liveContext, setLiveContext] = useState({
     city: 'Kolkata',
     temperature: 30,
@@ -145,78 +143,6 @@ function App() {
   });
 
   const canShowSuggestions = !hasSearched && activeTab === 'single' && showSuggestions;
-
-  useEffect(() => {
-    try {
-      if (localStorage.getItem('weather-intro-seen') === '1') {
-        setIntroPhase('done');
-      }
-    } catch {
-      setIntroPhase('done');
-    }
-  }, []);
-
-  useEffect(() => {
-    let timeoutId;
-    let cancelled = false;
-
-    const markReady = () => {
-      if (!cancelled) setIntroFontReady(true);
-    };
-
-    if (typeof document !== 'undefined' && document.fonts?.load) {
-      Promise.race([
-        document.fonts.load('1em Parisienne'),
-        new Promise((resolve) => {
-          timeoutId = setTimeout(resolve, 1200);
-        }),
-      ]).finally(markReady);
-    } else {
-      markReady();
-    }
-
-    return () => {
-      cancelled = true;
-      if (timeoutId) clearTimeout(timeoutId);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!introFontReady || introPhase === 'done') return undefined;
-
-    let fadeTimer;
-    let doneTimer;
-
-    try {
-      const introSeen = localStorage.getItem('weather-intro-seen');
-      if (introSeen === '1') {
-        setIntroPhase('done');
-        return undefined;
-      }
-    } catch {
-      setIntroPhase('done');
-      return undefined;
-    }
-
-    setIntroPhase('visible');
-    fadeTimer = setTimeout(() => {
-      setIntroPhase('fading');
-    }, 2100);
-
-    doneTimer = setTimeout(() => {
-      setIntroPhase('done');
-      try {
-        localStorage.setItem('weather-intro-seen', '1');
-      } catch {
-        // Ignore storage failures and continue with a non-blocking UX.
-      }
-    }, 2700);
-
-    return () => {
-      clearTimeout(fadeTimer);
-      clearTimeout(doneTimer);
-    };
-  }, [introFontReady, introPhase]);
 
   const fetchWeather = async (city) => {
     if (!city.trim()) return;
@@ -619,36 +545,16 @@ function App() {
   );
 
   const homeHero = (
-    <div className="fade-soft home-hero-wrap mx-auto flex w-full max-w-3xl flex-col items-center gap-5 text-center lg:mx-0 lg:items-start lg:text-left sm:gap-6">
-      <div className="home-orb home-orb-cool" aria-hidden="true" />
-      <div className="home-orb home-orb-warm" aria-hidden="true" />
-      <div className="home-hero-grain" aria-hidden="true" />
-      <p className="hero-greeting section-enter text-xs font-medium tracking-[0.12em] text-inkSecondary/62">{getDayGreeting('Biprajit')}</p>
+    <div className="fade-soft home-hero-wrap mx-auto flex w-full max-w-3xl flex-col items-center text-center lg:mx-0 lg:items-start lg:text-left">
+      <p className="hero-greeting section-enter text-xs font-medium tracking-[0.12em] text-white/68">{getDayGreeting('Biprajit')}</p>
 
-      <div className="relative h-10 w-full sm:h-12 md:h-14">
-        {introPhase !== 'done' && introFontReady ? (
-          <p
-            className={`font-tagline-script absolute left-0 right-0 text-3xl leading-none text-inkSecondary/85 transition-opacity duration-[600ms] ease-in-out sm:text-4xl md:text-[2.85rem] ${
-              introPhase === 'visible' ? 'opacity-100' : 'opacity-0'
-            }`}
-          >
-            Weather, designed as a product.
-          </p>
-        ) : null}
-      </div>
-
-      <h1
-        className={`hero-heading-gradient hero-heading-enter text-4xl font-semibold tracking-[-0.03em] text-inkPrimary transition-opacity duration-[600ms] ease-in-out sm:text-5xl md:text-6xl ${
-          introPhase === 'done' ? 'opacity-100' : 'opacity-0'
-        }`}
-      >
+      <h1 className="hero-heading-clean hero-heading-enter mt-10 text-4xl font-semibold tracking-[-0.02em] sm:text-5xl md:text-6xl">
         Where weather meets experience
       </h1>
-      <p className="hero-subtle-shimmer max-w-2xl text-sm text-inkSecondary/90 sm:text-base">
+      <p className="mt-4 max-w-2xl text-sm text-white/60 sm:text-base">
         Search any city to begin a calm, immersive weather experience.
       </p>
-      <div className="home-search-focus-wrap w-full max-w-2xl section-enter" style={{ transitionDelay: '90ms' }}>
-        <div className="home-search-glow" aria-hidden="true" />
+      <div className="home-search-focus-wrap mt-7 w-full max-w-2xl section-enter" style={{ transitionDelay: '90ms' }}>
         <CitySearchBox
           value={query}
           onChange={(event) => {

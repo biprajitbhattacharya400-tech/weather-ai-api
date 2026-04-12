@@ -41,7 +41,7 @@ function CitySearchBox({
           onChange={onChange}
           onKeyDown={onKeyDown}
           placeholder={placeholder}
-          className={`focus-glow caret-soft search-input w-full rounded-full bg-transparent text-inkPrimary placeholder:text-inkTertiary focus:outline-none ${hasValue ? 'search-has-value' : ''} ${large ? 'px-2 text-lg font-medium' : 'px-2 text-sm font-medium'}`}
+          className={`focus-glow search-input w-full rounded-full bg-transparent text-inkPrimary placeholder:text-inkTertiary focus:outline-none ${hasValue ? 'search-has-value' : ''} ${large ? 'px-2 text-lg font-medium' : 'px-2 text-sm font-medium'}`}
           aria-label="City search"
         />
         <button

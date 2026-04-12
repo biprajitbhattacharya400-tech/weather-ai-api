@@ -17,6 +17,9 @@ const OVERLAY_BY_WEATHER = {
   default: 'radial-gradient(circle at 14% 10%, rgba(233, 241, 253, 0.18), transparent 45%)',
 };
 
+const HOME_IDLE_BACKGROUND = 'linear-gradient(135deg, #0F172A, #1E293B, #334155)';
+const HOME_IDLE_LIGHT = 'radial-gradient(circle at 20% 30%, rgba(255,255,255,0.05), transparent 60%)';
+
 const BLOOM_STYLES = {
   clear: 'bg-[radial-gradient(circle_at_52%_12%,rgba(255,248,223,0.26),transparent_48%)]',
   clouds: 'bg-[radial-gradient(circle_at_50%_10%,rgba(255,255,255,0.2),transparent_45%)]',
@@ -50,6 +53,7 @@ function WeatherAtmosphere({ condition, parallaxOffset = 0 }) {
   const [now, setNow] = useState(() => new Date());
   const [performanceMode, setPerformanceMode] = useState('full');
   const key = resolveCondition(condition);
+  const isHomeIdle = key === 'default';
   const phase = resolvePhase(now.getHours(), key);
   const skyGradient = SKY_BY_PHASE[phase] || SKY_BY_PHASE.noon;
   const weatherOverlay = OVERLAY_BY_WEATHER[key] || OVERLAY_BY_WEATHER.default;
@@ -84,8 +88,12 @@ function WeatherAtmosphere({ condition, parallaxOffset = 0 }) {
   }, []);
 
   const skyStyle = useMemo(
-    () => ({ backgroundImage: `${skyGradient}, ${weatherOverlay}` }),
-    [skyGradient, weatherOverlay],
+    () => ({
+      backgroundImage: isHomeIdle
+        ? `${HOME_IDLE_LIGHT}, ${HOME_IDLE_BACKGROUND}`
+        : `${skyGradient}, ${weatherOverlay}`,
+    }),
+    [isHomeIdle, skyGradient, weatherOverlay],
   );
 
   useEffect(() => {
@@ -149,18 +157,18 @@ function WeatherAtmosphere({ condition, parallaxOffset = 0 }) {
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
       <div className="sky-drift absolute inset-0 transition-all duration-[1800ms] ease-out" style={skyStyle} />
 
-      <div className="atmo-overlay absolute inset-0 opacity-45 transition-opacity duration-[1500ms]" />
-      <div className="atmo-blob absolute -left-24 -top-10 h-[20rem] w-[20rem] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.18),transparent_68%)]" style={{ transform: `translateY(${shift * 0.55}px)` }} />
-      <div className="atmo-blob-slow absolute -right-28 bottom-[-4.5rem] h-[23rem] w-[23rem] rounded-full bg-[radial-gradient(circle,rgba(201,219,248,0.18),transparent_70%)]" style={{ transform: `translateY(${-shift * 0.4}px)` }} />
-      {performanceMode === 'full' ? <div className="atmo-blob absolute right-[24%] top-[36%] h-[13rem] w-[13rem] rounded-full bg-[radial-gradient(circle,rgba(247,251,255,0.12),transparent_72%)]" style={{ transform: `translateY(${shift * 0.22}px)` }} /> : null}
+      {!isHomeIdle ? <div className="atmo-overlay absolute inset-0 opacity-45 transition-opacity duration-[1500ms]" /> : null}
+      {!isHomeIdle ? <div className="atmo-blob absolute -left-24 -top-10 h-[20rem] w-[20rem] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.18),transparent_68%)]" style={{ transform: `translateY(${shift * 0.55}px)` }} /> : null}
+      {!isHomeIdle ? <div className="atmo-blob-slow absolute -right-28 bottom-[-4.5rem] h-[23rem] w-[23rem] rounded-full bg-[radial-gradient(circle,rgba(201,219,248,0.18),transparent_70%)]" style={{ transform: `translateY(${-shift * 0.4}px)` }} /> : null}
+      {!isHomeIdle && performanceMode === 'full' ? <div className="atmo-blob absolute right-[24%] top-[36%] h-[13rem] w-[13rem] rounded-full bg-[radial-gradient(circle,rgba(247,251,255,0.12),transparent_72%)]" style={{ transform: `translateY(${shift * 0.22}px)` }} /> : null}
 
-      <div className={`absolute inset-0 animate-breathe ${bloom}`} />
-      {isClear && performanceMode === 'full' ? <div className="sunny-particles absolute inset-0 opacity-30" /> : null}
-      {isCloudy ? <div className="cloud-layers absolute inset-0 opacity-56" /> : null}
-      <div className="grain-overlay absolute inset-0" />
-      {isNight && performanceMode === 'full' ? <div className="night-stars absolute inset-0 opacity-60" /> : null}
-      {isRainy ? <div className="rain-streaks absolute inset-0 opacity-30" /> : null}
-      {enableCanvasRain ? <canvas ref={canvasRef} className="absolute inset-0 opacity-40" /> : null}
+      {!isHomeIdle ? <div className={`absolute inset-0 animate-breathe ${bloom}`} /> : null}
+      {isClear && performanceMode === 'full' && !isHomeIdle ? <div className="sunny-particles absolute inset-0 opacity-30" /> : null}
+      {isCloudy && !isHomeIdle ? <div className="cloud-layers absolute inset-0 opacity-56" /> : null}
+      {!isHomeIdle ? <div className="grain-overlay absolute inset-0" /> : null}
+      {isNight && performanceMode === 'full' && !isHomeIdle ? <div className="night-stars absolute inset-0 opacity-60" /> : null}
+      {isRainy && !isHomeIdle ? <div className="rain-streaks absolute inset-0 opacity-30" /> : null}
+      {enableCanvasRain && !isHomeIdle ? <canvas ref={canvasRef} className="absolute inset-0 opacity-40" /> : null}
     </div>
   );
 }
