@@ -32,6 +32,51 @@ const EMPTY_WEATHER = {
 
 const formatHour = (value) => new Date(value).toLocaleTimeString([], { hour: 'numeric' });
 
+const toCleanAsciiCity = (value) => {
+  if (typeof value !== 'string') return value;
+
+  let decoded = value;
+  try {
+    decoded = decodeURIComponent(value);
+  } catch {
+    decoded = value;
+  }
+
+  return decoded
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^\x20-\x7E]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+};
+
+const sanitizeCityPayload = (payload) => {
+  if (!payload || typeof payload !== 'object') return payload;
+  return {
+    ...payload,
+    city: toCleanAsciiCity(payload.city),
+  };
+};
+
+const sanitizeAnalyticsPayload = (payload) => {
+  if (!payload || typeof payload !== 'object') return payload;
+
+  const requestCount = payload.request_count && typeof payload.request_count === 'object'
+    ? Object.fromEntries(Object.entries(payload.request_count).map(([k, v]) => [toCleanAsciiCity(k), v]))
+    : payload.request_count;
+
+  const averageTemperature = payload.average_temperature && typeof payload.average_temperature === 'object'
+    ? Object.fromEntries(Object.entries(payload.average_temperature).map(([k, v]) => [toCleanAsciiCity(k), v]))
+    : payload.average_temperature;
+
+  return {
+    ...payload,
+    most_searched_city: toCleanAsciiCity(payload.most_searched_city),
+    request_count: requestCount,
+    average_temperature: averageTemperature,
+  };
+};
+
 const buildAiTip = (weatherData) => {
   const condition = String(weatherData?.condition || '').toLowerCase();
   const humidity = Number(weatherData?.humidity || 0);
@@ -160,7 +205,8 @@ function App() {
         throw new Error('City not found. Try another location.');
       }
 
-      setWeather({ ...EMPTY_WEATHER, ...data });
+      const normalized = sanitizeCityPayload(data);
+      setWeather({ ...EMPTY_WEATHER, ...normalized });
       setHasSearched(true);
       setShowSuggestions(false);
       setSuggestions([]);
@@ -188,7 +234,12 @@ function App() {
         return;
       }
 
-      setSuggestions(data.slice(0, 6));
+      const normalizedSuggestions = data.slice(0, 6).map((item) => ({
+        ...item,
+        name: toCleanAsciiCity(item.name),
+      }));
+
+      setSuggestions(normalizedSuggestions);
       setShowSuggestions(true);
       setHighlightedSuggestion(0);
     } catch {
@@ -227,7 +278,9 @@ function App() {
         throw new Error('Unable to compare cities.');
       }
 
-      const values = Object.values(data).slice(0, 2);
+      const values = Object.values(data)
+        .slice(0, 2)
+        .map((cityData) => sanitizeCityPayload(cityData));
       setCompareCities(values);
     } catch (requestError) {
       setCompareError(requestError.message || 'Unable to compare cities right now.');
@@ -249,8 +302,12 @@ function App() {
       const history = await historyRes.json();
       const analytics = await analyticsRes.json();
 
-      setHistoryData(Array.isArray(history) ? history : []);
-      setAnalyticsData(analytics || null);
+      const normalizedHistory = Array.isArray(history)
+        ? history.map((item) => ({ ...item, city: toCleanAsciiCity(item.city) }))
+        : [];
+
+      setHistoryData(normalizedHistory);
+      setAnalyticsData(sanitizeAnalyticsPayload(analytics) || null);
     } catch {
       setHistoryData([]);
       setAnalyticsData(null);

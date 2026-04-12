@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Cloud, CloudRain, CloudSnow, Sparkles, Sun } from 'lucide-react';
+import ImmersiveConditionsBlock from './ImmersiveConditionsBlock';
 
 const iconByCondition = (condition) => {
   const c = (condition || '').toLowerCase();
@@ -157,6 +158,13 @@ function WeatherHero({ city, temperature, condition, tempMin, tempMax, feelsLike
           </span>
         </div>
       </div>
+
+      <ImmersiveConditionsBlock
+        condition={condition}
+        windSpeed={windSpeed}
+        rainChance={rainChance}
+        aqi={displayAqi}
+      />
     </section>
   );
 }
