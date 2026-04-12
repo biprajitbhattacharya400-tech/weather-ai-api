@@ -35,7 +35,7 @@ function CitySearchBox({
 
   return (
     <div className={`relative w-full ${showSuggestions ? 'pb-20 md:pb-0' : ''}`}>
-      <form onSubmit={onSubmit} className={`search-shell glass-lite flex w-full items-center gap-3 rounded-full shadow-ambient ${large ? 'px-4 py-3.5' : 'px-3 py-2'}`}>
+      <form onSubmit={onSubmit} className={`search-shell glass-lite flex w-full items-center gap-3 rounded-full shadow-ambient ${large ? 'px-4 py-[0.68rem]' : 'px-3 py-[0.46rem]'}`}>
         <input
           value={value}
           onChange={onChange}
@@ -46,7 +46,7 @@ function CitySearchBox({
         />
         <button
           type="submit"
-          className={`soft-button rounded-full bg-white/72 font-semibold text-inkSecondary hover:bg-white ${large ? 'px-6 py-2.5 text-sm' : 'px-4 py-2 text-sm'}`}
+          className={`soft-button rounded-full bg-white/72 font-semibold text-inkSecondary hover:bg-white ${large ? 'px-5 py-[0.46rem] text-sm' : 'px-4 py-[0.4rem] text-sm'}`}
         >
           {loading ? 'Loading' : 'Search'}
         </button>

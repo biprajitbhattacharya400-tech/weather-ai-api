@@ -493,7 +493,7 @@ function App() {
         : conditionFromDashboard;
 
   const topBar = (
-    <div className="flex w-full flex-col items-center gap-4 lg:items-start">
+    <div className="flex w-full flex-col items-start gap-4">
       <ModeTabs activeTab={activeTab} onChange={setActiveTab} />
 
       {activeTab === 'single' && hasSearched ? (
@@ -545,16 +545,16 @@ function App() {
   );
 
   const homeHero = (
-    <div className="fade-soft home-hero-wrap mx-auto flex w-full max-w-3xl flex-col items-center text-center lg:mx-0 lg:items-start lg:text-left">
-      <p className="hero-greeting section-enter text-xs font-medium tracking-[0.12em] text-white/68">{getDayGreeting('Biprajit')}</p>
+    <div className="fade-soft home-hero-wrap home-layout-limit mx-auto flex w-full flex-col items-start text-left lg:mx-0">
+      <p className="hero-greeting section-enter mt-7 text-xs font-medium tracking-[0.12em] text-white/68">{getDayGreeting('Biprajit')}</p>
 
-      <h1 className="hero-heading-clean hero-heading-enter mt-10 text-4xl font-semibold tracking-[-0.02em] sm:text-5xl md:text-6xl">
+      <h1 className="hero-heading-clean hero-heading-enter mt-4 text-4xl font-semibold tracking-[-0.02em] leading-[1.15] sm:text-5xl md:text-6xl">
         Where weather meets experience
       </h1>
-      <p className="mt-4 max-w-2xl text-sm text-white/60 sm:text-base">
+      <p className="hero-subtext-soft mt-5 max-w-[740px] text-sm leading-[1.6] text-white/60 sm:text-base">
         Search any city to begin a calm, immersive weather experience.
       </p>
-      <div className="home-search-focus-wrap mt-7 w-full max-w-2xl section-enter" style={{ transitionDelay: '90ms' }}>
+      <div className="home-search-focus-wrap mt-8 w-full max-w-[600px] section-enter" style={{ transitionDelay: '90ms' }}>
         <CitySearchBox
           value={query}
           onChange={(event) => {
@@ -573,14 +573,14 @@ function App() {
         />
       </div>
 
-      <div className="live-context-strip section-enter" style={{ transitionDelay: '130ms' }}>
+      <div className="live-context-strip mt-4 w-full max-w-[600px] section-enter" style={{ transitionDelay: '130ms' }}>
         <p className="live-context-primary">
           {liveContext.loading ? 'Detecting local weather...' : `${liveContext.city} • ${Math.round(liveContext.temperature)}° • ${liveContext.condition}`}
         </p>
         <p className="live-context-secondary">{liveContext.loading ? 'Setting up local context for you.' : liveContext.summary}</p>
       </div>
 
-      <div className="quick-chip-row section-enter" style={{ transitionDelay: '180ms' }}>
+      <div className="quick-chip-row mt-5 w-full max-w-[600px] section-enter" style={{ transitionDelay: '180ms' }}>
         {[
           {
             label: 'Use My Location',
