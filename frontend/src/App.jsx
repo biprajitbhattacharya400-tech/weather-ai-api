@@ -560,13 +560,13 @@ function App() {
           onChange={(event) => {
             setQuery(event.target.value);
             setHasSearched(false);
-            setShowSuggestions(true);
+            setShowSuggestions(false);
           }}
           onSubmit={onSubmitSingle}
           onSuggestionPick={onPickSuggestion}
           onKeyDown={onSingleKeyDown}
-          suggestions={suggestions}
-          showSuggestions={canShowSuggestions}
+          suggestions={[]}
+          showSuggestions={false}
           loading={loadingSingle}
           placeholder="Search for a city..."
           large
