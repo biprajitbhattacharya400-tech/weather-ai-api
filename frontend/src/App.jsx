@@ -32,6 +32,25 @@ const EMPTY_WEATHER = {
 
 const formatHour = (value) => new Date(value).toLocaleTimeString([], { hour: 'numeric' });
 
+const getDayGreeting = (name = 'Biprajit') => {
+  const hour = new Date().getHours();
+    if (hour < 12) return `Good Morning, ${name}`;
+    if (hour < 17) return `Good Afternoon, ${name}`;
+    if (hour < 21) return `Good Evening, ${name}`;
+    return `Good Night, ${name}`;
+};
+
+const buildLiveSummary = (payload) => {
+  const condition = String(payload?.condition || '').toLowerCase();
+  const feelsLike = Math.round(Number(payload?.feels_like ?? payload?.temperature ?? 0));
+
+  if (condition.includes('rain') || condition.includes('drizzle')) return 'Carry a light layer and umbrella for comfort.';
+  if (condition.includes('cloud') || condition.includes('mist') || condition.includes('fog')) return 'Air feels gentle with soft light cloud cover.';
+  if (feelsLike >= 32) return 'Feels warm outside today.';
+  if (feelsLike <= 14) return 'A cooler feel outside, keep a light layer handy.';
+  return 'Conditions are calm for outdoor plans.';
+};
+
 const toCleanAsciiCity = (value) => {
   if (typeof value !== 'string') return value;
 
@@ -117,6 +136,13 @@ function App() {
   const [loadingDashboard, setLoadingDashboard] = useState(false);
   const [introPhase, setIntroPhase] = useState('checking');
   const [introFontReady, setIntroFontReady] = useState(false);
+  const [liveContext, setLiveContext] = useState({
+    city: 'Kolkata',
+    temperature: 30,
+    condition: 'Clear',
+    summary: 'Feels warm outside today.',
+    loading: true,
+  });
 
   const canShowSuggestions = !hasSearched && activeTab === 'single' && showSuggestions;
 
@@ -216,6 +242,97 @@ function App() {
     } finally {
       setLoadingSingle(false);
     }
+  };
+
+  const fetchWeatherByCoords = async ({ lat, lon, cityHint = 'Current Location', updateMain = true }) => {
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
+
+    if (updateMain) {
+      setLoadingSingle(true);
+      setSingleError('');
+    }
+
+    try {
+      const response = await fetch(
+        `${API_BASE}/weather/${encodeURIComponent(cityHint)}?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}`,
+      );
+      const data = await response.json();
+
+      if (!response.ok || data.error) {
+        throw new Error('Unable to load location weather.');
+      }
+
+      const normalized = sanitizeCityPayload(data);
+
+      if (updateMain) {
+        setWeather({ ...EMPTY_WEATHER, ...normalized });
+        setHasSearched(true);
+        setShowSuggestions(false);
+        setSuggestions([]);
+      }
+
+      return normalized;
+    } catch (requestError) {
+      if (updateMain) {
+        setSingleError(requestError.message || 'Unable to load location weather right now.');
+      }
+      return null;
+    } finally {
+      if (updateMain) setLoadingSingle(false);
+    }
+  };
+
+  const detectAndFetchLiveContext = async () => {
+    const fallback = async () => {
+      try {
+        const response = await fetch(`${API_BASE}/weather/${encodeURIComponent('Kolkata')}`);
+        const data = await response.json();
+        if (!response.ok || data.error) throw new Error('fallback-failed');
+        const normalized = sanitizeCityPayload(data);
+        setLiveContext({
+          city: normalized.city || 'Kolkata',
+          temperature: Math.round(Number(normalized.temperature) || 0),
+          condition: normalized.condition || 'Clear',
+          summary: buildLiveSummary(normalized),
+          loading: false,
+        });
+      } catch {
+        setLiveContext((prev) => ({ ...prev, loading: false }));
+      }
+    };
+
+    if (!navigator.geolocation) {
+      fallback();
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async ({ coords }) => {
+        const byCoords = await fetchWeatherByCoords({
+          lat: coords.latitude,
+          lon: coords.longitude,
+          cityHint: 'Current Location',
+          updateMain: false,
+        });
+
+        if (byCoords) {
+          setLiveContext({
+            city: byCoords.city || 'Current Location',
+            temperature: Math.round(Number(byCoords.temperature) || 0),
+            condition: byCoords.condition || 'Clear',
+            summary: buildLiveSummary(byCoords),
+            loading: false,
+          });
+          return;
+        }
+
+        fallback();
+      },
+      () => {
+        fallback();
+      },
+      { timeout: 5500, maximumAge: 900000, enableHighAccuracy: false },
+    );
   };
 
   const fetchSuggestions = async (searchTerm) => {
@@ -325,6 +442,12 @@ function App() {
       fetchDashboard();
     }
   }, [activeTab]);
+
+  useEffect(() => {
+    if (activeTab === 'single' && !hasSearched) {
+      detectAndFetchLiveContext();
+    }
+  }, [activeTab, hasSearched]);
 
   const onPickSuggestion = (item) => {
     setQuery(item.name);
@@ -496,7 +619,12 @@ function App() {
   );
 
   const homeHero = (
-    <div className="fade-soft mx-auto flex w-full max-w-3xl flex-col items-center gap-5 text-center lg:mx-0 lg:items-start lg:text-left sm:gap-6">
+    <div className="fade-soft home-hero-wrap mx-auto flex w-full max-w-3xl flex-col items-center gap-5 text-center lg:mx-0 lg:items-start lg:text-left sm:gap-6">
+      <div className="home-orb home-orb-cool" aria-hidden="true" />
+      <div className="home-orb home-orb-warm" aria-hidden="true" />
+      <div className="home-hero-grain" aria-hidden="true" />
+      <p className="hero-greeting section-enter text-xs font-medium tracking-[0.12em] text-inkSecondary/62">{getDayGreeting('Biprajit')}</p>
+
       <div className="relative h-10 w-full sm:h-12 md:h-14">
         {introPhase !== 'done' && introFontReady ? (
           <p
@@ -510,16 +638,17 @@ function App() {
       </div>
 
       <h1
-        className={`text-4xl font-semibold tracking-[-0.03em] text-inkPrimary transition-opacity duration-[600ms] ease-in-out sm:text-5xl md:text-6xl ${
+        className={`hero-heading-gradient hero-heading-enter text-4xl font-semibold tracking-[-0.03em] text-inkPrimary transition-opacity duration-[600ms] ease-in-out sm:text-5xl md:text-6xl ${
           introPhase === 'done' ? 'opacity-100' : 'opacity-0'
         }`}
       >
         Where weather meets experience
       </h1>
-      <p className="max-w-2xl text-sm text-inkSecondary/90 sm:text-base">
+      <p className="hero-subtle-shimmer max-w-2xl text-sm text-inkSecondary/90 sm:text-base">
         Search any city to begin a calm, immersive weather experience.
       </p>
-      <div className="w-full max-w-2xl">
+      <div className="home-search-focus-wrap w-full max-w-2xl section-enter" style={{ transitionDelay: '90ms' }}>
+        <div className="home-search-glow" aria-hidden="true" />
         <CitySearchBox
           value={query}
           onChange={(event) => {
@@ -536,6 +665,48 @@ function App() {
           placeholder="Search for a city..."
           large
         />
+      </div>
+
+      <div className="live-context-strip section-enter" style={{ transitionDelay: '130ms' }}>
+        <p className="live-context-primary">
+          {liveContext.loading ? 'Detecting local weather...' : `${liveContext.city} • ${Math.round(liveContext.temperature)}° • ${liveContext.condition}`}
+        </p>
+        <p className="live-context-secondary">{liveContext.loading ? 'Setting up local context for you.' : liveContext.summary}</p>
+      </div>
+
+      <div className="quick-chip-row section-enter" style={{ transitionDelay: '180ms' }}>
+        {[
+          {
+            label: 'Use My Location',
+            onClick: () => {
+              if (!navigator.geolocation) {
+                fetchWeather('Kolkata');
+                return;
+              }
+
+              navigator.geolocation.getCurrentPosition(
+                ({ coords }) => {
+                  fetchWeatherByCoords({ lat: coords.latitude, lon: coords.longitude, cityHint: 'Current Location', updateMain: true });
+                },
+                () => fetchWeather('Kolkata'),
+                { timeout: 6000, maximumAge: 900000, enableHighAccuracy: false },
+              );
+            },
+          },
+          { label: 'Kolkata', onClick: () => fetchWeather('Kolkata') },
+          { label: 'Delhi', onClick: () => fetchWeather('Delhi') },
+          { label: 'Mumbai', onClick: () => fetchWeather('Mumbai') },
+        ].map((chip, index) => (
+          <button
+            key={chip.label}
+            type="button"
+            onClick={chip.onClick}
+            className="quick-chip"
+            style={{ animationDelay: `${220 + index * 70}ms` }}
+          >
+            {chip.label}
+          </button>
+        ))}
       </div>
     </div>
   );
