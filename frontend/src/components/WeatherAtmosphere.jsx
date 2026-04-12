@@ -48,7 +48,7 @@ const resolvePhase = (hour, weatherKey) => {
   return 'night';
 };
 
-function WeatherAtmosphere({ condition, parallaxOffset = 0 }) {
+function WeatherAtmosphere({ condition, parallaxOffset = 0, suppressLineEffects = false }) {
   const canvasRef = useRef(null);
   const [now, setNow] = useState(() => new Date());
   const [performanceMode, setPerformanceMode] = useState('full');
@@ -77,7 +77,7 @@ function WeatherAtmosphere({ condition, parallaxOffset = 0 }) {
     return () => window.removeEventListener('resize', updateMode);
   }, []);
 
-  const enableCanvasRain = isRainy && performanceMode === 'full';
+  const enableCanvasRain = isRainy && performanceMode === 'full' && !suppressLineEffects;
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -167,7 +167,7 @@ function WeatherAtmosphere({ condition, parallaxOffset = 0 }) {
       {isCloudy && !isHomeIdle ? <div className="cloud-layers absolute inset-0 opacity-56" /> : null}
       {!isHomeIdle ? <div className="grain-overlay absolute inset-0" /> : null}
       {isNight && performanceMode === 'full' && !isHomeIdle ? <div className="night-stars absolute inset-0 opacity-60" /> : null}
-      {isRainy && !isHomeIdle ? <div className="rain-streaks absolute inset-0 opacity-30" /> : null}
+      {isRainy && !isHomeIdle && !suppressLineEffects ? <div className="rain-streaks absolute inset-0 opacity-30" /> : null}
       {enableCanvasRain && !isHomeIdle ? <canvas ref={canvasRef} className="absolute inset-0 opacity-40" /> : null}
     </div>
   );

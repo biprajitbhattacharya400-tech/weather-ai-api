@@ -540,7 +540,7 @@ function App() {
           />
           <button
             type="submit"
-            className="soft-button rounded-xl bg-white/70 px-4 py-2 text-sm font-semibold text-inkSecondary hover:bg-white"
+            className="primary-compare-btn soft-button rounded-xl px-4 py-2 text-sm font-semibold"
           >
             {loadingCompare ? 'Loading' : 'Compare'}
           </button>
@@ -704,6 +704,7 @@ function App() {
   return (
     <AppShell
       condition={currentCondition}
+      suppressLineEffects={activeTab === 'compare'}
       topBar={topBar}
       hero={hero}
       centerPanel={centerPanel}

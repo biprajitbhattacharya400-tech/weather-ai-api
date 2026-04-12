@@ -11,7 +11,7 @@ const resolveWeatherKey = (condition = '') => {
   return 'default';
 };
 
-function AppShell({ condition, topBar, hero, centerPanel, desktopPanel, mobilePanel, footer }) {
+function AppShell({ condition, topBar, hero, centerPanel, desktopPanel, mobilePanel, footer, suppressLineEffects = false }) {
   const [scrollY, setScrollY] = useState(0);
   const [showCursorGlow, setShowCursorGlow] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
@@ -121,7 +121,7 @@ function AppShell({ condition, topBar, hero, centerPanel, desktopPanel, mobilePa
         if (cursorGlowRef.current) cursorGlowRef.current.style.opacity = '0';
       }}
     >
-      <WeatherAtmosphere condition={condition} parallaxOffset={scrollY} />
+      <WeatherAtmosphere condition={condition} parallaxOffset={scrollY} suppressLineEffects={suppressLineEffects} />
       {showCursorGlow ? <div ref={cursorGlowRef} className="cursor-glow" /> : null}
 
       <div className="relative z-10 mx-auto w-full max-w-[1440px] flex-1 px-5 pb-8 pt-20 md:px-10 md:pt-24 lg:grid lg:grid-cols-[minmax(0,0.98fr)_minmax(320px,0.8fr)_minmax(320px,0.72fr)] lg:gap-8 lg:px-14 lg:pb-24 xl:gap-10">
