@@ -62,6 +62,7 @@ function WeatherAtmosphere({ condition, parallaxOffset = 0, suppressLineEffects 
   const isNight = key === 'night';
   const isClear = key === 'clear';
   const isCloudy = key === 'clouds';
+  const isSnow = key === 'snow';
   const shift = Math.min(parallaxOffset * 0.05, 20);
 
   useEffect(() => {
@@ -156,6 +157,7 @@ function WeatherAtmosphere({ condition, parallaxOffset = 0, suppressLineEffects 
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
       <div className="sky-drift absolute inset-0 transition-all duration-[1800ms] ease-out" style={skyStyle} />
+      <div className="ambient-radial-light absolute inset-0" />
 
       {!isHomeIdle ? <div className="atmo-overlay absolute inset-0 opacity-45 transition-opacity duration-[1500ms]" /> : null}
       {!isHomeIdle ? <div className="atmo-blob absolute -left-24 -top-10 h-[20rem] w-[20rem] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.18),transparent_68%)]" style={{ transform: `translateY(${shift * 0.55}px)` }} /> : null}
@@ -165,6 +167,7 @@ function WeatherAtmosphere({ condition, parallaxOffset = 0, suppressLineEffects 
       {!isHomeIdle ? <div className={`absolute inset-0 animate-breathe ${bloom}`} /> : null}
       {isClear && performanceMode === 'full' && !isHomeIdle ? <div className="sunny-particles absolute inset-0 opacity-30" /> : null}
       {isCloudy && !isHomeIdle ? <div className="cloud-layers absolute inset-0 opacity-56" /> : null}
+      {isSnow && !isHomeIdle ? <div className="snow-particles absolute inset-0 opacity-40" /> : null}
       {!isHomeIdle ? <div className="grain-overlay absolute inset-0" /> : null}
       {isNight && performanceMode === 'full' && !isHomeIdle ? <div className="night-stars absolute inset-0 opacity-60" /> : null}
       {isRainy && !isHomeIdle && !suppressLineEffects ? <div className="rain-streaks absolute inset-0 opacity-30" /> : null}

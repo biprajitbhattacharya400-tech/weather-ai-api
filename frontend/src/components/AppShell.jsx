@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import WeatherAtmosphere from './WeatherAtmosphere';
+import AmbientSoundControl from './AmbientSoundControl';
 
 const resolveWeatherKey = (condition = '') => {
   const normalized = String(condition).toLowerCase();
@@ -11,7 +12,7 @@ const resolveWeatherKey = (condition = '') => {
   return 'default';
 };
 
-function AppShell({ condition, topBar, hero, centerPanel, desktopPanel, mobilePanel, footer, suppressLineEffects = false }) {
+function AppShell({ condition, topBar, hero, centerPanel, desktopPanel, mobilePanel, footer, suppressLineEffects = false, viewKey = 'single' }) {
   const [scrollY, setScrollY] = useState(0);
   const [showCursorGlow, setShowCursorGlow] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
@@ -124,7 +125,7 @@ function AppShell({ condition, topBar, hero, centerPanel, desktopPanel, mobilePa
       <WeatherAtmosphere condition={condition} parallaxOffset={scrollY} suppressLineEffects={suppressLineEffects} />
       {showCursorGlow ? <div ref={cursorGlowRef} className="cursor-glow" /> : null}
 
-      <div className="relative z-10 mx-auto w-full max-w-[1440px] flex-1 px-5 pb-8 pt-20 md:px-10 md:pt-24 lg:grid lg:grid-cols-[minmax(0,0.98fr)_minmax(320px,0.8fr)_minmax(320px,0.72fr)] lg:gap-8 lg:px-14 lg:pb-24 xl:gap-10">
+      <div key={viewKey} className="view-pane-transition relative z-10 mx-auto w-full max-w-[1440px] flex-1 px-5 pb-8 pt-20 md:px-10 md:pt-24 lg:grid lg:grid-cols-[minmax(0,0.98fr)_minmax(320px,0.8fr)_minmax(320px,0.72fr)] lg:gap-8 lg:px-14 lg:pb-24 xl:gap-10">
         <div className="scroll-reveal revealed relative z-30 mb-5 lg:col-span-3 lg:mb-0">{topBar}</div>
 
         <section style={{ transform: `translateY(${heroShift}px)` }} className={`scroll-reveal revealed flex min-h-[68vh] justify-center pb-44 ${desktopPanel ? 'items-start lg:min-h-0 lg:justify-start lg:pb-0' : 'items-start pt-0 sm:pt-2 lg:col-span-3 lg:min-h-0 lg:justify-start lg:pt-3 lg:pb-0'}`}>
@@ -141,6 +142,8 @@ function AppShell({ condition, topBar, hero, centerPanel, desktopPanel, mobilePa
       ) : null}
 
       {footer ? <div className="scroll-reveal revealed relative z-30 mt-auto px-4 pb-[calc(0.9rem+env(safe-area-inset-bottom))] pt-2 text-center" style={{ transitionDelay: '180ms' }}>{footer}</div> : null}
+
+      <AmbientSoundControl weatherKey={weatherKey} />
     </main>
   );
 }

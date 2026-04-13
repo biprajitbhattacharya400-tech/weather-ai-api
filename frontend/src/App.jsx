@@ -705,6 +705,7 @@ function App() {
     <AppShell
       condition={currentCondition}
       suppressLineEffects={activeTab === 'compare'}
+      viewKey={activeTab}
       topBar={topBar}
       hero={hero}
       centerPanel={centerPanel}
