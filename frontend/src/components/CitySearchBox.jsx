@@ -46,7 +46,7 @@ function CitySearchBox({
         />
         <button
           type="submit"
-          className={`soft-button rounded-full bg-white/72 font-semibold text-inkSecondary hover:bg-white ${large ? 'px-5 py-[0.46rem] text-sm' : 'px-4 py-[0.4rem] text-sm'}`}
+          className={`search-submit-pill soft-button rounded-full font-semibold ${large ? 'px-5 py-[0.46rem] text-sm' : 'px-4 py-[0.4rem] text-sm'}`}
         >
           {loading ? 'Loading' : 'Search'}
         </button>

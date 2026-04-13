@@ -696,7 +696,7 @@ function App() {
   ) : null;
 
   const footer = (
-    <p className="text-xs tracking-wide text-inkSecondary/78">
+    <p className="app-footer-note text-xs tracking-wide text-inkSecondary/78">
       Made with <span aria-hidden="true">&#10084;</span> by Biprajit
     </p>
   );
