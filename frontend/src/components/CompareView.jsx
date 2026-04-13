@@ -43,9 +43,9 @@ function DifferenceBar({ label, leftValue, rightValue, leftUnit, rightUnit }) {
         <p className="text-inkSecondary">{label}</p>
         <p className="text-inkTertiary">{leftValue}{leftUnit} vs {rightValue}{rightUnit}</p>
       </div>
-      <div className="h-2 overflow-hidden rounded-full bg-slate-800/55">
-        <div className="h-full rounded-full bg-sky-300/45" style={{ width: `${leftWidth}%` }} />
-        <div className="-mt-2 h-full rounded-full bg-indigo-200/35" style={{ width: `${rightWidth}%` }} />
+      <div className="compare-diff-track h-2 overflow-hidden rounded-full">
+        <div className="compare-diff-fill-left h-full rounded-full" style={{ width: `${leftWidth}%` }} />
+        <div className="compare-diff-fill-right -mt-2 h-full rounded-full" style={{ width: `${rightWidth}%` }} />
       </div>
     </div>
   );
@@ -70,7 +70,7 @@ function CitySnapshot({ city }) {
           <p className="text-6xl font-semibold leading-[0.9] tracking-[-0.04em] text-inkPrimary">{Math.round(city.temperature)}°</p>
           <p className="mt-2 text-sm text-inkTertiary">Feels like {Math.round(city.feels_like)}°</p>
         </div>
-        <div className="icon-float rounded-2xl border border-white/15 bg-slate-900/42 p-3 text-inkSecondary">
+        <div className="compare-icon-chip icon-float rounded-2xl p-3 text-inkSecondary">
           <Icon size={22} />
         </div>
       </div>
@@ -95,7 +95,7 @@ function CompareView({ cities, loading, error }) {
   return (
     <section className="glass-strong fade-soft weather-refresh w-full max-w-6xl rounded-[34px] p-6 shadow-ambient md:p-8">
       <div className="space-y-8">
-        <div className="insight-enter rounded-2xl border-l-2 border-sky-300/45 bg-[linear-gradient(120deg,rgba(56,189,248,0.12),rgba(18,28,47,0.45)_24%,rgba(18,28,47,0.24))] px-4 py-3 shadow-[0_12px_28px_rgba(6,14,28,0.24)]">
+        <div className="compare-insight-card insight-enter rounded-2xl border-l-2 px-4 py-3">
           <p className="text-xs uppercase tracking-[0.16em] text-inkTertiary">Insight</p>
           <p className="mt-2 text-sm text-inkSecondary">{insight}</p>
         </div>
@@ -113,7 +113,7 @@ function CompareView({ cities, loading, error }) {
             <LineChart size={14} />
             <span>Hourly Comparison</span>
           </div>
-          <div className="h-48 w-full rounded-2xl border border-white/14 bg-[linear-gradient(180deg,rgba(24,38,62,0.74),rgba(20,32,52,0.45))] p-2">
+          <div className="compare-chart-panel h-48 w-full rounded-2xl p-2">
             <ResponsiveContainer>
               <RechartLineChart data={hourly} margin={{ top: 12, right: 10, bottom: 4, left: 0 }}>
                 <defs>
@@ -127,11 +127,11 @@ function CompareView({ cities, loading, error }) {
                 <Tooltip
                   cursor={false}
                   contentStyle={{
-                    background: 'rgba(17,29,47,0.88)',
-                    border: '1px solid rgba(203,220,246,0.18)',
+                    background: 'var(--cmp-tooltip-bg)',
+                    border: '1px solid var(--cmp-tooltip-border)',
                     borderRadius: '12px',
-                    boxShadow: '0 10px 26px rgba(0,0,0,0.26)',
-                    color: 'rgba(236,244,255,0.92)',
+                    boxShadow: 'var(--cmp-tooltip-shadow)',
+                    color: 'var(--cmp-tooltip-text)',
                     fontSize: '12px',
                   }}
                 />

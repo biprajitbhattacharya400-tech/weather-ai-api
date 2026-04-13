@@ -3,6 +3,10 @@
 
 :root {
   color-scheme: light;
+  --cmp-tooltip-bg: rgba(255, 255, 255, 0.9);
+  --cmp-tooltip-border: rgba(177, 196, 228, 0.42);
+  --cmp-tooltip-shadow: 0 10px 26px rgba(30, 48, 76, 0.16);
+  --cmp-tooltip-text: rgba(35, 52, 80, 0.92);
 }
 
 * {
@@ -152,6 +156,90 @@ body {
 
 .wx-night .placeholder\:text-inkTertiary::placeholder {
   color: rgba(193, 206, 232, 0.62) !important;
+}
+
+.wx-night {
+  --cmp-tooltip-bg: rgba(17, 29, 47, 0.88);
+  --cmp-tooltip-border: rgba(203, 220, 246, 0.18);
+  --cmp-tooltip-shadow: 0 10px 26px rgba(0, 0, 0, 0.26);
+  --cmp-tooltip-text: rgba(236, 244, 255, 0.92);
+}
+
+.compare-insight-card {
+  border-color: rgba(125, 211, 252, 0.42);
+  background: linear-gradient(120deg, rgba(127, 191, 251, 0.16), rgba(255, 255, 255, 0.3) 24%, rgba(245, 250, 255, 0.14));
+  box-shadow: 0 12px 28px rgba(37, 66, 107, 0.14);
+}
+
+.compare-chart-panel {
+  border: 1px solid rgba(185, 203, 229, 0.34);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.32), rgba(246, 251, 255, 0.16));
+}
+
+.compare-icon-chip {
+  border: 1px solid rgba(183, 201, 228, 0.34);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.42), rgba(244, 250, 255, 0.25));
+}
+
+.compare-diff-track {
+  background: rgba(193, 211, 236, 0.56);
+}
+
+.compare-diff-fill-left {
+  background: rgba(84, 144, 232, 0.58);
+}
+
+.compare-diff-fill-right {
+  background: rgba(135, 156, 197, 0.44);
+}
+
+.dashboard-tile {
+  border: 1px solid rgba(183, 201, 228, 0.3);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.34), rgba(243, 249, 255, 0.16));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42), 0 8px 20px rgba(40, 68, 108, 0.12);
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+.wx-night .compare-insight-card,
+.wx-default .compare-insight-card {
+  border-color: rgba(125, 211, 252, 0.45);
+  background: linear-gradient(120deg, rgba(56, 189, 248, 0.12), rgba(18, 28, 47, 0.45) 24%, rgba(18, 28, 47, 0.24));
+  box-shadow: 0 12px 28px rgba(6, 14, 28, 0.24);
+}
+
+.wx-night .compare-chart-panel,
+.wx-default .compare-chart-panel {
+  border-color: rgba(208, 223, 248, 0.14);
+  background: linear-gradient(180deg, rgba(24, 38, 62, 0.74), rgba(20, 32, 52, 0.45));
+}
+
+.wx-night .compare-icon-chip,
+.wx-default .compare-icon-chip {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(15, 27, 45, 0.42);
+}
+
+.wx-night .compare-diff-track,
+.wx-default .compare-diff-track {
+  background: rgba(31, 44, 68, 0.64);
+}
+
+.wx-night .compare-diff-fill-left,
+.wx-default .compare-diff-fill-left {
+  background: rgba(125, 191, 255, 0.46);
+}
+
+.wx-night .compare-diff-fill-right,
+.wx-default .compare-diff-fill-right {
+  background: rgba(192, 204, 229, 0.34);
+}
+
+.wx-night .dashboard-tile,
+.wx-default .dashboard-tile {
+  border-color: rgba(212, 226, 248, 0.14);
+  background: linear-gradient(145deg, rgba(17, 30, 49, 0.56), rgba(23, 36, 58, 0.4));
+  box-shadow: inset 0 1px 0 rgba(235, 243, 255, 0.1), 0 8px 20px rgba(7, 14, 27, 0.2);
 }
 
 @keyframes fadeSoft {

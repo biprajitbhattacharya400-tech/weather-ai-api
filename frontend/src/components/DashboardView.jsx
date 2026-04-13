@@ -38,15 +38,15 @@ function DashboardView({ primaryLocation, totalSearches, recentSearches, uniqueC
         <div className="section-enter" style={{ animationDelay: '90ms' }}>
           <p className="text-xs uppercase tracking-[0.16em] text-inkTertiary">Search Insights</p>
           <div className="mt-4 grid grid-cols-2 gap-5 md:grid-cols-3">
-            <article className="soft-hover-lift rounded-2xl border border-white/12 bg-slate-900/42 px-4 py-3">
+            <article className="dashboard-tile soft-hover-lift rounded-2xl px-4 py-3">
               <p className="text-xs text-inkTertiary">Total Searches</p>
               <p className="mt-1 text-2xl font-medium text-inkPrimary"><CountUp value={totalSearches} /></p>
             </article>
-            <article className="soft-hover-lift rounded-2xl border border-white/12 bg-slate-900/42 px-4 py-3">
+            <article className="dashboard-tile soft-hover-lift rounded-2xl px-4 py-3">
               <p className="text-xs text-inkTertiary">Unique Cities</p>
               <p className="mt-1 text-2xl font-medium text-inkPrimary"><CountUp value={uniqueCities} /></p>
             </article>
-            <article className="soft-hover-lift col-span-2 rounded-2xl border border-white/12 bg-slate-900/42 px-4 py-3 md:col-span-1">
+            <article className="dashboard-tile soft-hover-lift col-span-2 rounded-2xl px-4 py-3 md:col-span-1">
               <p className="text-xs text-inkTertiary">Recent Activity</p>
               <p className="mt-1 text-base font-medium text-inkSecondary">{recentSearches.length > 0 ? 'Active' : 'Waiting'}</p>
             </article>
@@ -60,7 +60,7 @@ function DashboardView({ primaryLocation, totalSearches, recentSearches, uniqueC
               <p className="text-sm text-inkSecondary">No recent searches.</p>
             ) : (
               recentSearches.map((item, idx) => (
-                <article key={`${item.city}-${idx}`} className="soft-hover-lift rounded-2xl border border-white/12 bg-slate-900/44 px-4 py-3">
+                <article key={`${item.city}-${idx}`} className="dashboard-tile soft-hover-lift rounded-2xl px-4 py-3">
                   <div className="flex items-center justify-between">
                     <p className="text-sm font-medium text-inkSecondary">{item.city}</p>
                     <p className="text-sm font-semibold text-inkPrimary">{Math.round(item.temperature)}°</p>
