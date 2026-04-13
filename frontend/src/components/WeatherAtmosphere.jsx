@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 const SKY_BY_PHASE = {
-  morning: 'linear-gradient(160deg, #c9dcf5 0%, #bfd5ef 42%, #f2d0bf 100%)',
-  noon: 'linear-gradient(170deg, #cbe1fb 0%, #c2d8f5 45%, #dbe8fb 100%)',
-  sunset: 'linear-gradient(170deg, #f0b39a 0%, #d6a7d8 48%, #8fa3d8 100%)',
+  morning: 'linear-gradient(160deg, #d6e3f4 0%, #cdddf2 44%, #e8d8c9 100%)',
+  noon: 'linear-gradient(170deg, #d7e5f6 0%, #cedff4 46%, #dde7f7 100%)',
+  sunset: 'linear-gradient(170deg, #e9c6b2 0%, #d9bfd6 50%, #a6b4d6 100%)',
   night: 'linear-gradient(170deg, #1b2342 0%, #26315d 48%, #4c4f89 100%)',
 };
 
