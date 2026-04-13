@@ -141,9 +141,9 @@ function AppShell({ condition, topBar, hero, centerPanel, desktopPanel, mobilePa
         <div className="scroll-reveal relative z-20 mt-8 mb-6 px-4 lg:hidden" style={{ transitionDelay: '120ms' }}>{mobilePanel}</div>
       ) : null}
 
-      {footer ? <div className="scroll-reveal revealed relative z-30 mt-auto px-4 pb-[calc(0.9rem+env(safe-area-inset-bottom))] pt-2 text-center" style={{ transitionDelay: '180ms' }}>{footer}</div> : null}
-
       <AmbientSoundControl weatherKey={weatherKey} />
+
+      {footer ? <div className="scroll-reveal revealed relative z-30 mt-auto px-4 pb-[calc(0.9rem+env(safe-area-inset-bottom))] pt-2 text-center" style={{ transitionDelay: '180ms' }}>{footer}</div> : null}
     </main>
   );
 }

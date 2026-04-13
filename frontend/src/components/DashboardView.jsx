@@ -28,7 +28,7 @@ function CountUp({ value, duration = 620 }) {
 
 function DashboardView({ primaryLocation, totalSearches, recentSearches, uniqueCities }) {
   return (
-    <section className="glass-strong fade-soft weather-refresh w-full max-w-5xl rounded-[34px] p-6 shadow-ambient md:p-8">
+    <section className="dashboard-view-root glass-strong fade-soft weather-refresh w-full max-w-5xl rounded-[34px] p-6 shadow-ambient md:p-8">
       <div className="space-y-10">
         <div className="section-enter">
           <p className="text-xs uppercase tracking-[0.16em] text-inkTertiary">Primary Tracked Location</p>

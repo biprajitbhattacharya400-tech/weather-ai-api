@@ -196,7 +196,7 @@ function AmbientSoundControl({ weatherKey = 'default' }) {
   );
 
   return (
-    <div className="ambient-audio-panel glass-lite fixed bottom-4 right-4 z-40 rounded-2xl p-3 shadow-ambient">
+    <div className="ambient-audio-panel glass-lite rounded-2xl p-3 shadow-ambient">
       {!enabled ? (
         <button
           type="button"

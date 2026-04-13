@@ -93,7 +93,7 @@ function CompareView({ cities, loading, error }) {
   const hourly = buildHourly(cityA, cityB);
 
   return (
-    <section className="glass-strong fade-soft weather-refresh w-full max-w-6xl rounded-[34px] p-6 shadow-ambient md:p-8">
+    <section className="compare-view-root glass-strong fade-soft weather-refresh w-full max-w-6xl rounded-[34px] p-6 shadow-ambient md:p-8">
       <div className="space-y-8">
         <div className="compare-insight-card insight-enter rounded-2xl border-l-2 px-4 py-3">
           <p className="text-xs uppercase tracking-[0.16em] text-inkTertiary">Insight</p>
@@ -122,7 +122,7 @@ function CompareView({ cities, loading, error }) {
                     <stop offset="100%" stopColor="rgba(95, 125, 178, 0.02)" />
                   </linearGradient>
                 </defs>
-                <XAxis dataKey="hour" tick={{ fill: '#69778f', fontSize: 11 }} axisLine={false} tickLine={false} />
+                <XAxis dataKey="hour" tick={{ fill: 'var(--cmp-axis-text)', fontSize: 11 }} axisLine={false} tickLine={false} />
                 <YAxis hide />
                 <Tooltip
                   cursor={false}

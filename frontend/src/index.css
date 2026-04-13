@@ -7,6 +7,7 @@
   --cmp-tooltip-border: rgba(177, 196, 228, 0.42);
   --cmp-tooltip-shadow: 0 10px 26px rgba(30, 48, 76, 0.16);
   --cmp-tooltip-text: rgba(35, 52, 80, 0.92);
+  --cmp-axis-text: rgba(62, 82, 114, 0.78);
 }
 
 * {
@@ -184,6 +185,47 @@ body {
   --cmp-tooltip-border: rgba(203, 220, 246, 0.18);
   --cmp-tooltip-shadow: 0 10px 26px rgba(0, 0, 0, 0.26);
   --cmp-tooltip-text: rgba(236, 244, 255, 0.92);
+  --cmp-axis-text: rgba(198, 212, 235, 0.76);
+}
+
+.wx-default {
+  --cmp-axis-text: rgba(198, 212, 235, 0.74);
+}
+
+.compare-view-root .text-inkPrimary,
+.dashboard-view-root .text-inkPrimary {
+  color: rgba(26, 44, 71, 0.97) !important;
+}
+
+.compare-view-root .text-inkSecondary,
+.dashboard-view-root .text-inkSecondary {
+  color: rgba(50, 70, 102, 0.9) !important;
+}
+
+.compare-view-root .text-inkTertiary,
+.dashboard-view-root .text-inkTertiary {
+  color: rgba(77, 97, 128, 0.82) !important;
+}
+
+.wx-night .compare-view-root .text-inkPrimary,
+.wx-default .compare-view-root .text-inkPrimary,
+.wx-night .dashboard-view-root .text-inkPrimary,
+.wx-default .dashboard-view-root .text-inkPrimary {
+  color: rgba(236, 244, 255, 0.95) !important;
+}
+
+.wx-night .compare-view-root .text-inkSecondary,
+.wx-default .compare-view-root .text-inkSecondary,
+.wx-night .dashboard-view-root .text-inkSecondary,
+.wx-default .dashboard-view-root .text-inkSecondary {
+  color: rgba(212, 224, 245, 0.9) !important;
+}
+
+.wx-night .compare-view-root .text-inkTertiary,
+.wx-default .compare-view-root .text-inkTertiary,
+.wx-night .dashboard-view-root .text-inkTertiary,
+.wx-default .dashboard-view-root .text-inkTertiary {
+  color: rgba(184, 201, 228, 0.82) !important;
 }
 
 .compare-insight-card {
@@ -867,6 +909,10 @@ body {
 .ambient-audio-panel {
   max-width: min(90vw, 320px);
   border-color: rgba(198, 214, 242, 0.26);
+  position: fixed;
+  right: 14px;
+  bottom: calc(env(safe-area-inset-bottom) + 12px);
+  z-index: 36;
 }
 
 .ambient-enable-btn {
@@ -1495,6 +1541,15 @@ body {
 
   .home-layout-limit {
     padding: 0 20px;
+  }
+
+  .ambient-audio-panel {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    z-index: 20;
+    width: min(calc(100% - 1.2rem), 420px);
+    margin: 0.6rem auto 0.25rem;
   }
 
   .home-orb {
