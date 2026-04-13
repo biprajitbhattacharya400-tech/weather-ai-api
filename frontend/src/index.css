@@ -676,12 +676,23 @@ body {
 }
 
 .app-footer-note {
-  color: rgba(63, 82, 112, 0.78) !important;
+  color: rgba(42, 60, 88, 0.84) !important;
+  text-shadow: 0 1px 10px rgba(255, 255, 255, 0.18);
 }
 
+.wx-clear .app-footer-note,
+.wx-clouds .app-footer-note,
+.wx-rain .app-footer-note,
 .wx-default .app-footer-note,
 .wx-night .app-footer-note {
-  color: rgba(206, 220, 244, 0.74) !important;
+  color: rgba(214, 228, 249, 0.84) !important;
+}
+
+.wx-clear .app-footer-note,
+.wx-clouds .app-footer-note,
+.wx-rain .app-footer-note {
+  color: rgba(37, 57, 87, 0.84) !important;
+  text-shadow: 0 1px 8px rgba(255, 255, 255, 0.34);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -1548,8 +1559,18 @@ body {
     right: auto;
     bottom: auto;
     z-index: 20;
-    width: min(calc(100% - 1.2rem), 420px);
-    margin: 0.6rem auto 0.25rem;
+    width: fit-content;
+    max-width: calc(100% - 1.2rem);
+    padding: 0.52rem 0.64rem;
+    margin: 0.55rem auto 0.2rem;
+  }
+
+  .ambient-audio-state {
+    justify-content: center;
+  }
+
+  .ambient-audio-label {
+    display: none;
   }
 
   .home-orb {

@@ -211,7 +211,7 @@ function AmbientSoundControl({ weatherKey = 'default' }) {
           <span>Enable Ambient Sound</span>
         </button>
       ) : (
-        <div className="flex items-center gap-2">
+        <div className="ambient-audio-state flex items-center gap-2">
           <button
             type="button"
             className="soft-button inline-flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-inkSecondary"
@@ -221,7 +221,7 @@ function AmbientSoundControl({ weatherKey = 'default' }) {
             {muted ? <VolumeX size={14} /> : <Volume2 size={14} />}
             <span>{muted ? 'Unmute' : 'Mute'}</span>
           </button>
-          <span className="text-[11px] font-medium text-inkTertiary">{ambientLabel}</span>
+          <span className="ambient-audio-label text-[11px] font-medium text-inkTertiary">{ambientLabel}</span>
         </div>
       )}
     </div>
