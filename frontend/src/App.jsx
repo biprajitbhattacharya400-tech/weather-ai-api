@@ -488,14 +488,16 @@ function App() {
   const conditionFromDashboard = recentSearches[0]?.condition || 'Clear';
   const conditionFromCompare = compareCities[0]?.condition || weather.condition;
   const nowUnix = Math.floor(Date.now() / 1000);
+  const hourNow = new Date().getHours();
+  const isGlobalNight = hourNow >= 19 || hourNow < 5;
   const isNightNow = Boolean(weather.sunrise && weather.sunset && (nowUnix < weather.sunrise || nowUnix > weather.sunset));
   const singleCondition = hasSearched ? (isNightNow ? 'night' : weather.condition) : 'default';
   const currentCondition =
     activeTab === 'single'
       ? singleCondition
       : activeTab === 'compare'
-        ? conditionFromCompare
-        : conditionFromDashboard;
+        ? (isGlobalNight ? 'night' : conditionFromCompare)
+        : (isGlobalNight ? 'night' : conditionFromDashboard);
 
   const topBar = (
     <div className="flex w-full flex-col items-start gap-4">
