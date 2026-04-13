@@ -96,8 +96,6 @@ const createAmbientLayer = (context, noiseBuffer, weather) => {
     connectOsc({ type: 'triangle', freq: 261.6, gain: 0.006 });
   }
 
-  layerGain.connect(context.destination);
-
   return {
     gainNode: layerGain,
     stop: () => {
