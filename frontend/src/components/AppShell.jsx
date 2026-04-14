@@ -123,6 +123,7 @@ function AppShell({ condition, topBar, hero, centerPanel, desktopPanel, mobilePa
       }}
     >
       <WeatherAtmosphere condition={condition} parallaxOffset={scrollY} suppressLineEffects={suppressLineEffects} />
+      <div className="aether-brand-corner" aria-label="Aether brand">AETHER</div>
       {showCursorGlow ? <div ref={cursorGlowRef} className="cursor-glow" /> : null}
 
       <div key={viewKey} className="view-pane-transition relative z-10 mx-auto w-full max-w-[1440px] flex-1 px-5 pb-8 pt-20 md:px-10 md:pt-24 lg:grid lg:grid-cols-[minmax(0,0.98fr)_minmax(320px,0.8fr)_minmax(320px,0.72fr)] lg:gap-8 lg:px-14 lg:pb-24 xl:gap-10">
