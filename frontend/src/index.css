@@ -784,6 +784,24 @@ body {
   opacity: 0.7;
 }
 
+.hero-inline-meta-primary {
+  color: rgba(50, 68, 95, 0.9);
+}
+
+.hero-inline-meta-sep {
+  color: rgba(86, 105, 134, 0.74);
+}
+
+.wx-night .hero-inline-meta-primary,
+.wx-default .hero-inline-meta-primary {
+  color: rgba(226, 236, 252, 0.92);
+}
+
+.wx-night .hero-inline-meta-sep,
+.wx-default .hero-inline-meta-sep {
+  color: rgba(189, 203, 228, 0.86);
+}
+
 .wx-default .glass-lite {
   background: linear-gradient(150deg, rgba(20, 31, 50, 0.74), rgba(26, 41, 66, 0.56));
   border: 1px solid rgba(206, 222, 248, 0.2);

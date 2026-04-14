@@ -137,8 +137,14 @@ function WeatherHero({ city, temperature, condition, tempMin, tempMax, feelsLike
         H {Math.round(tempMax)}° · L {Math.round(tempMin)}°
       </p>
 
-      <p className="mt-5 mb-3 text-sm font-medium text-inkSecondary/82">
-        Humidity {displayHumidity}% <span className="px-1.5 text-inkTertiary">•</span> Wind {Math.round(windSpeed ?? 0)} m/s <span className="px-1.5 text-inkTertiary">•</span> <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold ${aqiTone}`}><span className="h-1.5 w-1.5 rounded-full bg-current shadow-[0_0_8px_currentColor]" />AQI {displayAqi}</span> <span className="px-1.5 text-inkTertiary">•</span> <span className="shimmer-pill inline-flex items-center rounded-full border border-sky-200/20 px-2 py-0.5 text-[11px] font-semibold" style={{ color: 'var(--wx-accent)', background: 'color-mix(in srgb, var(--wx-accent) 14%, rgba(17,28,48,0.64))' }}>🌧 {Math.round(rainChance ?? 0)}%</span>
+      <p className="hero-inline-meta mt-5 mb-3 text-sm font-medium">
+        <span className="hero-inline-meta-primary">Humidity {displayHumidity}%</span>
+        <span className="hero-inline-meta-sep px-1.5">•</span>
+        <span className="hero-inline-meta-primary">Wind {Math.round(windSpeed ?? 0)} m/s</span>
+        <span className="hero-inline-meta-sep px-1.5">•</span>
+        <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold ${aqiTone}`}><span className="h-1.5 w-1.5 rounded-full bg-current shadow-[0_0_8px_currentColor]" />AQI {displayAqi}</span>
+        <span className="hero-inline-meta-sep px-1.5">•</span>
+        <span className="shimmer-pill inline-flex items-center rounded-full border border-sky-200/20 px-2 py-0.5 text-[11px] font-semibold" style={{ color: 'var(--wx-accent)', background: 'color-mix(in srgb, var(--wx-accent) 14%, rgba(17,28,48,0.64))' }}>🌧 {Math.round(rainChance ?? 0)}%</span>
       </p>
 
       <div className="glass-soft live-strip-enter w-full max-w-xl rounded-2xl px-4 py-3 shadow-ambient">
