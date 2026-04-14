@@ -716,6 +716,42 @@ body {
   width: min(100%, 420px);
 }
 
+.brand-tabs-row {
+  white-space: nowrap;
+}
+
+.brand-aether {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: default;
+}
+
+.brand-aether-text {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
+  transition: color 300ms ease, letter-spacing 300ms ease;
+}
+
+.brand-aether-dot {
+  margin-left: 0.36rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 12px;
+  line-height: 1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .brand-aether:hover .brand-aether-text {
+    color: rgba(255, 255, 255, 1);
+    letter-spacing: 0.12em;
+  }
+}
+
 .tabs-slide-indicator {
   position: absolute;
   top: 4px;
@@ -1575,6 +1611,14 @@ body {
 
   .home-layout-limit {
     padding: 0 20px;
+  }
+
+  .brand-aether-text {
+    font-size: 14px;
+  }
+
+  .brand-aether-dot {
+    font-size: 11px;
   }
 
   .ambient-audio-panel {

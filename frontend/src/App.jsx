@@ -501,7 +501,13 @@ function App() {
 
   const topBar = (
     <div className="flex w-full flex-col items-start gap-4">
-      <ModeTabs activeTab={activeTab} onChange={setActiveTab} />
+      <div className="brand-tabs-row flex items-center gap-4 sm:gap-5">
+        <button type="button" className="brand-aether inline-flex items-center" aria-label="Aether brand">
+          <span className="brand-aether-text">Aether</span>
+          <span className="brand-aether-dot" aria-hidden="true">•</span>
+        </button>
+        <ModeTabs activeTab={activeTab} onChange={setActiveTab} />
+      </div>
 
       {activeTab === 'single' && hasSearched ? (
         <div className="w-full max-w-xl">
