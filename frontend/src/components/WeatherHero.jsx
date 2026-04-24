@@ -128,9 +128,9 @@ function WeatherHero({ city, temperature, condition, tempMin, tempMax, feelsLike
         </h1>
       </div>
 
-      <div className="mt-4 flex items-center gap-2 text-[22px] font-medium text-inkSecondary/92">
+      <div className="hero-condition-row mt-4 flex items-center gap-2 text-[22px] font-medium">
         <Icon size={20} strokeWidth={2} className="icon-float" style={{ color: 'var(--wx-accent)' }} />
-        <span>{condition || 'Clear'}</span>
+        <span className="hero-condition-text">{condition || 'Clear'}</span>
       </div>
 
       <p className="mt-6 text-sm font-medium tracking-wide text-inkTertiary">

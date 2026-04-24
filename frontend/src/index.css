@@ -815,6 +815,11 @@ body {
   color: rgba(86, 105, 134, 0.74);
 }
 
+.hero-condition-text {
+  color: rgba(42, 61, 90, 0.92);
+  text-shadow: 0 1px 8px rgba(255, 255, 255, 0.22);
+}
+
 .rain-percent-pill {
   color: rgba(36, 102, 178, 0.96);
   border: 1px solid rgba(154, 202, 255, 0.6);
@@ -830,6 +835,12 @@ body {
 .wx-night .hero-inline-meta-sep,
 .wx-default .hero-inline-meta-sep {
   color: rgba(189, 203, 228, 0.86);
+}
+
+.wx-night .hero-condition-text,
+.wx-default .hero-condition-text {
+  color: rgba(230, 239, 255, 0.95);
+  text-shadow: 0 2px 10px rgba(5, 10, 18, 0.46);
 }
 
 .wx-night .rain-percent-pill,
