@@ -126,20 +126,20 @@ function AppShell({ condition, topBar, hero, centerPanel, desktopPanel, mobilePa
       <div className="aether-brand-corner" aria-label="Aether brand">AETHER</div>
       {showCursorGlow ? <div ref={cursorGlowRef} className="cursor-glow" /> : null}
 
-      <div key={viewKey} className="view-pane-transition relative z-10 mx-auto w-full max-w-[1440px] flex-1 px-5 pb-8 pt-20 md:px-10 md:pt-24 lg:grid lg:grid-cols-[minmax(0,0.98fr)_minmax(320px,0.8fr)_minmax(320px,0.72fr)] lg:gap-8 lg:px-14 lg:pb-24 xl:gap-10">
+      <div key={viewKey} className="view-pane-transition relative z-10 mx-auto w-full max-w-[1440px] flex-1 px-5 pb-8 pt-20 md:px-10 md:pt-24 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.75fr)_minmax(280px,0.7fr)] lg:gap-5 lg:px-12 lg:pb-20 xl:gap-6">
         <div className="scroll-reveal revealed relative z-30 mb-5 lg:col-span-3 lg:mb-0">{topBar}</div>
 
         <section style={{ transform: `translateY(${heroShift}px)` }} className={`scroll-reveal revealed flex min-h-[68vh] justify-center pb-44 ${desktopPanel ? 'items-start lg:min-h-0 lg:justify-start lg:pb-0' : 'items-start pt-0 sm:pt-2 lg:col-span-3 lg:min-h-0 lg:justify-start lg:pt-3 lg:pb-0'}`}>
           {hero}
         </section>
 
-        {centerPanel ? <section className="scroll-reveal hidden lg:block lg:pt-6" style={{ transitionDelay: '90ms' }}>{centerPanel}</section> : null}
+        {centerPanel ? <section className="scroll-reveal hidden lg:block lg:pt-4" style={{ transitionDelay: '90ms' }}>{centerPanel}</section> : null}
 
         {desktopPanel ? <aside className="scroll-reveal hidden lg:flex lg:items-stretch" style={{ transitionDelay: '140ms' }}>{desktopPanel}</aside> : null}
       </div>
 
       {mobilePanel ? (
-        <div className="scroll-reveal relative z-20 mt-8 mb-6 px-4 lg:hidden" style={{ transitionDelay: '120ms' }}>{mobilePanel}</div>
+        <div className="scroll-reveal relative z-20 mt-6 mb-4 px-4 lg:hidden" style={{ transitionDelay: '120ms' }}>{mobilePanel}</div>
       ) : null}
 
       <AmbientSoundControl weatherKey={weatherKey} />
