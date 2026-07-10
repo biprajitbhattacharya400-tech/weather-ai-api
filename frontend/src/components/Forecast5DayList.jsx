@@ -15,15 +15,15 @@ const formatDay = (value) => {
 
 function Forecast5DayList({ daily }) {
   return (
-    <section className="space-y-2.5">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-inkTertiary">5 Day</p>
-      <div className="space-y-2">
+    <section className="space-y-2">
+      <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-inkTertiary">5 Day</p>
+      <div className="space-y-1.5">
         {daily.map((day) => {
           const Icon = iconByCondition(day.condition);
           return (
-            <article key={day.date} className="flex items-center justify-between rounded-2xl bg-white/24 px-3 py-2.5">
-              <div className="flex items-center gap-2.5">
-                <Icon size={16} className="text-inkSecondary" />
+            <article key={day.date} className="flex items-center justify-between rounded-2xl bg-white/24 px-3 py-2">
+              <div className="flex items-center gap-2">
+                <Icon size={15} className="text-inkSecondary" />
                 <p className="text-sm font-medium text-inkSecondary">{formatDay(day.date)}</p>
               </div>
               <p className="text-sm font-semibold text-inkPrimary">

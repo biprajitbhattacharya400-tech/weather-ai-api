@@ -685,7 +685,7 @@ function App() {
   const centerPanel = activeTab === 'single' && hasSearched ? <HourlyStrip hourly={hourly} /> : null;
 
   const mobilePanel = activeTab === 'single' && hasSearched ? (
-    <div className="space-y-3">
+    <div className="space-y-2">
       <ForecastPanel hourly={hourly} />
       <UnifiedInfoSurface
         graphPoints={graphPoints}

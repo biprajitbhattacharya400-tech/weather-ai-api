@@ -15,9 +15,9 @@ const formatHour = (value) => {
 
 function HourlyStrip({ hourly }) {
   return (
-    <section className="glass-lite fade-soft w-full rounded-[28px] px-5 py-5 shadow-ambient">
-      <p className="px-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-inkTertiary">Hourly</p>
-      <div className="smooth-scroll-x mt-4 flex gap-2.5 overflow-x-auto px-0.5 pb-1">
+    <section className="glass-lite fade-soft w-full rounded-[28px] px-5 py-4 shadow-ambient">
+      <p className="px-1 text-[9px] font-bold uppercase tracking-[0.2em] text-inkTertiary">Hourly</p>
+      <div className="smooth-scroll-x mt-3 flex gap-2.5 overflow-x-auto px-0.5 pb-1">
         {hourly.map((item, index) => {
           const Icon = iconByCondition(item.condition);
           const rainPercent = Math.max(0, Math.min(100, Math.round(Number(item.pop ?? 0))));

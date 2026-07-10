@@ -139,7 +139,7 @@ function AppShell({ condition, topBar, hero, centerPanel, desktopPanel, mobilePa
       </div>
 
       {mobilePanel ? (
-        <div className="scroll-reveal relative z-20 mt-2 mb-4 px-4 lg:hidden" style={{ transitionDelay: '120ms' }}>{mobilePanel}</div>
+        <div className="scroll-reveal relative z-20 mt-1 mb-3 px-4 lg:hidden" style={{ transitionDelay: '120ms' }}>{mobilePanel}</div>
       ) : null}
 
       <AmbientSoundControl weatherKey={weatherKey} />

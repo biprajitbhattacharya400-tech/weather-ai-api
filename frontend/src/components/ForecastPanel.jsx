@@ -15,8 +15,8 @@ const formatHour = (value) => {
 
 function ForecastPanel({ hourly }) {
   return (
-    <section className="glass-lite mx-auto w-full rounded-[30px] p-5 shadow-ambient">
-      <div className="mb-4 px-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-inkTertiary">Hourly</div>
+    <section className="glass-lite mx-auto w-full rounded-[30px] p-4 shadow-ambient">
+      <div className="mb-3 px-1 text-[9px] font-bold uppercase tracking-[0.2em] text-inkTertiary">Hourly</div>
       <div className="smooth-scroll-x flex gap-2.5 overflow-x-auto px-0.5 pb-1">
         {hourly.map((item, index) => {
           const Icon = iconByCondition(item.condition);
